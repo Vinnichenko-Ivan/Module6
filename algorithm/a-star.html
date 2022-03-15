@@ -1,12 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Алгоритм A*</title>
     <link href="../css/a-star.css" rel="stylesheet">
-    <script src="../js/a-star.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 </head>
 <body>
-
+    <div style="flex-direction: row">
+        <input id="field-width" type="number" value="24">
+        <input id="field-height" type="number" value="16">
+        <button id="field-resize">Создать Карту</button>
+    </div>
+    <div id="field">
+        <!--<canvas id="field"></canvas>-->
+    </div>
+    <script src="../js/a-star.js"></script>
 </body>
 </html>

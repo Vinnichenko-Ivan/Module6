@@ -1,0 +1,60 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Задаём глобальные параметры */
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background: #161a1a;
+}
+
+/* Делаем границу вокруг игрового поля */
+#field {
+    display: flex;
+    flex-direction: column;
+
+    width: 90%;
+    height: 90%;
+    padding: 1px;
+
+    background: #545454;
+}
+
+.cell-row {
+    display: flex;
+    flex-direction: row;
+
+    height: inherit;
+    margin: 1px 0;
+}
+
+.cell {
+    width: 100%;
+    height: 100%;
+    margin: 0 1px;
+
+    background: #fff2e6;
+    transition: background-color .2s ease-out;
+}
+
+.cell:hover {
+    background: #ffcbba;
+}
+
+.cell[type='wall'] {
+    background: dimgray;
+}
+
+.cell[type='start'] {
+    background: green;
+}
+
+.cell[type='end'] {
+    background: red;
+}
