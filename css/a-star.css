@@ -58,3 +58,15 @@ body {
 .cell[type='end'] {
     background: red;
 }
+
+.reachable {
+    background: lightgreen;
+}
+
+.explored {
+    background: lightblue;
+}
+
+.path {
+    background: yellow;
+}
