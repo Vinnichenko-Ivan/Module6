@@ -17,7 +17,6 @@ $('#field').mousedown(event => {
     if ($(event.target).hasClass('cell')) {
         selected = $(event.target);
     }
-    console.log("down");
     return false;
 });
 $('#field').mousemove(event => {
@@ -40,7 +39,6 @@ $('#field').mouseup(event => {
             selected = null;
         }
     }
-    console.log("up");
 });
 
 function resize() {

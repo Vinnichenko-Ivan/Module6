@@ -11,7 +11,7 @@ body {
     justify-content: center;
     align-items: center;
 
-    background: #161a1a;
+    background: white;
 }
 
 /* Делаем границу вокруг игрового поля */
@@ -21,9 +21,7 @@ body {
 
     width: 90%;
     height: 90%;
-    padding: 1px;
-
-    background: #545454;
+    padding-bottom: 1px;
 }
 
 .cell-row {
@@ -31,16 +29,15 @@ body {
     flex-direction: row;
 
     height: inherit;
-    margin: 1px 0;
 }
 
 .cell {
     width: 100%;
     height: 100%;
-    margin: 0 1px;
 
     background: #fff2e6;
     transition: background-color .2s ease-out;
+    box-shadow: 0 0 3px #161a1a;
 }
 
 .cell:hover {
@@ -52,11 +49,11 @@ body {
 }
 
 .cell[type='start'] {
-    background: green;
+    background: linear-gradient(#0d5006, #1d6e16, #2a7922);
 }
 
 .cell[type='end'] {
-    background: red;
+    background: linear-gradient(#880303, #a80909, #c00707);
 }
 
 .reachable {
