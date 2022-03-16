@@ -3,11 +3,45 @@ const field = $('#field')[0];
 let width;
 let height;
 
+let startPos;
+let endPos;
+
+let finding = false;
+
+let selected;
+
 $('#field-resize').on('click', resize);
 $('#field-find').on('click', find);
 
-let startPos;
-let endPos;
+$('#field').mousedown(event => {
+    if ($(event.target).hasClass('cell')) {
+        selected = $(event.target);
+    }
+    console.log("down");
+    return false;
+});
+$('#field').mousemove(event => {
+    /*if (selected) {
+        let element = $(event.target)[0];
+        if (element.className === 'cell') {
+            element.attr('type', selected.attr('type'));
+            selected = element;
+        }
+        console.log("move");
+    }*/
+});
+$('#field').mouseup(event => {
+    if ($(event.target).hasClass('cell')) {
+        let element = $(event.target);
+
+        if (selected.attr('type') === 'start' || selected.attr('type') === 'end') {
+            element.attr('type', selected.attr('type'));
+            selected.attr('type', 'empty')
+            selected = null;
+        }
+    }
+    console.log("up");
+});
 
 function resize() {
     width = Math.min(Math.max($('#field-width')[0].value, 8), 64);
@@ -34,13 +68,17 @@ function resize() {
         }
     }
 
-    $(`.cell[x="${2}"][y="${+(height/2)}"]`).attr('type', 'start');
-    $(`.cell[x="${width - 2}"][y="${+(height/2)}"]`).attr('type', 'end');
+    jCell(2, (height/2)|0).attr('type', 'start');
+    jCell(width - 3, (height/2)|0).attr('type', 'end');
 
     $('.cell').on('click', event => toggleCell(event.target));
 }
 
 function find() {
+    if (finding) {
+        return;
+    }
+
     let start = $('.cell[type="start"]');
     let end = $('.cell[type="end"]');
 
@@ -60,12 +98,14 @@ function find() {
         .removeClass("path")
         .text('');
 
+    finding = true;
     algorithmAStar().then(path => {
         if (path) {
             for (const node of path) {
-                $(`.cell[x="${node.x}"][y="${node.y}"]`).addClass("path");
+                jCell(node.x, node.y).addClass("path");
             }
         }
+        finding = false;
     });
 }
 
@@ -80,29 +120,29 @@ function createNode(pos, distance) {
         getAdjacentNodes: function () {
             let nodes = [];
 
-            if (x > 0 && $(`.cell[x="${x - 1}"][y="${y}"]`).attr('type') !== 'wall') {
+            if (x > 0 && !jCellIsWall(x - 1, y)) {
                 nodes.push(createNode({x: x - 1, y: y}, distance + 1));
             }
-            if (x < width - 1 && $(`.cell[x="${x + 1}"][y="${y}"]`).attr('type') !== 'wall') {
+            if (x < width - 1 && !jCellIsWall(x + 1, y)) {
                 nodes.push(createNode({x: x + 1, y: y}, distance + 1));
             }
-            if (y > 0 && $(`.cell[x="${x}"][y="${y - 1}"]`).attr('type') !== 'wall') {
+            if (y > 0 && !jCellIsWall(x, y - 1)) {
                 nodes.push(createNode({x: x, y: y - 1}, distance + 1));
             }
-            if (y < height - 1 && $(`.cell[x="${x}"][y="${y + 1}"]`).attr('type') !== 'wall') {
+            if (y < height - 1 && !jCellIsWall(x, y + 1)) {
                 nodes.push(createNode({x: x, y: y + 1}, distance + 1));
             }
 
-            if (x > 0 && y > 0 && $(`.cell[x="${x - 1}"][y="${y - 1}"]`).attr('type') !== 'wall') {
+            if (x > 0 && y > 0 && !jCellIsWall(x - 1, y - 1) && (!jCellIsWall(x - 1, y) || !jCellIsWall(x, y - 1))) {
                 nodes.push(createNode({x: x - 1, y: y - 1}, distance + Math.SQRT2));
             }
-            if (x < width - 1 && y > 0 && $(`.cell[x="${x + 1}"][y="${y - 1}"]`).attr('type') !== 'wall') {
+            if (x < width - 1 && y > 0 && !jCellIsWall(x + 1, y - 1) && (!jCellIsWall(x + 1, y) || !jCellIsWall(x, y - 1))) {
                 nodes.push(createNode({x: x + 1, y: y - 1}, distance + Math.SQRT2));
             }
-            if (x > 0 && y < height - 1 && $(`.cell[x="${x - 1}"][y="${y + 1}"]`).attr('type') !== 'wall') {
+            if (x > 0 && y < height - 1 && !jCellIsWall(x - 1, y + 1) && (!jCellIsWall(x - 1, y) || !jCellIsWall(x, y + 1))) {
                 nodes.push(createNode({x: x - 1, y: y + 1}, distance + Math.SQRT2));
             }
-            if (x < width - 1 && y < height - 1 && $(`.cell[x="${x + 1}"][y="${y + 1}"]`).attr('type') !== 'wall') {
+            if (x < width - 1 && y < height - 1 && !jCellIsWall(x + 1, y + 1) && (!jCellIsWall(x + 1, y) || !jCellIsWall(x, y + 1))) {
                 nodes.push(createNode({x: x + 1, y: y + 1}, distance + Math.SQRT2));
             }
 
@@ -148,11 +188,11 @@ async function algorithmAStar() {
 
                 let cell = $(`.cell[x="${adjacent.x}"][y="${adjacent.y}"]`);
                 cell.addClass("reachable")
-                cell.text(adjacent.weight.toFixed(2));
+                //cell.text(adjacent.weight.toFixed(2));
             }
         }
 
-        await new Promise(r => setTimeout(r, 100))
+        await new Promise(r => setTimeout(r, 10))
     }
 
     return null;
@@ -186,15 +226,31 @@ function manhattan(pos) {
     }
 }
 
+function jCell(x, y) {
+    return $(`.cell[x="${x}"][y="${y}"]`);
+}
+
+function jCellType(x, y) {
+    return jCell(x, y).attr('type');
+}
+
+function jCellIsWall(x, y) {
+    return jCellType(x, y) === 'wall';
+}
+
 function toggleCell(element) {
+    if (finding) {
+        return;
+    }
+
     let type = $(element).attr('type');
 
-    if (type == 'empty') {
+    if (type === 'empty') {
         $(element).attr('type', 'wall')
         return;
     }
 
-    if (type == 'wall') {
+    if (type === 'wall') {
         $(element).attr('type', 'empty')
     }
 }
