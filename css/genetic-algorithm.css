@@ -1,0 +1,27 @@
+body{
+    background: azure;
+}
+#mainButton{
+    width: 20%;
+    height: 50px;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    margin: 10px;
+}
+#MyCanvas{
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    border-style: dashed;
+    margin: 10px;
+}
+#Towns{
+    width: 20%;
+    height: auto;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    margin: 10px;
+    text-align: center;
+}
