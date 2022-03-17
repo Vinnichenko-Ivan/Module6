@@ -1,30 +1,27 @@
-window.addEventListener("load", function onWindowLoad()
-{
+window.addEventListener("load", function onWindowLoad() {
     let State = {
         preStart: 1,
         mapBuilding: 0,
         pathFinding: 0,
-        showingResult: 0,
-        next: function()
-        {
-            if(State.preStart)
-            {
+        next: function () {
+            if (State.preStart) {
                 State.preStart = 0;
                 State.mapBuilding = 1;
+                ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
                 document.getElementById("Towns").textContent = "";
                 document.getElementById("mainButton").textContent = "Find Path";
-            }
-            else if(State.mapBuilding) {
+            } else if (State.mapBuilding) {
                 State.mapBuilding = 0;
                 State.pathFinding = 1;
-                document.getElementById("mainButton").textContent = "Show Result";
+                document.getElementById("mainButton").textContent = "Break";
 
                 //реализуем ген алгоритм с показом
 
                 //ВАЖНЫЕ КОНСТАНТЫ:
-                const N = List.x.length;//размер популяции
-                const MutationPercent = 0.4;//процент мутаций
-                const NumberOfGenerations = Math.pow(List.x.length, 3);//количество популяций
+                const N = Math.pow(List.x.length, 2);//размер популяции
+                const MutationPercent = 0.7;//процент мутаций
+                const NumberOfGenerations = 100000;//количество популяций
+                const numberOfPermutation = N;
 
                 //1. создаем матрицу весов
                 let mat = new Array(List.x.length);
@@ -64,7 +61,7 @@ window.addEventListener("load", function onWindowLoad()
                 }];
 
                 for (let i = 1; i < N; i++) {
-                    for (let j = 0; j < List.x.length; j++) {
+                    for (let j = 0; j < numberOfPermutation; j++) {
                         let a = getRandomInt(0, List.x.length);
                         let b = getRandomInt(0, List.x.length);
                         [chromosome.arr[a], chromosome.arr[b]] = [chromosome.arr[b], chromosome.arr[a]];
@@ -82,23 +79,117 @@ window.addEventListener("load", function onWindowLoad()
                     });
                 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 //-------------------------------------------------
                 //Дальнейшие действия повторяем несколько поколений в setTimeOut с анимацией
 
                 let minPathLength = Infinity;
                 let it = 0;
-                let delay;//задержка при анимации
 
-                setTimeout(function drawFrame()
-                {
-                    if(it === 0)
-                        delay = 0;
-                    else
-                        delay = 500;
-                    if(State.showingResult)
-                        delay = 0;
-
+                let id = setInterval(function drawFrame() {
+                    if(it > NumberOfGenerations)
+                        clearInterval(id);
                     it++;
+
+                    if(State.preStart)
+                    {
+                        document.getElementById("Towns").textContent = `Path: `;
+                        for (let i = 0; i < population[0].arr.length; i++)
+                            document.getElementById("Towns").textContent += `${population[0].arr[i]} `;
+
+                        //заново все рисуем
+                        ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
+
+                        //рисуем города
+                        for (let i = 0; i < List.x.length; i++) {
+                            ctx.beginPath();
+                            ctx.arc(List.x[i], List.y[i], 5, 0, Math.PI * 2, false);
+                            ctx.closePath();
+                            ctx.stroke();
+                        }
+
+                        //рисуем пути, создав сначала матрицу с цветами ребер
+
+                        let edgeColor = new Array(List.x.length);
+                        for (let i = 0; i < List.x.length; i++)
+                            edgeColor[i] = new Array(List.x.length)
+
+                        for (let i = 0; i < List.x.length; i++) {
+                            if (i === 0) {
+                                edgeColor[Math.min(population[0].arr[0], population[0].arr[List.x.length - 1])][Math.max(population[0].arr[0], population[0].arr[List.x.length - 1])] = "Green";
+                            } else
+                                edgeColor[Math.min(population[0].arr[i], population[0].arr[i - 1])][Math.max(population[0].arr[i], population[0].arr[i - 1])] = "Green";
+                        }
+
+                        ctx.lineWidth = 3;
+                        for (let i = 0; i < List.x.length; i++) {
+                            for (let j = i + 1; j < List.x.length; j++) {
+                                if (edgeColor[i][j] === "Green") {
+                                    ctx.lineWidth = 4;
+                                    ctx.strokeStyle = "green";
+                                    ctx.beginPath();
+                                    ctx.moveTo(List.x[i], List.y[i]);
+                                    ctx.lineTo(List.x[j], List.y[j]);
+                                    ctx.stroke();
+                                    ctx.strokeStyle = 'black';
+                                    ctx.lineWidth = 3;
+                                } else {
+                                    ctx.lineWidth = 2;
+                                    ctx.globalAlpha = 0.5;
+                                    ctx.strokeStyle = "#aaa";
+                                    ctx.beginPath();
+                                    ctx.moveTo(List.x[i], List.y[i]);
+                                    ctx.lineTo(List.x[j], List.y[j]);
+                                    ctx.stroke();
+                                    ctx.strokeStyle = 'black';
+                                    ctx.lineWidth = 3;
+                                    ctx.globalAlpha = 1;
+                                }
+                            }
+                        }
+                        ctx.lineWidth = 15;
+
+                        List.x.splice(0, List.x.length);
+                        List.y.splice(0, List.y.length);
+                        clearInterval(id);
+                    }
+
+
+
                     //Берем 2 случайных маршрута из популяции и скрещиваем их
 
                     let v = getRandomInt(0, N);
@@ -177,14 +268,9 @@ window.addEventListener("load", function onWindowLoad()
 
                     //Естественный отбор - оставляем только лучших особей популяции
 
-                    let f = function compare(a, b) {
-                        if (a.pathLength < b.pathLength) {
-                            return -1;
-                        }
-                        if (a.pathLength > b.pathLength) {
-                            return 1;
-                        }
-                        return 0;
+                    let f = function compare(a, b)
+                    {
+                        return a.pathLength - b.pathLength;
                     }
 
                     population.sort(f)
@@ -192,8 +278,7 @@ window.addEventListener("load", function onWindowLoad()
                     population.pop();
 
                     //отрисовка итерации:
-                    if (population[0].pathLength < minPathLength)
-                    {
+                    if (population[0].pathLength < minPathLength) {
                         minPathLength = population[0].pathLength;
 
                         document.getElementById("Towns").textContent = `Path: `;
@@ -237,93 +322,27 @@ window.addEventListener("load", function onWindowLoad()
                                     ctx.strokeStyle = 'black';
                                     ctx.lineWidth = 3;
                                 } else {
+                                    ctx.lineWidth = 2;
+                                    ctx.globalAlpha = 0.5;
                                     ctx.strokeStyle = "#aaa";
                                     ctx.beginPath();
                                     ctx.moveTo(List.x[i], List.y[i]);
                                     ctx.lineTo(List.x[j], List.y[j]);
                                     ctx.stroke();
                                     ctx.strokeStyle = 'black';
-                                }
-                            }
-                        }
-                        ctx.lineWidth = 15;
-
-                        if(it<NumberOfGenerations)
-                            setTimeout(drawFrame, delay);
-                    }
-                    else if(it<NumberOfGenerations)
-                        drawFrame();
-                    else if(it === NumberOfGenerations)
-                    {
-                        document.getElementById("Towns").textContent = `Path: `;
-                        for (let i = 0; i < population[0].arr.length; i++)
-                            document.getElementById("Towns").textContent += `${population[0].arr[i]} `;
-
-                        //заново все рисуем
-                        ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
-
-                        //рисуем города
-                        for (let i = 0; i < List.x.length; i++) {
-                            ctx.beginPath();
-                            ctx.arc(List.x[i], List.y[i], 5, 0, Math.PI * 2, false);
-                            ctx.closePath();
-                            ctx.stroke();
-                        }
-
-                        //рисуем пути, создав сначала матрицу с цветами ребер
-
-                        let edgeColor = new Array(List.x.length);
-                        for (let i = 0; i < List.x.length; i++)
-                            edgeColor[i] = new Array(List.x.length)
-
-                        for (let i = 0; i < List.x.length; i++) {
-                            if (i === 0) {
-                                edgeColor[Math.min(population[0].arr[0], population[0].arr[List.x.length - 1])][Math.max(population[0].arr[0], population[0].arr[List.x.length - 1])] = "Green";
-                            } else
-                                edgeColor[Math.min(population[0].arr[i], population[0].arr[i - 1])][Math.max(population[0].arr[i], population[0].arr[i - 1])] = "Green";
-                        }
-
-                        ctx.lineWidth = 3;
-                        for (let i = 0; i < List.x.length; i++) {
-                            for (let j = i + 1; j < List.x.length; j++) {
-                                if (edgeColor[i][j] === "Green") {
-                                    ctx.lineWidth = 4;
-                                    ctx.strokeStyle = "green";
-                                    ctx.beginPath();
-                                    ctx.moveTo(List.x[i], List.y[i]);
-                                    ctx.lineTo(List.x[j], List.y[j]);
-                                    ctx.stroke();
-                                    ctx.strokeStyle = 'black';
+                                    ctx.globalAlpha = 1;
                                     ctx.lineWidth = 3;
-                                } else {
-                                    ctx.strokeStyle = "#aaa";
-                                    ctx.beginPath();
-                                    ctx.moveTo(List.x[i], List.y[i]);
-                                    ctx.lineTo(List.x[j], List.y[j]);
-                                    ctx.stroke();
-                                    ctx.strokeStyle = 'black';
                                 }
                             }
                         }
                         ctx.lineWidth = 15;
                     }
-                }, delay);
-            }
-            else if(State.pathFinding)
-            {
+                }, 10);
+            } else if (State.pathFinding) {
                 State.pathFinding = 0;
-                State.showingResult = 1;
-                document.getElementById("mainButton").textContent = "Break";
-            }
-            else if(State.showingResult)
-            {
-                State.showingResult = 0;
                 State.preStart = 1;
-                ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
                 document.getElementById("mainButton").textContent = "Start";
-                document.getElementById("Towns").textContent = "Here You will see your Towns";
-                List.x.splice(0, List.x.length);
-                List.y.splice(0, List.y.length);
+                document.getElementById("Towns").textContent = "";
             }
         }
     }
@@ -347,33 +366,33 @@ window.addEventListener("load", function onWindowLoad()
     };
 
     // На нажатие мыши по canvas будет выполняться эта функция
-    MyCanvas.onmousedown = function newTown (e) {
+    MyCanvas.onmousedown = function newTown(e) {
         // в "e"  попадает экземпляр MouseEvent
         let x = e.offsetX;
         let y = e.offsetY;
 
         // Проверяем на нажатие мыши
-        if (e.buttons === 1 && State.mapBuilding && x>=0 && y>=0 && x<=MyCanvas.width && y <=MyCanvas.height)
-        {
+        if (e.buttons === 1 && State.mapBuilding && x >= 0 && y >= 0 && x <= MyCanvas.width && y <= MyCanvas.height) {
             //рисуем город
             ctx.beginPath();
-            ctx.arc(x, y, 5, 0, Math.PI*2, false);
+            ctx.arc(x, y, 5, 0, Math.PI * 2, false);
             ctx.closePath();
             ctx.stroke();
 
             //рисуем пути
-            ctx.lineWidth = 3;
-            for(let i = 0; i < List.x.length; i++)
-            {
+            ctx.lineWidth = 2;
+            for (let i = 0; i < List.x.length; i++) {
+                ctx.globalAlpha = 0.5;
                 ctx.beginPath();
                 ctx.moveTo(List.x[i], List.y[i]);
                 ctx.lineTo(x, y);
                 ctx.stroke();
+                ctx.globalAlpha = 1;
             }
             ctx.lineWidth = 15;
 
             //выводим на экран координаты
-            document.getElementById("Towns").textContent += `${List.x.length+1}:\t${x}\t${y}\n`;
+            document.getElementById("Towns").textContent += `${List.x.length + 1}:\t${x}\t${y}\n`;
 
             //добавляем координаты города в массивы
             List.x.push(x);
@@ -381,4 +400,3 @@ window.addEventListener("load", function onWindowLoad()
         }
     };
 });
-
