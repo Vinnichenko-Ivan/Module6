@@ -79,7 +79,6 @@ window.addEventListener("load", function onWindowLoad() {
                     });
                 }
 
-
                 //-------------------------------------------------
                 //Дальнейшие действия повторяем несколько поколений в setInterval с анимацией
 
@@ -87,11 +86,16 @@ window.addEventListener("load", function onWindowLoad() {
                 let it = 0;
 
                 let id = setInterval(function drawFrame() {
-                    if (it > NumberOfGenerations)
-                        clearInterval(id);
                     it++;
 
-                    if (State.preStart) {
+                    //окончание работы алгоритма
+                    if (State.preStart || it > NumberOfGenerations) {
+
+                        State.pathFinding = 0;
+                        State.preStart = 1;
+                        document.getElementById("mainButton").textContent = "Start";
+                        document.getElementById("Towns").textContent = "";
+
                         document.getElementById("Towns").textContent = `Path: `;
                         for (let i = 0; i < population[0].arr.length; i++)
                             document.getElementById("Towns").textContent += `${population[0].arr[i]} `;
@@ -108,7 +112,6 @@ window.addEventListener("load", function onWindowLoad() {
                         }
 
                         //рисуем пути, создав сначала матрицу с цветами ребер
-
                         let edgeColor = new Array(List.x.length);
                         for (let i = 0; i < List.x.length; i++)
                             edgeColor[i] = new Array(List.x.length)
@@ -134,7 +137,7 @@ window.addEventListener("load", function onWindowLoad() {
                                     ctx.lineWidth = 3;
                                 } else {
                                     ctx.lineWidth = 2;
-                                    ctx.globalAlpha = 0.5;
+                                    ctx.globalAlpha = 0.35;
                                     ctx.strokeStyle = "#aaa";
                                     ctx.beginPath();
                                     ctx.moveTo(List.x[i], List.y[i]);
@@ -155,7 +158,6 @@ window.addEventListener("load", function onWindowLoad() {
 
 
                     //Берем 2 случайных маршрута из популяции и скрещиваем их
-
                     let v = getRandomInt(0, N);
                     let a = {
                         arr: population[v].arr.slice(0, population[v].arr.length),
@@ -286,7 +288,7 @@ window.addEventListener("load", function onWindowLoad() {
                                     ctx.lineWidth = 3;
                                 } else {
                                     ctx.lineWidth = 2;
-                                    ctx.globalAlpha = 0.5;
+                                    ctx.globalAlpha = 0.35;
                                     ctx.strokeStyle = "#aaa";
                                     ctx.beginPath();
                                     ctx.moveTo(List.x[i], List.y[i]);
@@ -353,7 +355,7 @@ window.addEventListener("load", function onWindowLoad() {
                 //рисуем пути
                 ctx.lineWidth = 2;
                 for (let i = 0; i < List.x.length; i++) {
-                    ctx.globalAlpha = 0.5;
+                    ctx.globalAlpha = 0.35;
                     ctx.beginPath();
                     ctx.moveTo(List.x[i], List.y[i]);
                     ctx.lineTo(x, y);
