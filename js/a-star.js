@@ -65,7 +65,6 @@ function setIterationDelay(target) {
  * Вызывается, когда меняется значение в вводе
  */
 function setFieldSize(target) {
-    iterationDelay = target.value;
     $('.field-size.display').text(target.value);
 }
 
@@ -79,7 +78,7 @@ function resize() {
     }
 
     // Получаем размер из ввода
-    width = height = $('.field-size')[0].value;
+    width = height = $('.field-size.val')[0].value;
 
     // Обновляем поле
     while (field.firstChild) {
