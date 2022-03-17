@@ -10,7 +10,7 @@ window.addEventListener("load", function onWindowLoad() {
                 ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
                 document.getElementById("Towns").textContent = "";
                 document.getElementById("mainButton").textContent = "Find Path";
-            } else if (State.mapBuilding) {
+            } else if (State.mapBuilding && List.x.length !== 0) {
                 State.mapBuilding = 0;
                 State.pathFinding = 1;
                 document.getElementById("mainButton").textContent = "Break";
@@ -80,53 +80,18 @@ window.addEventListener("load", function onWindowLoad() {
                 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 //-------------------------------------------------
-                //Дальнейшие действия повторяем несколько поколений в setTimeOut с анимацией
+                //Дальнейшие действия повторяем несколько поколений в setInterval с анимацией
 
                 let minPathLength = Infinity;
                 let it = 0;
 
                 let id = setInterval(function drawFrame() {
-                    if(it > NumberOfGenerations)
+                    if (it > NumberOfGenerations)
                         clearInterval(id);
                     it++;
 
-                    if(State.preStart)
-                    {
+                    if (State.preStart) {
                         document.getElementById("Towns").textContent = `Path: `;
                         for (let i = 0; i < population[0].arr.length; i++)
                             document.getElementById("Towns").textContent += `${population[0].arr[i]} `;
@@ -187,7 +152,6 @@ window.addEventListener("load", function onWindowLoad() {
                         List.y.splice(0, List.y.length);
                         clearInterval(id);
                     }
-
 
 
                     //Берем 2 случайных маршрута из популяции и скрещиваем их
@@ -268,8 +232,7 @@ window.addEventListener("load", function onWindowLoad() {
 
                     //Естественный отбор - оставляем только лучших особей популяции
 
-                    let f = function compare(a, b)
-                    {
+                    let f = function compare(a, b) {
                         return a.pathLength - b.pathLength;
                     }
 
@@ -337,7 +300,7 @@ window.addEventListener("load", function onWindowLoad() {
                         }
                         ctx.lineWidth = 15;
                     }
-                }, 10);
+                }, 0);
             } else if (State.pathFinding) {
                 State.pathFinding = 0;
                 State.preStart = 1;
@@ -373,30 +336,39 @@ window.addEventListener("load", function onWindowLoad() {
 
         // Проверяем на нажатие мыши
         if (e.buttons === 1 && State.mapBuilding && x >= 0 && y >= 0 && x <= MyCanvas.width && y <= MyCanvas.height) {
-            //рисуем город
-            ctx.beginPath();
-            ctx.arc(x, y, 5, 0, Math.PI * 2, false);
-            ctx.closePath();
-            ctx.stroke();
-
-            //рисуем пути
-            ctx.lineWidth = 2;
+            let flag = 1;
             for (let i = 0; i < List.x.length; i++) {
-                ctx.globalAlpha = 0.5;
-                ctx.beginPath();
-                ctx.moveTo(List.x[i], List.y[i]);
-                ctx.lineTo(x, y);
-                ctx.stroke();
-                ctx.globalAlpha = 1;
+                if (List.x[i] === x && List.y[i] === y) {
+                    flag = 0;
+                    break;
+                }
             }
-            ctx.lineWidth = 15;
+            if (flag) {
+                //рисуем город
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, Math.PI * 2, false);
+                ctx.closePath();
+                ctx.stroke();
 
-            //выводим на экран координаты
-            document.getElementById("Towns").textContent += `${List.x.length + 1}:\t${x}\t${y}\n`;
+                //рисуем пути
+                ctx.lineWidth = 2;
+                for (let i = 0; i < List.x.length; i++) {
+                    ctx.globalAlpha = 0.5;
+                    ctx.beginPath();
+                    ctx.moveTo(List.x[i], List.y[i]);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                    ctx.globalAlpha = 1;
+                }
+                ctx.lineWidth = 15;
 
-            //добавляем координаты города в массивы
-            List.x.push(x);
-            List.y.push(y);
+                //выводим на экран координаты
+                document.getElementById("Towns").textContent += `${List.x.length + 1}:\t${x}\t${y}\n`;
+
+                //добавляем координаты города в массивы
+                List.x.push(x);
+                List.y.push(y);
+            }
         }
     };
 });
