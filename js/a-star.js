@@ -16,7 +16,7 @@ let selected;
  */
 $('#field-resize').on('click', resize);
 $('#field-generate').on('click', generate);
-$('#field-find').on('click', find);
+$('#field-find').on('click', findPath);
 $('.iter-delay.val').on('input', e => setIterationDelay(e.target));
 $('.field-size.val').on('input', e => setFieldSize(e.target));
 
@@ -111,7 +111,7 @@ function resize() {
 /**
  * Функция запуска поиска пути по алгоритму A*
  */
-function find() {
+function findPath() {
     // Проверка состояния
     if (finding) {
         return;
@@ -335,13 +335,22 @@ async function algorithmAStar() {
 
         // Проходимся по смежным узлам, если они
         for (const adjacent of node.getAdjacentNodes()) {
-            if (!contains(reachable, adjacent) && !contains(explored, adjacent)) {
+            if (!contains(explored, adjacent)) {
+                let previous = find(reachable, adjacent);
+
+                if (previous != null) {
+                    if (previous.weight < adjacent.weight) {
+                        continue;
+                    }
+                    // Если весы нового путя меньше, чем старого, то будем рассматривать новый путь
+                    reachable.splice(reachable.indexOf(previous), 1);
+                }
+
                 adjacent.previous = node;
                 reachable.push(adjacent);
 
                 let cell = $(`.cell[x="${adjacent.x}"][y="${adjacent.y}"]`);
                 cell.addClass("reachable")
-                //cell.text(adjacent.weight.toFixed(2));
             }
         }
 
@@ -367,6 +376,22 @@ function findMin(array) {
     }
 
     return min;
+}
+
+/**
+ * Найти элемент по координатам
+ *
+ * @param array массив элементов с весами
+ * @param pos координаты
+ * @returns {*}
+ */
+function find(array, pos) {
+    for (const element of array) {
+        if (element.x === pos.x && element.y === pos.y) {
+            return element;
+        }
+    }
+    return null;
 }
 
 /**
