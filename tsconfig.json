@@ -1,10 +1,16 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "amd",
     "target": "es5",
+    "noImplicitAny": true,
+    "removeComments": true,
     "sourceMap": true
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "**/*.spec.ts"
+  ],
+  "include": [
+    "ts/**/*"
   ]
 }
