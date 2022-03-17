@@ -1,0 +1,149 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Задаём глобальные параметры */
+body {
+    display: flex;
+    flex-direction: row-reverse;
+
+    background: white;
+
+    font-family: 'Inter';
+    font-size: 16px;
+}
+
+/* Стиль верхней менюшки */
+#top {
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    background: #e1e1e1;
+
+    width: 47%;
+    height: 100%;
+}
+
+/* Стиль игрового поля */
+#field {
+    display: flex;
+    flex-direction: column;
+
+    margin-right: auto;
+
+    width: 53%;
+    height: 100%;
+    padding-bottom: 1px;
+}
+
+/* Стиль клеточек на игровом поле */
+.cell-row {
+    display: flex;
+    flex-direction: row;
+
+    height: inherit;
+}
+
+.cell {
+    width: 100%;
+    height: 100%;
+
+    background: #fff2e6;
+    transition: background-color .2s ease-out;
+    box-shadow: 0 0 3px #969696;
+}
+
+.cell:hover {
+    background: #ffcbba;
+}
+
+.cell.reachable {
+    background: lightgreen;
+}
+
+.cell.explored {
+    background: lightblue;
+}
+
+.cell.path {
+    background: yellow;
+}
+
+.cell[type='wall'] {
+    background: dimgray;
+    box-shadow: 0 0 3px #3f3f3f;
+}
+
+.cell[type='start'] {
+    background: linear-gradient(#0d5006, #1d6e16, #2a7922);
+}
+
+.cell[type='end'] {
+    background: linear-gradient(#880303, #a80909, #c00707);
+}
+
+/* Стиль разных элементов */
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.center {
+    justify-content: center;
+    align-items: center;
+}
+
+.margin-small {
+    margin: 5px 0;
+}
+
+.margin-middle {
+    margin: 10px 0;
+}
+
+.margin-big {
+    margin: 25px 0;
+}
+
+button {
+    font-family: 'Inter';
+    font-size: 16px;
+
+    background-color: lightcoral;
+    cursor: pointer;
+
+    border: 0;
+    box-shadow: 0 0 3px black;
+    border-radius: 10px;
+
+    padding: 5px 10px;
+
+    transition: background-color .1s linear;
+}
+
+button:hover, button[active="true"] {
+    background-color: #f6d1d1;
+}
+
+button[active="true"] {
+    transition: 0s;
+}
+
+input[type="number"] {
+    padding: 5px 10px;
+    width: 50px;
+
+    border: 0;
+    box-shadow: 0 0 3px black;
+    border-radius: 10px;
+}
