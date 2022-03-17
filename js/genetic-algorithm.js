@@ -1,4 +1,94 @@
 window.addEventListener("load", function onWindowLoad() {
+
+    //ВАЖНЫЕ ФУНКЦИИ:
+
+    //отрисовать города
+    function drawTowns(col, rad) {
+        for (let i = 0; i < List.x.length; i++) {
+            ctx.strokeStyle = col;
+            ctx.lineWidth = 15;
+            ctx.beginPath();
+            ctx.arc(List.x[i], List.y[i], rad, 0, Math.PI * 2, false);
+            ctx.closePath();
+            ctx.stroke();
+        }
+    }
+
+    //отрисовать пути
+    function drawEdges(wid, alpha, i, j, col) {
+        ctx.lineWidth = wid;
+        ctx.globalAlpha = alpha;
+        ctx.strokeStyle = col;
+        ctx.beginPath();
+        ctx.moveTo(List.x[i], List.y[i]);
+        ctx.lineTo(List.x[j], List.y[j]);
+        ctx.stroke();
+        ctx.strokeStyle = 'black';
+        ctx.globalAlpha = 1;
+    }
+
+    //случайное число
+    function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min;
+        //Максимум не включается, минимум включается
+    }
+
+    //функция отрисовки
+    function redrawing(population, goodEdgesWidth, goodEdgesOpacity, goodEdgesColor, badEdgesWidth, badEdgesOpacity, badEdgesColor)
+    {
+
+        document.getElementById("Towns").textContent = `Path: `;
+        for (let i = 0; i < population[0].arr.length; i++)
+            document.getElementById("Towns").textContent += `${population[0].arr[i]} `;
+
+        //заново все рисуем
+
+        ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
+        //рисуем города
+        drawTowns(townColor, townRadius);
+
+        //рисуем пути, создав сначала матрицу с цветами ребер
+        let edgeColor = new Array(List.x.length);
+        for (let i = 0; i < List.x.length; i++)
+            edgeColor[i] = new Array(List.x.length)
+
+        for (let i = 0; i < List.x.length; i++) {
+            if (i === 0) {
+                edgeColor[Math.min(population[0].arr[0], population[0].arr[List.x.length - 1])][Math.max(population[0].arr[0], population[0].arr[List.x.length - 1])] = "1";
+            } else
+                edgeColor[Math.min(population[0].arr[i], population[0].arr[i - 1])][Math.max(population[0].arr[i], population[0].arr[i - 1])] = "1";
+        }
+
+        for (let i = 0; i < List.x.length; i++) {
+            for (let j = i + 1; j < List.x.length; j++) {
+                if (edgeColor[i][j] === "1")
+                    drawEdges(goodEdgesWidth, goodEdgesOpacity, i, j, goodEdgesColor);
+                else
+                    drawEdges(badEdgesWidth, badEdgesOpacity, i, j, badEdgesColor);
+            }
+        }
+    }
+
+    //------------------------------------------------------------------
+
+    //ВАЖНЫЕ КОНСТАНТЫ
+    const otherEdgesOpacity = 0.2;
+    const otherEdgesColor = "#aaa";
+    const otherEdgesWidth = 2;
+    const townRadius = 5;
+    const townColor = "black";
+    const resultEdgesOpacity = 1;
+    const resultEdgesColor = "green";
+    const resultEdgesWidth = 4;
+    const mainEdgesWidth = 4;
+    const mainEdgesColor = "yellow";
+    const mainEdgesOpacity = 1;
+
+    //------------------------------------------------------------------
+
+
     let State = {
         preStart: 1,
         mapBuilding: 0,
@@ -15,15 +105,22 @@ window.addEventListener("load", function onWindowLoad() {
                 State.pathFinding = 1;
                 document.getElementById("mainButton").textContent = "Break";
 
-                //реализуем ген алгоритм с показом
 
-                //ВАЖНЫЕ КОНСТАНТЫ:
+                //------------------------------------------------------------------
+
+                //ВАЖНЫЕ КОНСТАНТЫ ПО АЛГОРИТМУ
                 const N = Math.pow(List.x.length, 2);//размер популяции
                 const MutationPercent = 0.7;//процент мутаций
                 const NumberOfGenerations = 100000;//количество популяций
                 const numberOfPermutation = N;
+                const mutationMod = 2;//Режимы мутации: 1 - поменять местами гены в хромосоме, 2 - развернуть участок хромосомы. По моим наблюдениям 2 работает лучше
 
-                //1. создаем матрицу весов
+                //------------------------------------------------------------------
+
+
+                //Реализуем ген алгоритм с показом
+
+                //Создаем матрицу весов
                 let mat = new Array(List.x.length);
                 for (let i = 0; i < List.x.length; i++) {
                     mat[i] = new Array(List.x.length);
@@ -34,14 +131,7 @@ window.addEventListener("load", function onWindowLoad() {
                         mat[i][j] = Math.sqrt(Math.pow(List.x[i] - List.x[j], 2) + Math.pow(List.y[i] - List.y[j], 2))
                 }
 
-                //2. Генерация начальной популяции - создаем случайные начальные маршруты
-
-                function getRandomInt(min, max) {
-                    min = Math.ceil(min);
-                    max = Math.floor(max);
-                    return Math.floor(Math.random() * (max - min)) + min;
-                    //Максимум не включается, минимум включается
-                }
+                //Генерация начальной популяции - создаем случайные начальные маршруты
 
                 let chromosome = {
                     arr: new Array(List.x.length),
@@ -79,228 +169,122 @@ window.addEventListener("load", function onWindowLoad() {
                     });
                 }
 
+
                 //-------------------------------------------------
                 //Дальнейшие действия повторяем несколько поколений в setInterval с анимацией
-
-                let minPathLength = Infinity;
                 let it = 0;
-
                 let id = setInterval(function drawFrame() {
                     it++;
 
-                    //окончание работы алгоритма
                     if (State.preStart || it > NumberOfGenerations) {
+                        //окончание работы алгоритма
 
                         State.pathFinding = 0;
                         State.preStart = 1;
                         document.getElementById("mainButton").textContent = "Start";
                         document.getElementById("Towns").textContent = "";
 
-                        document.getElementById("Towns").textContent = `Path: `;
-                        for (let i = 0; i < population[0].arr.length; i++)
-                            document.getElementById("Towns").textContent += `${population[0].arr[i]} `;
-
-                        //заново все рисуем
-                        ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
-
-                        //рисуем города
-                        for (let i = 0; i < List.x.length; i++) {
-                            ctx.beginPath();
-                            ctx.arc(List.x[i], List.y[i], 5, 0, Math.PI * 2, false);
-                            ctx.closePath();
-                            ctx.stroke();
-                        }
-
-                        //рисуем пути, создав сначала матрицу с цветами ребер
-                        let edgeColor = new Array(List.x.length);
-                        for (let i = 0; i < List.x.length; i++)
-                            edgeColor[i] = new Array(List.x.length)
-
-                        for (let i = 0; i < List.x.length; i++) {
-                            if (i === 0) {
-                                edgeColor[Math.min(population[0].arr[0], population[0].arr[List.x.length - 1])][Math.max(population[0].arr[0], population[0].arr[List.x.length - 1])] = "Green";
-                            } else
-                                edgeColor[Math.min(population[0].arr[i], population[0].arr[i - 1])][Math.max(population[0].arr[i], population[0].arr[i - 1])] = "Green";
-                        }
-
-                        ctx.lineWidth = 3;
-                        for (let i = 0; i < List.x.length; i++) {
-                            for (let j = i + 1; j < List.x.length; j++) {
-                                if (edgeColor[i][j] === "Green") {
-                                    ctx.lineWidth = 4;
-                                    ctx.strokeStyle = "green";
-                                    ctx.beginPath();
-                                    ctx.moveTo(List.x[i], List.y[i]);
-                                    ctx.lineTo(List.x[j], List.y[j]);
-                                    ctx.stroke();
-                                    ctx.strokeStyle = 'black';
-                                    ctx.lineWidth = 3;
-                                } else {
-                                    ctx.lineWidth = 2;
-                                    ctx.globalAlpha = 0.35;
-                                    ctx.strokeStyle = "#aaa";
-                                    ctx.beginPath();
-                                    ctx.moveTo(List.x[i], List.y[i]);
-                                    ctx.lineTo(List.x[j], List.y[j]);
-                                    ctx.stroke();
-                                    ctx.strokeStyle = 'black';
-                                    ctx.lineWidth = 3;
-                                    ctx.globalAlpha = 1;
-                                }
-                            }
-                        }
-                        ctx.lineWidth = 15;
+                        //отрисовка
+                        redrawing(population, resultEdgesWidth, resultEdgesOpacity, resultEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
 
                         List.x.splice(0, List.x.length);
                         List.y.splice(0, List.y.length);
                         clearInterval(id);
                     }
+                    else {
+                        //Берем 2 случайных хромосомы из популяции и скрещиваем их
+                        let v = getRandomInt(0, N);
+                        let a = {
+                            arr: population[v].arr.slice(0, population[v].arr.length),
+                            pathLength: population[v].pathLength
+                        }
+                        v = getRandomInt(0, N);
+                        let b = {
+                            arr: population[v].arr.slice(0, population[v].arr.length),
+                            pathLength: population[v].pathLength
+                        }
 
+                        //случайное место разреза хромосомы
+                        v = getRandomInt(0, List.x.length);
 
-                    //Берем 2 случайных маршрута из популяции и скрещиваем их
-                    let v = getRandomInt(0, N);
-                    let a = {
-                        arr: population[v].arr.slice(0, population[v].arr.length),
-                        pathLength: population[v].pathLength
-                    }
-                    v = getRandomInt(0, N);
-                    let b = {
-                        arr: population[v].arr.slice(0, population[v].arr.length),
-                        pathLength: population[v].pathLength
-                    }
+                        let descendant1 = {
+                            arr: new Array(List.x.length),
+                            pathLength: 0
+                        }
+                        let descendant2 = {
+                            arr: new Array(List.x.length),
+                            pathLength: 0
+                        }
 
-                    //случайное место разреза хромосомы
-                    v = getRandomInt(0, List.x.length);
-
-                    let descendant1 = {
-                        arr: new Array(List.x.length),
-                        pathLength: 0
-                    }
-                    let descendant2 = {
-                        arr: new Array(List.x.length),
-                        pathLength: 0
-                    }
-
-                    let x = 0, y = 0;//сколько днк хромосом потомков уже вставлено
-                    for (let i = 0; i < v; i++) {
-                        descendant1.arr[x++] = a.arr[i];
-                        descendant2.arr[y++] = b.arr[i];
-                    }
-                    for (let i = v; i < a.arr.length; i++) {
-                        if (!descendant1.arr.includes(b.arr[i]))
-                            descendant1.arr[x++] = b.arr[i];
-                        if (!descendant2.arr.includes(a.arr[i]))
-                            descendant2.arr[y++] = a.arr[i];
-                    }
-                    for (let i = v; i < a.arr.length; i++) {
-                        if (!descendant1.arr.includes(a.arr[i]))
+                        let x = 0, y = 0;//сколько днк хромосом потомков уже вставлено
+                        for (let i = 0; i < v; i++) {
                             descendant1.arr[x++] = a.arr[i];
-                        if (!descendant2.arr.includes(b.arr[i]))
                             descendant2.arr[y++] = b.arr[i];
-                    }
-
-                    //Мутация
-                    if (Math.random() < MutationPercent) {
-                        let v1 = getRandomInt(0, descendant1.arr.length);
-                        let v2 = getRandomInt(0, descendant1.arr.length);
-                        [descendant1.arr[v1], descendant1.arr[v2]] = [descendant1.arr[v2], descendant1.arr[v1]];
-                    }
-                    if (Math.random() < MutationPercent) {
-                        let v1 = getRandomInt(0, descendant2.arr.length);
-                        let v2 = getRandomInt(0, descendant2.arr.length);
-                        [descendant2.arr[v1], descendant2.arr[v2]] = [descendant2.arr[v2], descendant2.arr[v1]];
-                    }
-
-                    //посчитаем длину полученных маршрутов потомков
-                    for (let i = 0; i < descendant1.arr.length; i++) {
-                        if (i === 0)
-                            descendant1.pathLength += mat[descendant1.arr[0]][descendant1.arr[descendant1.arr.length - 1]];
-                        else
-                            descendant1.pathLength += mat[descendant1.arr[i]][descendant1.arr[i - 1]];
-                        if (i === 0)
-                            descendant2.pathLength += mat[descendant2.arr[0]][descendant2.arr[descendant2.arr.length - 1]];
-                        else
-                            descendant2.pathLength += mat[descendant2.arr[i]][descendant2.arr[i - 1]];
-                    }
-
-                    population.push({
-                        arr: descendant1.arr.slice(0, descendant1.arr.length),
-                        pathLength: descendant1.pathLength
-                    });
-                    population.push({
-                        arr: descendant2.arr.slice(0, descendant1.arr.length),
-                        pathLength: descendant2.pathLength
-                    });
-
-                    //Естественный отбор - оставляем только лучших особей популяции
-
-                    let f = function compare(a, b) {
-                        return a.pathLength - b.pathLength;
-                    }
-
-                    population.sort(f)
-                    population.pop();
-                    population.pop();
-
-                    //отрисовка итерации:
-                    if (population[0].pathLength < minPathLength) {
-                        minPathLength = population[0].pathLength;
-
-                        document.getElementById("Towns").textContent = `Path: `;
-                        for (let i = 0; i < population[0].arr.length; i++)
-                            document.getElementById("Towns").textContent += `${population[0].arr[i]} `;
-
-                        //заново все рисуем
-                        ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
-
-                        //рисуем города
-                        for (let i = 0; i < List.x.length; i++) {
-                            ctx.beginPath();
-                            ctx.arc(List.x[i], List.y[i], 5, 0, Math.PI * 2, false);
-                            ctx.closePath();
-                            ctx.stroke();
+                        }
+                        for (let i = v; i < a.arr.length; i++) {
+                            if (!descendant1.arr.includes(b.arr[i]))
+                                descendant1.arr[x++] = b.arr[i];
+                            if (!descendant2.arr.includes(a.arr[i]))
+                                descendant2.arr[y++] = a.arr[i];
+                        }
+                        for (let i = v; i < a.arr.length; i++) {
+                            if (!descendant1.arr.includes(a.arr[i]))
+                                descendant1.arr[x++] = a.arr[i];
+                            if (!descendant2.arr.includes(b.arr[i]))
+                                descendant2.arr[y++] = b.arr[i];
                         }
 
-                        //рисуем пути, создав сначала матрицу с цветами ребер
-
-                        let edgeColor = new Array(List.x.length);
-                        for (let i = 0; i < List.x.length; i++)
-                            edgeColor[i] = new Array(List.x.length)
-
-                        for (let i = 0; i < List.x.length; i++) {
-                            if (i === 0) {
-                                edgeColor[Math.min(population[0].arr[0], population[0].arr[List.x.length - 1])][Math.max(population[0].arr[0], population[0].arr[List.x.length - 1])] = "Yellow";
-                            } else
-                                edgeColor[Math.min(population[0].arr[i], population[0].arr[i - 1])][Math.max(population[0].arr[i], population[0].arr[i - 1])] = "Yellow";
+                        //Мутация
+                        if (Math.random() < MutationPercent) {
+                            let v1 = getRandomInt(0, descendant1.arr.length);
+                            let v2 = getRandomInt(0, descendant1.arr.length);
+                            if (mutationMod === 1)
+                                [descendant1.arr[v1], descendant1.arr[v2]] = [descendant1.arr[v2], descendant1.arr[v1]];
+                            else if (mutationMod === 2)
+                                descendant1.arr = (descendant1.arr.slice(0, Math.min(v1, v2)).concat(descendant1.arr.slice(Math.min(v1, v2), Math.max(v1, v2) + 1).reverse(), descendant1.arr.slice(Math.max(v1, v2) + 1, descendant1.arr.length)));
+                        }
+                        if (Math.random() < MutationPercent) {
+                            let v1 = getRandomInt(0, descendant2.arr.length);
+                            let v2 = getRandomInt(0, descendant2.arr.length);
+                            if (mutationMod === 1)
+                                [descendant2.arr[v1], descendant2.arr[v2]] = [descendant2.arr[v2], descendant2.arr[v1]];
+                            else if (mutationMod === 2)
+                                descendant2.arr = (descendant2.arr.slice(0, Math.min(v1, v2)).concat(descendant2.arr.slice(Math.min(v1, v2), Math.max(v1, v2) + 1).reverse(), descendant2.arr.slice(Math.max(v1, v2) + 1, descendant2.arr.length)));
                         }
 
-                        ctx.lineWidth = 3;
-                        for (let i = 0; i < List.x.length; i++) {
-                            for (let j = i + 1; j < List.x.length; j++) {
-                                if (edgeColor[i][j] === "Yellow") {
-                                    ctx.lineWidth = 4;
-                                    ctx.strokeStyle = 'yellow';
-                                    ctx.beginPath();
-                                    ctx.moveTo(List.x[i], List.y[i]);
-                                    ctx.lineTo(List.x[j], List.y[j]);
-                                    ctx.stroke();
-                                    ctx.strokeStyle = 'black';
-                                    ctx.lineWidth = 3;
-                                } else {
-                                    ctx.lineWidth = 2;
-                                    ctx.globalAlpha = 0.35;
-                                    ctx.strokeStyle = "#aaa";
-                                    ctx.beginPath();
-                                    ctx.moveTo(List.x[i], List.y[i]);
-                                    ctx.lineTo(List.x[j], List.y[j]);
-                                    ctx.stroke();
-                                    ctx.strokeStyle = 'black';
-                                    ctx.globalAlpha = 1;
-                                    ctx.lineWidth = 3;
-                                }
-                            }
+                        //посчитаем длину полученных маршрутов потомков
+                        for (let i = 0; i < descendant1.arr.length; i++) {
+                            if (i === 0)
+                                descendant1.pathLength += mat[descendant1.arr[0]][descendant1.arr[descendant1.arr.length - 1]];
+                            else
+                                descendant1.pathLength += mat[descendant1.arr[i]][descendant1.arr[i - 1]];
+                            if (i === 0)
+                                descendant2.pathLength += mat[descendant2.arr[0]][descendant2.arr[descendant2.arr.length - 1]];
+                            else
+                                descendant2.pathLength += mat[descendant2.arr[i]][descendant2.arr[i - 1]];
                         }
-                        ctx.lineWidth = 15;
+
+                        population.push({
+                            arr: descendant1.arr.slice(0, descendant1.arr.length),
+                            pathLength: descendant1.pathLength
+                        });
+                        population.push({
+                            arr: descendant2.arr.slice(0, descendant1.arr.length),
+                            pathLength: descendant2.pathLength
+                        });
+
+                        //Естественный отбор - оставляем только лучших особей популяции
+
+                        let f = function compare(a, b) {
+                            return a.pathLength - b.pathLength;
+                        }
+
+                        population.sort(f)
+                        population.pop();
+                        population.pop();
+
+                        //отрисовка
+                        redrawing(population, mainEdgesWidth, mainEdgesOpacity, mainEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
                     }
                 }, 0);
             } else if (State.pathFinding) {
@@ -323,7 +307,6 @@ window.addEventListener("load", function onWindowLoad() {
 
     // переменные для рисования
     ctx.lineCap = "round";
-    ctx.lineWidth = 15;
 
     //обработчик на кнопку
     document.getElementById("mainButton").onclick = function nextState() {
@@ -347,27 +330,27 @@ window.addEventListener("load", function onWindowLoad() {
             }
             if (flag) {
                 //рисуем город
+                ctx.strokeStyle = townColor;
+                ctx.lineWidth = 15;
                 ctx.beginPath();
-                ctx.arc(x, y, 5, 0, Math.PI * 2, false);
+                ctx.arc(x, y, townRadius, 0, Math.PI * 2, false);
                 ctx.closePath();
                 ctx.stroke();
 
                 //рисуем пути
-                ctx.lineWidth = 2;
+                ctx.lineWidth = otherEdgesWidth;
                 for (let i = 0; i < List.x.length; i++) {
-                    ctx.globalAlpha = 0.35;
+                    ctx.globalAlpha = otherEdgesOpacity;
                     ctx.beginPath();
                     ctx.moveTo(List.x[i], List.y[i]);
                     ctx.lineTo(x, y);
                     ctx.stroke();
                     ctx.globalAlpha = 1;
                 }
-                ctx.lineWidth = 15;
 
                 //выводим на экран координаты
                 document.getElementById("Towns").textContent += `${List.x.length + 1}:\t${x}\t${y}\n`;
 
-                //добавляем координаты города в массивы
                 List.x.push(x);
                 List.y.push(y);
             }
