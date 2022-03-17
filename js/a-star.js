@@ -2,6 +2,7 @@ const field = $('#field')[0];
 
 let width;
 let height;
+let iterationDelay;
 
 let startPos;
 let endPos;
@@ -16,27 +17,21 @@ let selected;
 $('#field-resize').on('click', resize);
 $('#field-generate').on('click', generate);
 $('#field-find').on('click', find);
+$('.iter-delay.val').on('input', e => setIterationDelay(e.target));
+$('.field-size.val').on('input', e => setFieldSize(e.target));
 
 /*
  * Определяем события для взаимодействия с клетками
  */
 $('#field')
     .mousedown(event => {
-        if (finding) {
-            return;
-        }
-
-        if ($(event.target).hasClass('cell')) {
+        if (!finding && $(event.target).hasClass('cell')) {
             selected = $(event.target);
         }
         return false;
     })
     .mouseup(event => {
-        if (finding) {
-            return;
-        }
-
-        if ($(event.target).hasClass('cell')) {
+        if (!finding && $(event.target).hasClass('cell')) {
             let element = $(event.target);
 
             if (selected.attr('type') === 'start' || selected.attr('type') === 'end') {
@@ -48,6 +43,33 @@ $('#field')
     });
 
 /**
+ * Переключение состояния
+ * @param value {boolean}
+ */
+function changeState(value) {
+    finding = value;
+    $('.state').attr('active', value);
+}
+
+/**
+ * Функция изменения задержки между итерациями.
+ * Вызывается, когда меняется значение в вводе
+ */
+function setIterationDelay(target) {
+    iterationDelay = target.value;
+    $('.iter-delay.display').text(target.value);
+}
+
+/**
+ * Функция изменения размера поля.
+ * Вызывается, когда меняется значение в вводе
+ */
+function setFieldSize(target) {
+    iterationDelay = target.value;
+    $('.field-size.display').text(target.value);
+}
+
+/**
  * Функция изменения размера поля
  */
 function resize() {
@@ -57,11 +79,7 @@ function resize() {
     }
 
     // Получаем размер из ввода
-    width = Math.min(Math.max($('#field-width')[0].value, 8), 64);
-    height = Math.min(Math.max($('#field-height')[0].value, 8), 64);
-
-    $('#field-width')[0].value = width;
-    $('#field-height')[0].value = height;
+    width = height = $('.field-size')[0].value;
 
     // Обновляем поле
     while (field.firstChild) {
@@ -88,6 +106,54 @@ function resize() {
 
     // Добавляем события клика
     $('.cell').on('click', event => toggleCell(event.target));
+}
+
+
+/**
+ * Функция запуска поиска пути по алгоритму A*
+ */
+function find() {
+    // Проверка состояния
+    if (finding) {
+        return;
+    }
+
+    // Инициализация
+    let start = $('.cell[type="start"]');
+    let end = $('.cell[type="end"]');
+
+    startPos = {
+        x: +start.attr('x'),
+        y: +start.attr('y')
+    }
+
+    endPos = {
+        x: +end.attr('x'),
+        y: +end.attr('y')
+    };
+
+    // Отчищаем путь
+    $('.cell')
+        .removeClass("explored")
+        .removeClass("reachable")
+        .removeClass("path")
+        .text('');
+
+    // Изменения состояния
+    changeState(true);
+
+    // Выполняем алгоритм A*
+    algorithmAStar().then(path => {
+        // Отмечаем найденный путь
+        if (path) {
+            for (const node of path) {
+                jCell(node.x, node.y).addClass("path");
+            }
+        }
+
+        // Изменение состояния
+        changeState(false)
+    });
 }
 
 /**
@@ -190,53 +256,6 @@ function generate() {
 }
 
 /**
- * Функция запуска поиска пути по алгоритму A*
- */
-function find() {
-    // Проверка состояния
-    if (finding) {
-        return;
-    }
-
-    // Инициализация
-    let start = $('.cell[type="start"]');
-    let end = $('.cell[type="end"]');
-
-    startPos = {
-        x: +start.attr('x'),
-        y: +start.attr('y')
-    }
-
-    endPos = {
-        x: +end.attr('x'),
-        y: +end.attr('y')
-    };
-
-    // Отчищаем путь
-    $('.cell')
-        .removeClass("explored")
-        .removeClass("reachable")
-        .removeClass("path")
-        .text('');
-
-    // Изменения состояния
-    finding = true;
-
-    // Выполняем алгоритм A*
-    algorithmAStar().then(path => {
-        // Отмечаем найденный путь
-        if (path) {
-            for (const node of path) {
-                jCell(node.x, node.y).addClass("path");
-            }
-        }
-
-        // Изменение состояния
-        finding = false;
-    });
-}
-
-/**
  * Функция создания узла для алгоритма A*
  *
  * @param pos координаты узла (клетки)
@@ -327,7 +346,7 @@ async function algorithmAStar() {
             }
         }
 
-        await new Promise(r => setTimeout(r, 10))
+        await new Promise(r => setTimeout(r, iterationDelay))
     }
 
     return null;
@@ -469,4 +488,6 @@ function toggleCell(element) {
 }
 
 // Запуск
+setFieldSize($('.field-size.val')[0]);
+setIterationDelay($('.iter-delay.val')[0]);
 resize();

@@ -3,16 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>Алгоритм A*</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
     <link href="../css/a-star.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 </head>
 <body>
-    <div style="flex-direction: row">
-        <input id="field-width" type="number" value="24">
-        <input id="field-height" type="number" value="16">
-        <button id="field-resize">Создать Карту</button>
-        <button id="field-generate">Сгенерировать лабиринт</button>
-        <button id="field-find">Поиск пути</button>
+    <div id="top">
+        <div class="margin-middle flex-column center">
+            <span>Размер поля:</span>
+            <input class="field-size val" type="range" value="24", min="8", max="64">
+            <span class="field-size display"></span>
+        </div>
+        <div class="margin-middle flex-column center">
+            <span>Задержка между итерациями:</span>
+            <input class="iter-delay val" type="range" value="25", min="10", max="100">
+            <span class="iter-delay display"></span>
+        </div>
+        <div class="margin-big flex-column center">
+            <button class="margin-small state" id="field-resize">Создать Карту</button>
+            <button class="margin-small state" id="field-generate">Сгенерировать лабиринт</button>
+            <button class="margin-small state" id="field-find">Поиск пути</button>
+        </div>
     </div>
     <div id="field"></div>
     <script src="../js/a-star.js"></script>
