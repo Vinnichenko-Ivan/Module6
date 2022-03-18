@@ -39,9 +39,10 @@ window.addEventListener("load", function onWindowLoad() {
     function redrawing(population, goodEdgesWidth, goodEdgesOpacity, goodEdgesColor, badEdgesWidth, badEdgesOpacity, badEdgesColor)
     {
 
-        document.getElementById("Towns").textContent = `Path: `;
+        document.getElementById("Towns").textContent = `Path: 0 `;
         for (let i = 0; i < population[0].arr.length; i++)
             document.getElementById("Towns").textContent += `${population[0].arr[i]} `;
+        document.getElementById("Towns").textContent += ` 0`;
 
         //заново все рисуем
 
@@ -54,12 +55,10 @@ window.addEventListener("load", function onWindowLoad() {
         for (let i = 0; i < List.x.length; i++)
             edgeColor[i] = new Array(List.x.length)
 
-        for (let i = 0; i < List.x.length; i++) {
-            if (i === 0) {
-                edgeColor[Math.min(population[0].arr[0], population[0].arr[List.x.length - 1])][Math.max(population[0].arr[0], population[0].arr[List.x.length - 1])] = "1";
-            } else
-                edgeColor[Math.min(population[0].arr[i], population[0].arr[i - 1])][Math.max(population[0].arr[i], population[0].arr[i - 1])] = "1";
-        }
+        edgeColor[0][population[0].arr[0]] = "1";
+        edgeColor[0][population[0].arr[population[0].arr.length-1]] = "1";
+        for (let i = 0; i < population[0].arr.length-1; i++)
+            edgeColor[Math.min(population[0].arr[i], population[0].arr[i + 1])][Math.max(population[0].arr[i], population[0].arr[i + 1])] = "1";
 
         for (let i = 0; i < List.x.length; i++) {
             for (let j = i + 1; j < List.x.length; j++) {
@@ -71,7 +70,20 @@ window.addEventListener("load", function onWindowLoad() {
         }
     }
 
-    //------------------------------------------------------------------
+    //ищет приспособленность хромосомы
+    function findPathLength (chromosome, mat)
+    {
+        for (let i = 0; i < chromosome.arr.length; i++) {
+            if(i === 0 && chromosome.arr.length!==1)
+                chromosome.pathLength+=mat[0][chromosome.arr[0]];
+            if (i === chromosome.arr.length-1 && chromosome.arr.length!==1)
+                chromosome.pathLength += mat[chromosome.arr[chromosome.arr.length-1]][0];
+            else if(chromosome.arr.length!==1)
+                chromosome.pathLength += mat[chromosome.arr[i]][chromosome.arr[i + 1]];
+        }
+    }
+
+    //------------------------------------------------------------------------------------------
 
     //ВАЖНЫЕ КОНСТАНТЫ
     const otherEdgesOpacity = 0.2;
@@ -86,7 +98,7 @@ window.addEventListener("load", function onWindowLoad() {
     const mainEdgesColor = "yellow";
     const mainEdgesOpacity = 1;
 
-    //------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------
 
 
     let State = {
@@ -106,7 +118,7 @@ window.addEventListener("load", function onWindowLoad() {
                 document.getElementById("mainButton").textContent = "Break";
 
 
-                //------------------------------------------------------------------
+                //------------------------------------------------------------------------------------------
 
                 //ВАЖНЫЕ КОНСТАНТЫ ПО АЛГОРИТМУ
                 const N = Math.pow(List.x.length, 2);//размер популяции
@@ -115,7 +127,7 @@ window.addEventListener("load", function onWindowLoad() {
                 const numberOfPermutation = N;
                 const mutationMod = 2;//Режимы мутации: 1 - поменять местами гены в хромосоме, 2 - развернуть участок хромосомы. По моим наблюдениям 2 работает лучше
 
-                //------------------------------------------------------------------
+                //------------------------------------------------------------------------------------------
 
 
                 //Реализуем ген алгоритм с показом
@@ -131,19 +143,20 @@ window.addEventListener("load", function onWindowLoad() {
                         mat[i][j] = Math.sqrt(Math.pow(List.x[i] - List.x[j], 2) + Math.pow(List.y[i] - List.y[j], 2))
                 }
 
+
+
+
+
+                //------------------------------------------------------------------------------------------
                 //Генерация начальной популяции - создаем случайные начальные маршруты
 
                 let chromosome = {
-                    arr: new Array(List.x.length),
+                    arr: new Array(List.x.length-1),
                     pathLength: 0
                 };
-                for (let i = 0; i < List.x.length; i++) {
-                    chromosome.arr[i] = i;
-                    if (i === 0)
-                        chromosome.pathLength += mat[0][List.x.length - 1];
-                    else
-                        chromosome.pathLength += mat[chromosome.arr[i]][chromosome.arr[i - 1]];
-                }
+                for(let i = 0; i < chromosome.arr.length; i++)
+                    chromosome.arr[i] = i+1;
+                findPathLength(chromosome, mat);
 
                 let population = [{
                     arr: chromosome.arr.slice(0, chromosome.arr.length),
@@ -152,25 +165,24 @@ window.addEventListener("load", function onWindowLoad() {
 
                 for (let i = 1; i < N; i++) {
                     for (let j = 0; j < numberOfPermutation; j++) {
-                        let a = getRandomInt(0, List.x.length);
-                        let b = getRandomInt(0, List.x.length);
+                        let a = getRandomInt(0, chromosome.arr.length);
+                        let b = getRandomInt(0, chromosome.arr.length);
                         [chromosome.arr[a], chromosome.arr[b]] = [chromosome.arr[b], chromosome.arr[a]];
                     }
                     chromosome.pathLength = 0;
-                    for (let i = 0; i < chromosome.arr.length; i++) {
-                        if (i === 0)
-                            chromosome.pathLength += mat[chromosome.arr[0]][chromosome.arr[chromosome.arr.length - 1]];
-                        else
-                            chromosome.pathLength += mat[chromosome.arr[i]][chromosome.arr[i - 1]];
-                    }
+                    findPathLength(chromosome, mat);
                     population.push({
                         arr: chromosome.arr.slice(0, chromosome.arr.length),
                         pathLength: chromosome.pathLength
                     });
                 }
+                //------------------------------------------------------------------------------------------
 
 
-                //-------------------------------------------------
+
+
+
+                //------------------------------------------------------------------------------------------
                 //Дальнейшие действия повторяем несколько поколений в setInterval с анимацией
                 let it = 0;
                 let id = setInterval(function drawFrame() {
@@ -192,27 +204,27 @@ window.addEventListener("load", function onWindowLoad() {
                         clearInterval(id);
                     }
                     else {
-                        //Берем 2 случайных хромосомы из популяции и скрещиваем их
-                        let v = getRandomInt(0, N);
+                        //Берем 2 случайных хромосомы(a, b) из популяции и скрещиваем их, получая потомков(descendant1,2)
+                        let v = getRandomInt(0, population.length);
                         let a = {
                             arr: population[v].arr.slice(0, population[v].arr.length),
                             pathLength: population[v].pathLength
                         }
-                        v = getRandomInt(0, N);
+                        v = getRandomInt(0, population.length);
                         let b = {
                             arr: population[v].arr.slice(0, population[v].arr.length),
                             pathLength: population[v].pathLength
                         }
 
                         //случайное место разреза хромосомы
-                        v = getRandomInt(0, List.x.length);
+                        v = getRandomInt(0, a.arr.length);
 
                         let descendant1 = {
-                            arr: new Array(List.x.length),
+                            arr: new Array(a.arr.length),
                             pathLength: 0
                         }
                         let descendant2 = {
-                            arr: new Array(List.x.length),
+                            arr: new Array(a.arr.length),
                             pathLength: 0
                         }
 
@@ -234,6 +246,9 @@ window.addEventListener("load", function onWindowLoad() {
                                 descendant2.arr[y++] = b.arr[i];
                         }
 
+
+
+                        //------------------------------------------------------------------------------------------
                         //Мутация
                         if (Math.random() < MutationPercent) {
                             let v1 = getRandomInt(0, descendant1.arr.length);
@@ -251,18 +266,13 @@ window.addEventListener("load", function onWindowLoad() {
                             else if (mutationMod === 2)
                                 descendant2.arr = (descendant2.arr.slice(0, Math.min(v1, v2)).concat(descendant2.arr.slice(Math.min(v1, v2), Math.max(v1, v2) + 1).reverse(), descendant2.arr.slice(Math.max(v1, v2) + 1, descendant2.arr.length)));
                         }
+                        //------------------------------------------------------------------------------------------
+
+
 
                         //посчитаем длину полученных маршрутов потомков
-                        for (let i = 0; i < descendant1.arr.length; i++) {
-                            if (i === 0)
-                                descendant1.pathLength += mat[descendant1.arr[0]][descendant1.arr[descendant1.arr.length - 1]];
-                            else
-                                descendant1.pathLength += mat[descendant1.arr[i]][descendant1.arr[i - 1]];
-                            if (i === 0)
-                                descendant2.pathLength += mat[descendant2.arr[0]][descendant2.arr[descendant2.arr.length - 1]];
-                            else
-                                descendant2.pathLength += mat[descendant2.arr[i]][descendant2.arr[i - 1]];
-                        }
+                        findPathLength(descendant1, mat);
+                        findPathLength(descendant2, mat);
 
                         population.push({
                             arr: descendant1.arr.slice(0, descendant1.arr.length),
@@ -279,9 +289,16 @@ window.addEventListener("load", function onWindowLoad() {
                             return a.pathLength - b.pathLength;
                         }
 
+
+                        //------------------------------
+
+                        //здесь надо как-то оптимально избавиться от повторов в массиве population
+
+                        //------------------------------
+
+
                         population.sort(f)
-                        population.pop();
-                        population.pop();
+                        population = population.slice(0, N);
 
                         //отрисовка
                         redrawing(population, mainEdgesWidth, mainEdgesOpacity, mainEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
