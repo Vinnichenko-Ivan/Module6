@@ -70,7 +70,7 @@ window.addEventListener("load", function onWindowLoad() {
         }
     }
 
-    //ищет приспособленность хромосомы
+    //функция поиска приспособленности хромосомы
     function findPathLength (chromosome, mat)
     {
         for (let i = 0; i < chromosome.arr.length; i++) {
@@ -97,6 +97,7 @@ window.addEventListener("load", function onWindowLoad() {
     const mainEdgesWidth = 4;
     const mainEdgesColor = "yellow";
     const mainEdgesOpacity = 1;
+    const maxNumberOfCities = 25;
 
     //------------------------------------------------------------------------------------------
 
@@ -109,6 +110,7 @@ window.addEventListener("load", function onWindowLoad() {
             if (State.preStart) {
                 State.preStart = 0;
                 State.mapBuilding = 1;
+                numberOfCities = 0;
                 ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
                 document.getElementById("Towns").textContent = "";
                 document.getElementById("mainButton").textContent = "Find Path";
@@ -124,6 +126,7 @@ window.addEventListener("load", function onWindowLoad() {
                 const N = Math.pow(List.x.length, 2);//размер популяции
                 const MutationPercent = 0.7;//процент мутаций
                 const NumberOfGenerations = 100000;//количество популяций
+                const MaxNumberOfWithoutResultGenerations = Math.pow(List.x.length, 3);
                 const numberOfPermutation = N;
                 const mutationMod = 2;//Режимы мутации: 1 - поменять местами гены в хромосоме, 2 - развернуть участок хромосомы. По моим наблюдениям 2 работает лучше
 
@@ -185,10 +188,14 @@ window.addEventListener("load", function onWindowLoad() {
                 //------------------------------------------------------------------------------------------
                 //Дальнейшие действия повторяем несколько поколений в setInterval с анимацией
                 let it = 0;
+                let itOfWithoutResultGenerations = 0;
+                let minPathLength = Infinity;
+
                 let id = setInterval(function drawFrame() {
                     it++;
+                    itOfWithoutResultGenerations++;
 
-                    if (State.preStart || it > NumberOfGenerations) {
+                    if (State.preStart || it > NumberOfGenerations || itOfWithoutResultGenerations > MaxNumberOfWithoutResultGenerations) {
                         //окончание работы алгоритма
 
                         State.pathFinding = 0;
@@ -300,6 +307,12 @@ window.addEventListener("load", function onWindowLoad() {
                         population.sort(f)
                         population = population.slice(0, N);
 
+                        if(population[0].pathLength < minPathLength)
+                        {
+                            minPathLength = population[0].pathLength;
+                            itOfWithoutResultGenerations = 0;
+                        }
+
                         //отрисовка
                         redrawing(population, mainEdgesWidth, mainEdgesOpacity, mainEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
                     }
@@ -321,6 +334,7 @@ window.addEventListener("load", function onWindowLoad() {
         x: [],
         y: []
     }
+    let numberOfCities;
 
     // переменные для рисования
     ctx.lineCap = "round";
@@ -337,7 +351,7 @@ window.addEventListener("load", function onWindowLoad() {
         let y = e.offsetY;
 
         // Проверяем на нажатие мыши
-        if (e.buttons === 1 && State.mapBuilding && x >= 0 && y >= 0 && x <= MyCanvas.width && y <= MyCanvas.height) {
+        if (e.buttons === 1 && State.mapBuilding && x >= 0 && y >= 0 && x <= MyCanvas.width && y <= MyCanvas.height && numberOfCities < maxNumberOfCities) {
             let flag = 1;
             for (let i = 0; i < List.x.length; i++) {
                 if (List.x[i] === x && List.y[i] === y) {
@@ -346,6 +360,7 @@ window.addEventListener("load", function onWindowLoad() {
                 }
             }
             if (flag) {
+                numberOfCities++;
                 //рисуем город
                 ctx.strokeStyle = townColor;
                 ctx.lineWidth = 15;
@@ -371,6 +386,9 @@ window.addEventListener("load", function onWindowLoad() {
                 List.x.push(x);
                 List.y.push(y);
             }
+        }
+        else if(e.buttons === 1 && State.mapBuilding && x >= 0 && y >= 0 && x <= MyCanvas.width && y <= MyCanvas.height && numberOfCities >= maxNumberOfCities){
+            alert("Максимальное количество городов уже построено");
         }
     };
 });
