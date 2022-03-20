@@ -124,7 +124,7 @@ window.addEventListener("load", function onWindowLoad() {
                 const N = Math.pow(List.x.length, 2);//размер популяции
                 const MutationPercent = 0.7;//процент мутаций
                 const NumberOfGenerations = 100000;//количество популяций
-                const MaxNumberOfWithoutResultGenerations = Math.pow(List.x.length, 3);
+                const MaxNumberOfWithoutResultGenerations = Math.pow(List.x.length, 2);
                 const NumberOfPermutation = N;
                 const MutationMod = 2;//Режимы мутации: 1 - поменять местами гены в хромосоме, 2 - развернуть участок хромосомы. По моим наблюдениям 2 работает лучше
                 const NumberOfDescendants = N;
