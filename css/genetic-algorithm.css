@@ -1,4 +1,8 @@
+* {
+    box-sizing: border-box;
+}
 body{
+    margin: 0;
     background: azure;
 }
 #mainButton{
@@ -24,4 +28,65 @@ body{
     transform: translate(-50%, 0);
     margin: 10px;
     text-align: center;
+}
+
+/*
+Дальше главное меню:
+ */
+header {
+    background: black;
+    text-align: center;
+}
+header a {
+    display: block;
+    text-decoration: none;
+    outline: none;
+    transition: .3s ease-in-out;
+}
+nav {
+    display: table;
+    margin: 0 auto;
+}
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.top-menu > li {
+    width: 25%;
+    float: left;
+    position: relative;
+    font-family: 'Open Sans', sans-serif;
+}
+.top-menu > li > a {
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: bold;
+    color: azure;
+    padding: 15px 30px;
+}
+.top-menu li a:hover {color: #D5B45B;}
+.submenu {
+    background: #111111;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    z-index: 5;
+    width: 180px;
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin :0 0;
+    transition: .5s ease-in-out;
+}
+.submenu a {
+    color: white;
+    text-align: left;
+    padding: 12px 15px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+}
+.submenu li:last-child a {border-bottom: none;}
+.top-menu > li:hover .submenu {
+    opacity: 1;
+    transform: scaleY(1);
 }
