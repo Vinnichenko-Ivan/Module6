@@ -1,6 +1,10 @@
 
 drawCenters = true
 
+drawLines = true
+
+autoRun = true
+
 xs = 400;
 ys = 400;
 
@@ -13,12 +17,14 @@ colorIndex.push('green')
 colorIndex.push('blue')
 colorIndex.push('brown')
 
+defColor = 'white'
+
 //https://habr.com/ru/post/585034/
 class Point{
     x = 0.0;
     y = 0.0;
-    id = 0;
-    color = 'white';
+    id = -1;
+    color = defColor;
     constructor(x, y) {
         this.x = x;
         this.y = y;
@@ -35,6 +41,19 @@ class Fild{
     clasterCenters = []
     addPoint(point){
         this.points.push(point)
+    }
+
+    rerun(){
+        this.clasterCenters = []
+        this.k = 0
+        this.points.forEach(function (point, index){
+            point.color = defColor
+            point.id = -1;
+        });
+    }
+
+    clear(){
+        this.points = []
     }
 
 }
@@ -95,8 +114,16 @@ function clInit(k, area){
     }
 }
 
+const checkBoxLineToCenter = document.getElementById('linesToCentres')
+const checkBoxAutoRun = document.getElementById('autoRun')
+const checkBoxCC = document.getElementById('clasterCenters')
+const buttonClear = document.getElementById('clear')
+const buttonRerun = document.getElementById('rerun')
+const buttonIter = document.getElementById('iter')
+const clasterCount = document.getElementById('CCount');
 const canvas = document.getElementById('mainFild');
 const context = canvas.getContext('2d');
+
 
 let mainFild = new Fild();
 
@@ -104,8 +131,10 @@ function loop() {
     requestAnimationFrame(loop);
     context.clearRect(0, 0, canvas.width, canvas.height)
 
-    dataDist(mainFild)
-    newCC(mainFild)
+    if(autoRun) {
+        dataDist(mainFild)
+        newCC(mainFild)
+    }
 
     mainFild.points.forEach(function (point, index){
         context.fillStyle = point.color
@@ -116,6 +145,21 @@ function loop() {
         mainFild.clasterCenters.forEach(function (point, index){
             context.fillStyle = colorIndex[index]
             context.fillRect(point.x - 2, point.y - 2, 4, 4);
+        });
+    }
+
+    if(drawLines){
+        mainFild.points.forEach(function (point, index){
+            if(point.id != -1)
+            {
+                context.strokeStyle = point.color
+                context.beginPath();
+                context.moveTo(point.x, point.y);
+                context.lineTo(mainFild.clasterCenters[point.id].x, mainFild.clasterCenters[point.id].y);
+                context.stroke();
+                //context.line()
+                context.closePath();
+            }
         });
     }
     //context.stroke();
@@ -150,4 +194,53 @@ canvas.addEventListener('mousedown', function (event) {
 
 });
 
+checkBoxLineToCenter.addEventListener('change', function() {
+    if (this.checked) {
+        drawLines = true
+    } else {
+        drawLines = false
+    }
+});
+
+
+checkBoxAutoRun.addEventListener('change', function() {
+    if (this.checked) {
+        autoRun = true
+    } else {
+        autoRun = false
+    }
+});
+
+
+checkBoxCC.addEventListener('change', function() {
+    if (this.checked) {
+        drawCenters = true
+    } else {
+        drawCenters = false
+    }
+});
+
+
+buttonRerun.addEventListener('click', function() {
+    mainFild.rerun()
+    clInit(gk, mainFild)
+});
+
+clasterCount.addEventListener('click', function() {
+    gk = clasterCount.value;
+    mainFild.rerun()
+    clInit(gk, mainFild)
+});
+
+buttonClear.addEventListener('click', function() {
+    mainFild.clear()
+});
+
+buttonIter.addEventListener('click', function() {
+    dataDist(mainFild)
+    newCC(mainFild)
+});
+
 requestAnimationFrame(loop);
+
+//TODO стартовые значения
