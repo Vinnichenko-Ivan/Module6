@@ -36,8 +36,7 @@ window.addEventListener("load", function onWindowLoad() {
     }
 
     //функция отрисовки
-    function redrawing(population, goodEdgesWidth, goodEdgesOpacity, goodEdgesColor, badEdgesWidth, badEdgesOpacity, badEdgesColor)
-    {
+    function redrawing(population, goodEdgesWidth, goodEdgesOpacity, goodEdgesColor, badEdgesWidth, badEdgesOpacity, badEdgesColor) {
 
         document.getElementById("Towns").textContent = `Path: 0 `;
         for (let i = 0; i < population[0].arr.length; i++)
@@ -56,8 +55,8 @@ window.addEventListener("load", function onWindowLoad() {
             edgeColor[i] = new Array(List.x.length)
 
         edgeColor[0][population[0].arr[0]] = "1";
-        edgeColor[0][population[0].arr[population[0].arr.length-1]] = "1";
-        for (let i = 0; i < population[0].arr.length-1; i++)
+        edgeColor[0][population[0].arr[population[0].arr.length - 1]] = "1";
+        for (let i = 0; i < population[0].arr.length - 1; i++)
             edgeColor[Math.min(population[0].arr[i], population[0].arr[i + 1])][Math.max(population[0].arr[i], population[0].arr[i + 1])] = "1";
 
         for (let i = 0; i < List.x.length; i++) {
@@ -71,14 +70,13 @@ window.addEventListener("load", function onWindowLoad() {
     }
 
     //функция поиска приспособленности хромосомы
-    function findPathLength (chromosome, mat)
-    {
+    function findPathLength(chromosome, mat) {
         for (let i = 0; i < chromosome.arr.length; i++) {
-            if(i === 0 && chromosome.arr.length!==1)
-                chromosome.pathLength+=mat[0][chromosome.arr[0]];
-            if (i === chromosome.arr.length-1 && chromosome.arr.length!==1)
-                chromosome.pathLength += mat[chromosome.arr[chromosome.arr.length-1]][0];
-            else if(chromosome.arr.length!==1)
+            if (i === 0 && chromosome.arr.length !== 1)
+                chromosome.pathLength += mat[0][chromosome.arr[0]];
+            if (i === chromosome.arr.length - 1 && chromosome.arr.length !== 1)
+                chromosome.pathLength += mat[chromosome.arr[chromosome.arr.length - 1]][0];
+            else if (chromosome.arr.length !== 1)
                 chromosome.pathLength += mat[chromosome.arr[i]][chromosome.arr[i + 1]];
         }
     }
@@ -97,7 +95,7 @@ window.addEventListener("load", function onWindowLoad() {
     const mainEdgesWidth = 4;
     const mainEdgesColor = "yellow";
     const mainEdgesOpacity = 1;
-    const maxNumberOfCities = 25;
+    const maxNumberOfCities = 50;
 
     //------------------------------------------------------------------------------------------
 
@@ -127,8 +125,9 @@ window.addEventListener("load", function onWindowLoad() {
                 const MutationPercent = 0.7;//процент мутаций
                 const NumberOfGenerations = 100000;//количество популяций
                 const MaxNumberOfWithoutResultGenerations = Math.pow(List.x.length, 3);
-                const numberOfPermutation = N;
-                const mutationMod = 2;//Режимы мутации: 1 - поменять местами гены в хромосоме, 2 - развернуть участок хромосомы. По моим наблюдениям 2 работает лучше
+                const NumberOfPermutation = N;
+                const MutationMod = 2;//Режимы мутации: 1 - поменять местами гены в хромосоме, 2 - развернуть участок хромосомы. По моим наблюдениям 2 работает лучше
+                const NumberOfDescendants = N;
 
                 //------------------------------------------------------------------------------------------
 
@@ -147,18 +146,15 @@ window.addEventListener("load", function onWindowLoad() {
                 }
 
 
-
-
-
                 //------------------------------------------------------------------------------------------
                 //Генерация начальной популяции - создаем случайные начальные маршруты
 
                 let chromosome = {
-                    arr: new Array(List.x.length-1),
+                    arr: new Array(List.x.length - 1),
                     pathLength: 0
                 };
-                for(let i = 0; i < chromosome.arr.length; i++)
-                    chromosome.arr[i] = i+1;
+                for (let i = 0; i < chromosome.arr.length; i++)
+                    chromosome.arr[i] = i + 1;
                 findPathLength(chromosome, mat);
 
                 let population = [{
@@ -167,7 +163,7 @@ window.addEventListener("load", function onWindowLoad() {
                 }];
 
                 for (let i = 1; i < N; i++) {
-                    for (let j = 0; j < numberOfPermutation; j++) {
+                    for (let j = 0; j < NumberOfPermutation; j++) {
                         let a = getRandomInt(0, chromosome.arr.length);
                         let b = getRandomInt(0, chromosome.arr.length);
                         [chromosome.arr[a], chromosome.arr[b]] = [chromosome.arr[b], chromosome.arr[a]];
@@ -180,9 +176,6 @@ window.addEventListener("load", function onWindowLoad() {
                     });
                 }
                 //------------------------------------------------------------------------------------------
-
-
-
 
 
                 //------------------------------------------------------------------------------------------
@@ -209,86 +202,87 @@ window.addEventListener("load", function onWindowLoad() {
                         List.x.splice(0, List.x.length);
                         List.y.splice(0, List.y.length);
                         clearInterval(id);
-                    }
-                    else {
-                        //Берем 2 случайных хромосомы(a, b) из популяции и скрещиваем их, получая потомков(descendant1,2)
-                        let v = getRandomInt(0, population.length);
-                        let a = {
-                            arr: population[v].arr.slice(0, population[v].arr.length),
-                            pathLength: population[v].pathLength
-                        }
-                        v = getRandomInt(0, population.length);
-                        let b = {
-                            arr: population[v].arr.slice(0, population[v].arr.length),
-                            pathLength: population[v].pathLength
-                        }
+                    } else {
+                        //создаем потомков в количестве NumberOfDescendants
+                        for (let createdDescendants = 0; createdDescendants < NumberOfDescendants; createdDescendants += 2) {
+                            //Берем 2 случайных хромосомы(a, b) из популяции и скрещиваем их, получая потомков(descendant1,2)
+                            let v = getRandomInt(0, population.length);
+                            let a = {
+                                arr: population[v].arr.slice(0, population[v].arr.length),
+                                pathLength: population[v].pathLength
+                            }
+                            v = getRandomInt(0, population.length);
+                            let b = {
+                                arr: population[v].arr.slice(0, population[v].arr.length),
+                                pathLength: population[v].pathLength
+                            }
 
-                        //случайное место разреза хромосомы
-                        v = getRandomInt(0, a.arr.length);
+                            //случайное место разреза хромосомы
+                            v = getRandomInt(0, a.arr.length);
 
-                        let descendant1 = {
-                            arr: new Array(a.arr.length),
-                            pathLength: 0
-                        }
-                        let descendant2 = {
-                            arr: new Array(a.arr.length),
-                            pathLength: 0
-                        }
+                            let descendant1 = {
+                                arr: new Array(a.arr.length),
+                                pathLength: 0
+                            }
+                            let descendant2 = {
+                                arr: new Array(a.arr.length),
+                                pathLength: 0
+                            }
 
-                        let x = 0, y = 0;//сколько днк хромосом потомков уже вставлено
-                        for (let i = 0; i < v; i++) {
-                            descendant1.arr[x++] = a.arr[i];
-                            descendant2.arr[y++] = b.arr[i];
-                        }
-                        for (let i = v; i < a.arr.length; i++) {
-                            if (!descendant1.arr.includes(b.arr[i]))
-                                descendant1.arr[x++] = b.arr[i];
-                            if (!descendant2.arr.includes(a.arr[i]))
-                                descendant2.arr[y++] = a.arr[i];
-                        }
-                        for (let i = v; i < a.arr.length; i++) {
-                            if (!descendant1.arr.includes(a.arr[i]))
+                            let x = 0, y = 0;//сколько днк хромосом потомков уже вставлено
+                            for (let i = 0; i < v; i++) {
                                 descendant1.arr[x++] = a.arr[i];
-                            if (!descendant2.arr.includes(b.arr[i]))
                                 descendant2.arr[y++] = b.arr[i];
+                            }
+                            for (let i = v; i < a.arr.length; i++) {
+                                if (!descendant1.arr.includes(b.arr[i]))
+                                    descendant1.arr[x++] = b.arr[i];
+                                if (!descendant2.arr.includes(a.arr[i]))
+                                    descendant2.arr[y++] = a.arr[i];
+                            }
+                            for (let i = v; i < a.arr.length; i++) {
+                                if (!descendant1.arr.includes(a.arr[i]))
+                                    descendant1.arr[x++] = a.arr[i];
+                                if (!descendant2.arr.includes(b.arr[i]))
+                                    descendant2.arr[y++] = b.arr[i];
+                            }
+
+
+                            //------------------------------------------------------------------------------------------
+                            //Мутация
+                            if (Math.random() < MutationPercent) {
+                                let v1 = getRandomInt(0, descendant1.arr.length);
+                                let v2 = getRandomInt(0, descendant1.arr.length);
+                                if (MutationMod === 1)
+                                    [descendant1.arr[v1], descendant1.arr[v2]] = [descendant1.arr[v2], descendant1.arr[v1]];
+                                else if (MutationMod === 2)
+                                    descendant1.arr = (descendant1.arr.slice(0, Math.min(v1, v2)).concat(descendant1.arr.slice(Math.min(v1, v2), Math.max(v1, v2) + 1).reverse(), descendant1.arr.slice(Math.max(v1, v2) + 1, descendant1.arr.length)));
+                            }
+                            if (Math.random() < MutationPercent) {
+                                let v1 = getRandomInt(0, descendant2.arr.length);
+                                let v2 = getRandomInt(0, descendant2.arr.length);
+                                if (MutationMod === 1)
+                                    [descendant2.arr[v1], descendant2.arr[v2]] = [descendant2.arr[v2], descendant2.arr[v1]];
+                                else if (MutationMod === 2)
+                                    descendant2.arr = (descendant2.arr.slice(0, Math.min(v1, v2)).concat(descendant2.arr.slice(Math.min(v1, v2), Math.max(v1, v2) + 1).reverse(), descendant2.arr.slice(Math.max(v1, v2) + 1, descendant2.arr.length)));
+                            }
+                            //------------------------------------------------------------------------------------------
+
+
+                            //посчитаем длину полученных маршрутов потомков
+                            findPathLength(descendant1, mat);
+                            findPathLength(descendant2, mat);
+
+                            population.push({
+                                arr: descendant1.arr.slice(0, descendant1.arr.length),
+                                pathLength: descendant1.pathLength
+                            });
+                            population.push({
+                                arr: descendant2.arr.slice(0, descendant1.arr.length),
+                                pathLength: descendant2.pathLength
+                            });
+
                         }
-
-
-
-                        //------------------------------------------------------------------------------------------
-                        //Мутация
-                        if (Math.random() < MutationPercent) {
-                            let v1 = getRandomInt(0, descendant1.arr.length);
-                            let v2 = getRandomInt(0, descendant1.arr.length);
-                            if (mutationMod === 1)
-                                [descendant1.arr[v1], descendant1.arr[v2]] = [descendant1.arr[v2], descendant1.arr[v1]];
-                            else if (mutationMod === 2)
-                                descendant1.arr = (descendant1.arr.slice(0, Math.min(v1, v2)).concat(descendant1.arr.slice(Math.min(v1, v2), Math.max(v1, v2) + 1).reverse(), descendant1.arr.slice(Math.max(v1, v2) + 1, descendant1.arr.length)));
-                        }
-                        if (Math.random() < MutationPercent) {
-                            let v1 = getRandomInt(0, descendant2.arr.length);
-                            let v2 = getRandomInt(0, descendant2.arr.length);
-                            if (mutationMod === 1)
-                                [descendant2.arr[v1], descendant2.arr[v2]] = [descendant2.arr[v2], descendant2.arr[v1]];
-                            else if (mutationMod === 2)
-                                descendant2.arr = (descendant2.arr.slice(0, Math.min(v1, v2)).concat(descendant2.arr.slice(Math.min(v1, v2), Math.max(v1, v2) + 1).reverse(), descendant2.arr.slice(Math.max(v1, v2) + 1, descendant2.arr.length)));
-                        }
-                        //------------------------------------------------------------------------------------------
-
-
-
-                        //посчитаем длину полученных маршрутов потомков
-                        findPathLength(descendant1, mat);
-                        findPathLength(descendant2, mat);
-
-                        population.push({
-                            arr: descendant1.arr.slice(0, descendant1.arr.length),
-                            pathLength: descendant1.pathLength
-                        });
-                        population.push({
-                            arr: descendant2.arr.slice(0, descendant1.arr.length),
-                            pathLength: descendant2.pathLength
-                        });
 
                         //Естественный отбор - оставляем только лучших особей популяции
 
@@ -307,8 +301,7 @@ window.addEventListener("load", function onWindowLoad() {
                         population.sort(f)
                         population = population.slice(0, N);
 
-                        if(population[0].pathLength < minPathLength)
-                        {
+                        if (population[0].pathLength < minPathLength) {
                             minPathLength = population[0].pathLength;
                             itOfWithoutResultGenerations = 0;
                         }
@@ -386,8 +379,7 @@ window.addEventListener("load", function onWindowLoad() {
                 List.x.push(x);
                 List.y.push(y);
             }
-        }
-        else if(e.buttons === 1 && State.mapBuilding && x >= 0 && y >= 0 && x <= MyCanvas.width && y <= MyCanvas.height && numberOfCities >= maxNumberOfCities){
+        } else if (e.buttons === 1 && State.mapBuilding && x >= 0 && y >= 0 && x <= MyCanvas.width && y <= MyCanvas.height && numberOfCities >= maxNumberOfCities) {
             alert("Максимальное количество городов уже построено");
         }
     };
