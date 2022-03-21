@@ -3,22 +3,22 @@ window.addEventListener("load", function onWindowLoad() {
     //ВАЖНЫЕ ФУНКЦИИ:
 
     //отрисовать города
-    function drawTowns(col, rad) {
+    function drawTowns(color, radius) {
         for (let i = 0; i < List.x.length; i++) {
-            ctx.strokeStyle = col;
+            ctx.strokeStyle = color;
             ctx.lineWidth = 15;
             ctx.beginPath();
-            ctx.arc(List.x[i], List.y[i], rad, 0, Math.PI * 2, false);
+            ctx.arc(List.x[i], List.y[i], radius, 0, Math.PI * 2, false);
             ctx.closePath();
             ctx.stroke();
         }
     }
 
     //отрисовать пути
-    function drawEdges(wid, alpha, i, j, col) {
-        ctx.lineWidth = wid;
+    function drawEdges(width, alpha, i, j, color) {
+        ctx.lineWidth = width;
         ctx.globalAlpha = alpha;
-        ctx.strokeStyle = col;
+        ctx.strokeStyle = color;
         ctx.beginPath();
         ctx.moveTo(List.x[i], List.y[i]);
         ctx.lineTo(List.x[j], List.y[j]);
@@ -36,13 +36,8 @@ window.addEventListener("load", function onWindowLoad() {
     }
 
     //функция отрисовки
-    function redrawing(population, goodEdgesWidth, goodEdgesOpacity, goodEdgesColor, badEdgesWidth, badEdgesOpacity, badEdgesColor) {
-
-        document.getElementById("Towns").textContent = `Path: 0 `;
-        for (let i = 0; i < population[0].arr.length; i++)
-            document.getElementById("Towns").textContent += `${population[0].arr[i]} `;
-        document.getElementById("Towns").textContent += ` 0`;
-
+    function redrawing(population, goodEdgesWidth, goodEdgesOpacity, goodEdgesColor, badEdgesWidth, badEdgesOpacity, badEdgesColor)
+    {
         //заново все рисуем
 
         ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
@@ -110,7 +105,6 @@ window.addEventListener("load", function onWindowLoad() {
                 State.mapBuilding = 1;
                 numberOfCities = 0;
                 ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
-                document.getElementById("Towns").textContent = "";
                 document.getElementById("mainButton").textContent = "Find Path";
             } else if (State.mapBuilding && List.x.length !== 0) {
                 State.mapBuilding = 0;
@@ -124,7 +118,7 @@ window.addEventListener("load", function onWindowLoad() {
                 const N = Math.pow(List.x.length, 2);//размер популяции
                 const MutationPercent = 0.7;//процент мутаций
                 const NumberOfGenerations = 100000;//количество популяций
-                const MaxNumberOfWithoutResultGenerations = Math.pow(List.x.length, 2);
+                const MaxNumberOfWithoutResultGenerations = Math.min(Math.pow(List.x.length, 2), 300);
                 const NumberOfPermutation = N;
                 const MutationMod = 2;//Режимы мутации: 1 - поменять местами гены в хромосоме, 2 - развернуть участок хромосомы. По моим наблюдениям 2 работает лучше
                 const NumberOfDescendants = N;
@@ -194,7 +188,6 @@ window.addEventListener("load", function onWindowLoad() {
                         State.pathFinding = 0;
                         State.preStart = 1;
                         document.getElementById("mainButton").textContent = "Start";
-                        document.getElementById("Towns").textContent = "";
 
                         //отрисовка
                         redrawing(population, resultEdgesWidth, resultEdgesOpacity, resultEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
@@ -290,14 +283,6 @@ window.addEventListener("load", function onWindowLoad() {
                             return a.pathLength - b.pathLength;
                         }
 
-
-                        //------------------------------
-
-                        //здесь надо как-то оптимально избавиться от повторов в массиве population
-
-                        //------------------------------
-
-
                         population.sort(f)
                         population = population.slice(0, N);
 
@@ -314,12 +299,11 @@ window.addEventListener("load", function onWindowLoad() {
                 State.pathFinding = 0;
                 State.preStart = 1;
                 document.getElementById("mainButton").textContent = "Start";
-                document.getElementById("Towns").textContent = "";
             }
         }
     }
 
-    let MyCanvas = document.getElementById("MyCanvas"),
+    let MyCanvas = document.getElementById("myCanvas"),
         ctx = MyCanvas.getContext('2d');
 
     //создаем массивы с координатами точек
@@ -372,9 +356,6 @@ window.addEventListener("load", function onWindowLoad() {
                     ctx.stroke();
                     ctx.globalAlpha = 1;
                 }
-
-                //выводим на экран координаты
-                document.getElementById("Towns").textContent += `${List.x.length + 1}:\t${x}\t${y}\n`;
 
                 List.x.push(x);
                 List.y.push(y);

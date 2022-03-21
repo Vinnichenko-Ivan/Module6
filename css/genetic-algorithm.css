@@ -13,21 +13,12 @@ body{
     transform: translate(-50%, 0);
     margin: 10px;
 }
-#MyCanvas{
+#myCanvas{
     position: relative;
     left: 50%;
     transform: translate(-50%, 0);
     border-style: dashed;
     margin: 10px;
-}
-#Towns{
-    width: 20%;
-    height: auto;
-    position: relative;
-    left: 50%;
-    transform: translate(-50%, 0);
-    margin: 10px;
-    text-align: center;
 }
 
 /*
