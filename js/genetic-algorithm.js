@@ -289,10 +289,10 @@ window.addEventListener("load", function onWindowLoad() {
                         if (population[0].pathLength < minPathLength) {
                             minPathLength = population[0].pathLength;
                             itOfWithoutResultGenerations = 0;
-                        }
 
-                        //отрисовка
-                        redrawing(population, mainEdgesWidth, mainEdgesOpacity, mainEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
+                            //отрисовка
+                            redrawing(population, mainEdgesWidth, mainEdgesOpacity, mainEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
+                        }
                     }
                 }, 0);
             } else if (State.pathFinding) {
