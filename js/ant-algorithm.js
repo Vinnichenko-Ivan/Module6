@@ -1,10 +1,15 @@
 window.addEventListener("load", function onWindowLoad() {
 
+    let MyCanvas = document.getElementById("myCanvas"),
+        ctx = MyCanvas.getContext('2d');
+
+
     //ВАЖНЫЕ ФУНКЦИИ:
 
     //отрисовать города
     function drawTowns(color, radius) {
         for (let i = 0; i < List.x.length; i++) {
+            ctx.lineCap = "round";
             ctx.strokeStyle = color;
             ctx.lineWidth = 15;
             ctx.beginPath();
@@ -270,8 +275,8 @@ window.addEventListener("load", function onWindowLoad() {
         }
     }
 
-    let MyCanvas = document.getElementById("myCanvas"),
-        ctx = MyCanvas.getContext('2d');
+
+
 
     //создаем массивы с координатами точек
     let List = {
@@ -279,9 +284,6 @@ window.addEventListener("load", function onWindowLoad() {
         y: []
     }
     let numberOfCities;
-
-    // переменные для рисования
-    ctx.lineCap = "round";
 
     //обработчик на кнопку
     document.getElementById("mainButton").onclick = function nextState() {
@@ -295,40 +297,43 @@ window.addEventListener("load", function onWindowLoad() {
         let y = e.offsetY;
 
         // Проверяем на нажатие мыши
-        if (e.buttons === 1 && State.mapBuilding && x >= 0 && y >= 0 && x <= MyCanvas.width && y <= MyCanvas.height && numberOfCities < maxNumberOfCities) {
-            let flag = 1;
-            for (let i = 0; i < List.x.length; i++) {
-                if (List.x[i] === x && List.y[i] === y) {
-                    flag = 0;
-                    break;
-                }
-            }
-            if (flag) {
-                numberOfCities++;
-                //рисуем город
-                ctx.strokeStyle = townColor;
-                ctx.lineWidth = 15;
-                ctx.beginPath();
-                ctx.arc(x, y, townRadius, 0, Math.PI * 2, false);
-                ctx.closePath();
-                ctx.stroke();
-
-                //рисуем пути
-                ctx.lineWidth = otherEdgesWidth;
+        if (e.buttons === 1 && State.mapBuilding && x >= 0 && y >= 0 && x <= MyCanvas.width && y <= MyCanvas.height) {
+            if(numberOfCities < maxNumberOfCities) {
+                let flag = 1;
                 for (let i = 0; i < List.x.length; i++) {
-                    ctx.globalAlpha = otherEdgesOpacity;
-                    ctx.beginPath();
-                    ctx.moveTo(List.x[i], List.y[i]);
-                    ctx.lineTo(x, y);
-                    ctx.stroke();
-                    ctx.globalAlpha = 1;
+                    if (List.x[i] === x && List.y[i] === y) {
+                        flag = 0;
+                        break;
+                    }
                 }
+                if (flag) {
+                    numberOfCities++;
+                    //рисуем город
+                    ctx.lineCap = "round";
+                    ctx.strokeStyle = townColor;
+                    ctx.lineWidth = 15;
+                    ctx.beginPath();
+                    ctx.arc(x, y, townRadius, 0, Math.PI * 2, false);
+                    ctx.closePath();
+                    ctx.stroke();
 
-                List.x.push(x);
-                List.y.push(y);
+                    //рисуем пути
+                    ctx.lineWidth = otherEdgesWidth;
+                    for (let i = 0; i < List.x.length; i++) {
+                        ctx.globalAlpha = otherEdgesOpacity;
+                        ctx.beginPath();
+                        ctx.moveTo(List.x[i], List.y[i]);
+                        ctx.lineTo(x, y);
+                        ctx.stroke();
+                        ctx.globalAlpha = 1;
+                    }
+
+                    List.x.push(x);
+                    List.y.push(y);
+                }
             }
-        } else if (e.buttons === 1 && State.mapBuilding && x >= 0 && y >= 0 && x <= MyCanvas.width && y <= MyCanvas.height && numberOfCities >= maxNumberOfCities) {
-            alert("Максимальное количество городов уже построено");
+            else
+                alert("Максимальное количество городов уже построено");
         }
     };
 });
