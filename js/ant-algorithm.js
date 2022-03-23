@@ -36,13 +36,29 @@ window.addEventListener("load", function onWindowLoad() {
     }
 
     //функция отрисовки
-    function redrawing(population, goodEdgesWidth, goodEdgesOpacity, goodEdgesColor, badEdgesWidth, badEdgesOpacity, badEdgesColor) {
+    function redrawing(minPath, goodEdgesWidth, goodEdgesOpacity, goodEdgesColor, badEdgesWidth, badEdgesOpacity, badEdgesColor) {
+        ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
 
-    }
+        drawTowns(townColor, townRadius);
 
-    //функция поиска приспособленности хромосомы
-    function findPathLength(chromosome, mat) {
+        //рисуем пути, создав сначала матрицу с цветами ребер
+        let edgeColor = new Array(List.x.length);
+        for (let i = 0; i < List.x.length; i++)
+            edgeColor[i] = new Array(List.x.length)
 
+        edgeColor[minPath[0]][minPath[minPath.length-1]] = "1";
+        edgeColor[minPath[minPath.length-1]][minPath[0]] = "1";
+        for (let i = 0; i < minPath.length - 1; i++)
+            edgeColor[Math.min(minPath[i], minPath[i + 1])][Math.max(minPath[i], minPath[i + 1])] = "1";
+
+        for (let i = 0; i < List.x.length; i++) {
+            for (let j = i + 1; j < List.x.length; j++) {
+                if (edgeColor[i][j] === "1")
+                    drawEdges(goodEdgesWidth, goodEdgesOpacity, i, j, goodEdgesColor);
+                else
+                    drawEdges(badEdgesWidth, badEdgesOpacity, i, j, badEdgesColor);
+            }
+        }
     }
 
     //------------------------------------------------------------------------------------------
@@ -85,22 +101,47 @@ window.addEventListener("load", function onWindowLoad() {
                 //------------------------------------------------------------------------------------------
                 //ВАЖНЫЕ КОНСТАНТЫ ПО АЛГОРИТМУ
 
-                const NumberOfIterations = 1000;
-                const MaxNumberOfWithoutResultIterations = 1000;
+                const NumberOfIterations = 1000;//максимальное количество итераций
+                const MaxNumberOfWithoutResultIterations = 500;//максимальное количество бессмысленных итераций
+
+                const NumberOfAnts = 100;
+                const InitialNumberOfPheromones = 0.2;
+
+                const Alfa = 0.5;//показатель степени феромонов
+                const Beta = 0.5;//показатель степени длины маршрута
+
+                const PathLengthConst = 10;//эту константу делим на расстояние между городами
+                const PheromoneConst = 10;//эту константу делим на длину дороги между городами и прибавляем столько феромонов на данную дорогу
+                const RemainingPheromones = 0.7;//какая часть феромонов остается после испарения
 
                 //------------------------------------------------------------------------------------------
 
 
-
-                //Создаем матрицу весов
-                let mat = new Array(List.x.length);
+                //Матрица весов с длиной маршрутов
+                let lengthMatrix = new Array(List.x.length);
                 for (let i = 0; i < List.x.length; i++) {
-                    mat[i] = new Array(List.x.length);
+                    lengthMatrix[i] = new Array(List.x.length);
                     for (let j = 0; j < i; j++)
-                        mat[i][j] = Math.sqrt(Math.pow(List.x[i] - List.x[j], 2) + Math.pow(List.y[i] - List.y[j], 2))
-                    mat[i][i] = -Infinity;
+                        lengthMatrix[i][j] = Math.sqrt(Math.pow(List.x[i] - List.x[j], 2) + Math.pow(List.y[i] - List.y[j], 2))
+                    lengthMatrix[i][i] = -Infinity;
                     for (let j = i + 1; j < List.x.length; j++)
-                        mat[i][j] = Math.sqrt(Math.pow(List.x[i] - List.x[j], 2) + Math.pow(List.y[i] - List.y[j], 2))
+                        lengthMatrix[i][j] = Math.sqrt(Math.pow(List.x[i] - List.x[j], 2) + Math.pow(List.y[i] - List.y[j], 2))
+                }
+
+                //Матрица весов с количеством феромонов на путях
+                let pheromoneMatrix = new Array(List.x.length);
+                for (let i = 0; i < List.x.length; i++) {
+                    pheromoneMatrix[i] = new Array(List.x.length);
+                    for (let j = 0; j < List.x.length; j++)
+                        pheromoneMatrix[i][j] = InitialNumberOfPheromones;
+                }
+
+                //Матрица, в которой будут храниться новые феромоны
+                let extraPheromones = new Array(List.x.length);
+                for (let i = 0; i < List.x.length; i++) {
+                    extraPheromones[i] = new Array(List.x.length);
+                    for(let j = 0; j < List.x.length; j++)
+                        extraPheromones[i][j] = 0;
                 }
 
 
@@ -109,10 +150,14 @@ window.addEventListener("load", function onWindowLoad() {
                 let it = 0;
                 let itOfWithoutResultGenerations = 0;
                 let minPathLength = Infinity;
+                let newMinPathLength;
+                let minPath;
+                let newMinPath;
 
                 let id = setInterval(function drawFrame() {
                     it++;
                     itOfWithoutResultGenerations++;
+                    newMinPathLength = Infinity;
 
                     if (State.preStart || it > NumberOfIterations || itOfWithoutResultGenerations > MaxNumberOfWithoutResultIterations) {
                         //окончание работы алгоритма
@@ -122,21 +167,103 @@ window.addEventListener("load", function onWindowLoad() {
                         document.getElementById("mainButton").textContent = "Start";
                         document.getElementById("towns").textContent = "";
 
-
+                        redrawing(minPath, resultEdgesWidth, resultEdgesOpacity, resultEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
 
                         List.x.splice(0, List.x.length);
                         List.y.splice(0, List.y.length);
                         clearInterval(id);
-                    }
-                    else {
+                    } else {
                         //------------------------------------------------------------------------------------------
+                        //******************************************************************************************
                         //САМ АЛГОРИТМ
 
+                        //Обнуляем муравьев
+                        let unvisitedCitiesArray = [];
+                        for (let i = 0; i < List.x.length; i++)
+                            unvisitedCitiesArray.push(i);
+                        let ants = [];
+                        for (let i = 0; i < NumberOfAnts; i++)
+                            ants.push({
+                                path: [],
+                                pathLength: 0,
+                                unvisitedCities: unvisitedCitiesArray.slice(0, unvisitedCitiesArray.length)
+                            });
+
+                        //обнуляем матрицу с добавочными феромонами
+                        for(let i1 = 0; i1 < extraPheromones.length; i1++)
+                            for(let i2 = 0; i2 < extraPheromones.length; i2++)
+                                extraPheromones[i1][i2] = 0;
+
+                        newMinPathLength = Infinity;
+
+                        //Каждый муравей делает один проход
+                        for (let i = 0; i < ants.length; i++) {
+                            //начало пути
+                            ants[i].path.push(getRandomInt(0, ants[i].unvisitedCities.length));
+                            ants[i].unvisitedCities.splice(ants[i].unvisitedCities.indexOf(ants[i].path[0]), 1);
+
+                            //сам путь
+                            while (ants[i].unvisitedCities.length > 0) {
+                                let probabilities = [];
+                                let probability;
+                                let probabilitySum = 0;
+                                for (let j = 0; j < ants[i].unvisitedCities.length; j++) {
+                                    probability = Math.pow(pheromoneMatrix[ants[i].path[ants[i].path.length - 1]][ants[i].unvisitedCities[j]], Alfa);
+                                    probability *= Math.pow(PathLengthConst / lengthMatrix[ants[i].path[ants[i].path.length - 1]][ants[i].unvisitedCities[j]], Beta);
+                                    probabilitySum += probability;
+                                    probabilities.push(probability);
+                                }
+                                for (let j = 0; j < probabilities.length; j++)
+                                    probabilities[j] /= probabilitySum;
+                                for (let j = 1; j < probabilities.length; j++)
+                                    probabilities[j] += probabilities[j - 1];
+
+                                let r = Math.random();
+                                let selectedTown;
+                                for (let j = 0; j < probabilities.length; j++) {
+                                    if (probabilities[j] > r) {
+                                        selectedTown = ants[i].unvisitedCities[j];
+                                        break;
+                                    }
+                                }
+
+                                extraPheromones[ants[i].path[ants[i].path.length - 1]][selectedTown] += PheromoneConst/lengthMatrix[ants[i].path[ants[i].path.length - 1]][selectedTown];
+                                extraPheromones[selectedTown][ants[i].path[ants[i].path.length - 1]] += PheromoneConst/lengthMatrix[ants[i].path[ants[i].path.length - 1]][selectedTown];
+                                ants[i].pathLength += lengthMatrix[ants[i].path[ants[i].path.length - 1]][selectedTown];
+                                ants[i].path.push(selectedTown);
+                                ants[i].unvisitedCities.splice(ants[i].unvisitedCities.indexOf(selectedTown), 1);
+                            }
+
+                            //возвращение в начало
+                            extraPheromones[ants[i].path[ants[i].path.length - 1]][ants[i].path[0]] += PheromoneConst/lengthMatrix[ants[i].path[ants[i].path.length - 1]][ants[i].path[0]];
+                            extraPheromones[ants[i].path[0]][ants[i].path[ants[i].path.length - 1]] += PheromoneConst/lengthMatrix[ants[i].path[ants[i].path.length - 1]][ants[i].path[0]];
+                            ants[i].pathLength += lengthMatrix[ants[i].path[ants[i].path.length - 1]][ants[i].path[0]];
+                            ants[i].path.push(ants[i].path[0]);
+
+                            if(ants[i].pathLength < newMinPathLength) {
+                                newMinPathLength = ants[i].pathLength;
+                                newMinPath = ants[i].path.slice(0, ants[i].path.length);
+                            }
+                        }
+
+                        //Испаряем старые феромоны и добавляем новые
+                        for(let i = 0; i < pheromoneMatrix.length; i++)
+                            for(let j = 0; j < pheromoneMatrix.length; j++)
+                                pheromoneMatrix[i][j] = pheromoneMatrix[i][j]*RemainingPheromones+extraPheromones[i][j];
+
+                        //Рисуем, если нашелся хороший маршрут
+                        if(newMinPathLength < minPathLength)
+                        {
+                            minPathLength = newMinPathLength;
+                            minPath = newMinPath.slice(0, newMinPath.length);
+                            redrawing(newMinPath, mainEdgesWidth, mainEdgesOpacity, mainEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
+                        }
+
+                        //******************************************************************************************
                         //------------------------------------------------------------------------------------------
                     }
                 }, 0);
-            }
-            else if (State.pathFinding) {
+            } else if (State.pathFinding) {
                 State.pathFinding = 0;
                 State.preStart = 1;
                 document.getElementById("mainButton").textContent = "Start";
