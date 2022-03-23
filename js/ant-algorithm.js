@@ -90,7 +90,6 @@ window.addEventListener("load", function onWindowLoad() {
                 State.mapBuilding = 1;
                 numberOfCities = 0;
                 ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
-                document.getElementById("towns").textContent = "";
                 document.getElementById("mainButton").textContent = "Find Path";
             } else if (State.mapBuilding && List.x.length !== 0) {
                 State.mapBuilding = 0;
@@ -101,18 +100,18 @@ window.addEventListener("load", function onWindowLoad() {
                 //------------------------------------------------------------------------------------------
                 //ВАЖНЫЕ КОНСТАНТЫ ПО АЛГОРИТМУ
 
-                const NumberOfIterations = 1000;//максимальное количество итераций
-                const MaxNumberOfWithoutResultIterations = 500;//максимальное количество бессмысленных итераций
+                const NumberOfIterations = 10000;//максимальное количество итераций
+                const MaxNumberOfWithoutResultIterations = Math.min(Math.pow(List.x.length, 1), 200);//максимальное количество бессмысленных итераций
 
-                const NumberOfAnts = 100;
-                const InitialNumberOfPheromones = 0.2;
+                const NumberOfAnts = Math.min(Math.pow(List.x.length, 2), 1000);//количество муравьев
+                const InitialNumberOfPheromones = 0.2;//начальное кол-во феромонов
 
-                const Alfa = 0.5;//показатель степени феромонов
-                const Beta = 0.5;//показатель степени длины маршрута
+                const Alfa = 1;//показатель степени феромонов
+                const Beta = 1.5;//показатель степени длины маршрута
 
                 const PathLengthConst = 10;//эту константу делим на расстояние между городами
                 const PheromoneConst = 10;//эту константу делим на длину дороги между городами и прибавляем столько феромонов на данную дорогу
-                const RemainingPheromones = 0.7;//какая часть феромонов остается после испарения
+                const RemainingPheromones = 0.6;//какая часть феромонов остается после испарения
 
                 //------------------------------------------------------------------------------------------
 
@@ -165,7 +164,6 @@ window.addEventListener("load", function onWindowLoad() {
                         State.pathFinding = 0;
                         State.preStart = 1;
                         document.getElementById("mainButton").textContent = "Start";
-                        document.getElementById("towns").textContent = "";
 
                         redrawing(minPath, resultEdgesWidth, resultEdgesOpacity, resultEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
 
@@ -254,6 +252,7 @@ window.addEventListener("load", function onWindowLoad() {
                         //Рисуем, если нашелся хороший маршрут
                         if(newMinPathLength < minPathLength)
                         {
+                            itOfWithoutResultGenerations = 0;
                             minPathLength = newMinPathLength;
                             minPath = newMinPath.slice(0, newMinPath.length);
                             redrawing(newMinPath, mainEdgesWidth, mainEdgesOpacity, mainEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
@@ -267,7 +266,6 @@ window.addEventListener("load", function onWindowLoad() {
                 State.pathFinding = 0;
                 State.preStart = 1;
                 document.getElementById("mainButton").textContent = "Start";
-                document.getElementById("towns").textContent = "";
             }
         }
     }
@@ -325,9 +323,6 @@ window.addEventListener("load", function onWindowLoad() {
                     ctx.stroke();
                     ctx.globalAlpha = 1;
                 }
-
-                //выводим на экран координаты
-                document.getElementById("towns").textContent += `${List.x.length + 1}:\t${x}\t${y}\n`;
 
                 List.x.push(x);
                 List.y.push(y);
