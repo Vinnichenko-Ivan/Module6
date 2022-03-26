@@ -7,7 +7,7 @@ let autoRun = true
 let xs = 400;
 let ys = 400;
 
-let globalClasterCount = 4;
+let globalClusterCount = 4;
 
 let colorIndex = [];
 colorIndex.push('red')
@@ -34,16 +34,16 @@ function lenBetweenPoints(a, b){
     return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y))
 }
 
-class Fild{
+class Field{
     points = [];
     k = 0;
-    clasterCenters = []
+    clusterCenters = []
     addPoint(point){
         this.points.push(point)
     }
 
     rerun(){
-        this.clasterCenters = []
+        this.clusterCenters = []
         this.k = 0
         this.points.forEach(function (point){
             point.color = defColor
@@ -64,7 +64,7 @@ function dataDist(area){
     area.points.forEach(function (point, j){
         let minD = 1000000;
         let index = 0
-        area.clasterCenters.forEach(function (cl, i){
+        area.clusterCenters.forEach(function (cl, i){
             if(lenBetweenPoints(cl, point) < minD){
                 index = i;
                 minD = lenBetweenPoints(cl, point)
@@ -76,30 +76,30 @@ function dataDist(area){
 }
 
 function newCC(area){
-    let clasterCentersCopy = []
+    let clusterCentersCopy = []
     let newCCentersCounts = []
     for (let i = 0; i < area.k; i++)
     {
-        clasterCentersCopy.push(new Point(area.clasterCenters[i].x,  area.clasterCenters[i].y))
-        area.clasterCenters[i].x = 0
-        area.clasterCenters[i].y = 0
+        clusterCentersCopy.push(new Point(area.clusterCenters[i].x,  area.clusterCenters[i].y))
+        area.clusterCenters[i].x = 0
+        area.clusterCenters[i].y = 0
         newCCentersCounts.push(0);
 
     }
     area.points.forEach(function (point){
-        area.clasterCenters[point.id].x += point.x;
-        area.clasterCenters[point.id].y += point.y;
+        area.clusterCenters[point.id].x += point.x;
+        area.clusterCenters[point.id].y += point.y;
         newCCentersCounts[point.id]++;
     })
     for (let i = 0; i < area.k; i++)
     {
         if(newCCentersCounts[i] === 0) {
-            area.clasterCenters[i].x = clasterCentersCopy[i].x;
-            area.clasterCenters[i].y = clasterCentersCopy[i].y;
+            area.clusterCenters[i].x = clusterCentersCopy[i].x;
+            area.clusterCenters[i].y = clusterCentersCopy[i].y;
         }
         else {
-            area.clasterCenters[i].x /= newCCentersCounts[i];
-            area.clasterCenters[i].y /= newCCentersCounts[i];
+            area.clusterCenters[i].x /= newCCentersCounts[i];
+            area.clusterCenters[i].y /= newCCentersCounts[i];
         }
     }
 
@@ -108,18 +108,18 @@ function newCC(area){
 function clInit(k, area){
     area.k = k
     for (let i = 0; i < k; i++) {
-        area.clasterCenters.push(new Point(randDouble(0, xs), randDouble(0, ys)));
+        area.clusterCenters.push(new Point(randDouble(0, xs), randDouble(0, ys)));
     }
 }
 
 const checkBoxLineToCenter = document.getElementById('linesToCentres')
 const checkBoxAutoRun = document.getElementById('autoRun')
-const checkBoxCC = document.getElementById('clasterCenters')
+const checkBoxCC = document.getElementById('clusterCenters')
 const buttonClear = document.getElementById('clear')
 const buttonRerun = document.getElementById('rerun')
 const buttonIter = document.getElementById('iter')
-const clasterCount = document.getElementById('CCount');
-const canvas = document.getElementById('mainFild');
+const clusterCount = document.getElementById('CCount');
+const canvas = document.getElementById('mainField');
 const context = canvas.getContext('2d');
 
 checkBoxAutoRun.checked = autoRun
@@ -127,37 +127,37 @@ checkBoxCC.checked = drawCenters
 checkBoxLineToCenter.checked = drawLines
 
 
-let mainFild = new Fild();
+let mainField = new Field();
 
 function loop() {
     requestAnimationFrame(loop);
     context.clearRect(0, 0, canvas.width, canvas.height)
 
     if(autoRun) {
-        dataDist(mainFild)
-        newCC(mainFild)
+        dataDist(mainField)
+        newCC(mainField)
     }
 
-    mainFild.points.forEach(function (point){
+    mainField.points.forEach(function (point){
         context.fillStyle = point.color
         context.fillRect(point.x - 1, point.y - 1, 2, 2);
     });
 
     if(drawCenters){
-        mainFild.clasterCenters.forEach(function (point, index){
+        mainField.clusterCenters.forEach(function (point, index){
             context.fillStyle = colorIndex[index]
             context.fillRect(point.x - 2, point.y - 2, 4, 4);
         });
     }
 
     if(drawLines){
-        mainFild.points.forEach(function (point){
+        mainField.points.forEach(function (point){
             if(point.id !== -1)
             {
                 context.strokeStyle = point.color
                 context.beginPath();
                 context.moveTo(point.x, point.y);
-                context.lineTo(mainFild.clasterCenters[point.id].x, mainFild.clasterCenters[point.id].y);
+                context.lineTo(mainField.clusterCenters[point.id].x, mainField.clusterCenters[point.id].y);
                 context.stroke();
                 context.closePath();
             }
@@ -165,19 +165,19 @@ function loop() {
     }
 }
 
-clInit(globalClasterCount, mainFild)
+clInit(globalClusterCount, mainField)
 
 canvas.addEventListener('mousedown', function (event) {
     const dx = this.offsetLeft;
     const dy = this.offsetTop;
     if (event.which === 1){
-        mainFild.addPoint(new Point(event.x - dx, event.y - dy))
+        mainField.addPoint(new Point(event.x - dx, event.y - dy))
 
     }
 
     if (event.which === 2){
         let arrayForDelete = []
-        mainFild.points.forEach(function (point, index){
+        mainField.points.forEach(function (point, index){
             let p = new Point(event.x - dx, event.y - dy)
             console.log(lenBetweenPoints(p, point))
             if(lenBetweenPoints(p, point) < 25) {
@@ -187,7 +187,7 @@ canvas.addEventListener('mousedown', function (event) {
         });
         arrayForDelete.reverse()
         arrayForDelete.forEach(function (p){
-            mainFild.points.splice(p, 1);
+            mainField.points.splice(p, 1);
         })
     }
 
@@ -210,23 +210,23 @@ checkBoxCC.addEventListener('change', function() {
 
 
 buttonRerun.addEventListener('click', function() {
-    mainFild.rerun()
-    clInit(globalClasterCount, mainFild)
+    mainField.rerun()
+    clInit(globalClusterCount, mainField)
 });
 
-clasterCount.addEventListener('click', function() {
-    globalClasterCount = clasterCount.value;
-    mainFild.rerun()
-    clInit(globalClasterCount, mainFild)
+clusterCount.addEventListener('click', function() {
+    globalClusterCount = clusterCount.value;
+    mainField.rerun()
+    clInit(globalClusterCount, mainField)
 });
 
 buttonClear.addEventListener('click', function() {
-    mainFild.clear()
+    mainField.clear()
 });
 
 buttonIter.addEventListener('click', function() {
-    dataDist(mainFild)
-    newCC(mainFild)
+    dataDist(mainField)
+    newCC(mainField)
 });
 
 requestAnimationFrame(loop);
