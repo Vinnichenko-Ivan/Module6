@@ -1,23 +1,22 @@
+let drawCenters = true;
 
-drawCenters = true
+let drawLines = true
 
-drawLines = true
+let autoRun = true
 
-autoRun = true
+let xs = 400;
+let ys = 400;
 
-xs = 400;
-ys = 400;
+let globalClasterCount = 4;
 
-gk = 4;
-
-colorIndex = [];
+let colorIndex = [];
 colorIndex.push('red')
 colorIndex.push('yellow')
 colorIndex.push('green')
 colorIndex.push('blue')
 colorIndex.push('brown')
 
-defColor = 'white'
+let defColor = 'white'
 
 //https://habr.com/ru/post/585034/
 class Point{
@@ -160,15 +159,13 @@ function loop() {
                 context.moveTo(point.x, point.y);
                 context.lineTo(mainFild.clasterCenters[point.id].x, mainFild.clasterCenters[point.id].y);
                 context.stroke();
-                //context.line()
                 context.closePath();
             }
         });
     }
-    //context.stroke();
 }
 
-clInit(gk, mainFild)
+clInit(globalClasterCount, mainFild)
 
 canvas.addEventListener('mousedown', function (event) {
     const dx = this.offsetLeft;
@@ -214,13 +211,13 @@ checkBoxCC.addEventListener('change', function() {
 
 buttonRerun.addEventListener('click', function() {
     mainFild.rerun()
-    clInit(gk, mainFild)
+    clInit(globalClasterCount, mainFild)
 });
 
 clasterCount.addEventListener('click', function() {
-    gk = clasterCount.value;
+    globalClasterCount = clasterCount.value;
     mainFild.rerun()
-    clInit(gk, mainFild)
+    clInit(globalClasterCount, mainFild)
 });
 
 buttonClear.addEventListener('click', function() {
@@ -233,5 +230,3 @@ buttonIter.addEventListener('click', function() {
 });
 
 requestAnimationFrame(loop);
-
-//TODO стартовые значения
