@@ -126,6 +126,8 @@ checkBoxAutoRun.checked = autoRun
 checkBoxCC.checked = drawCenters
 checkBoxLineToCenter.checked = drawLines
 
+xs = canvas.width;
+ys = canvas.height;
 
 let mainField = new Field();
 
