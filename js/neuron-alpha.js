@@ -28,9 +28,9 @@ class Neuron{
 
     result(input){
         let total = 0
-        for(let i = 0; i < this.weightsSize; i++)
+        for(let i = 0; i < this.weightsCount; i++)
         {
-            total += this.weights[i] + input[i];
+            total += this.weights[i] + input[i].output;
         }
         total += this.b;
         this.output = sigmoid(total)
@@ -40,8 +40,9 @@ class Neuron{
 }
 
 class NeuronFullNet{
-    inputSliceSize = 0
-    inputSlice = []
+
+    inputLayersSize = 0
+    inputLayers = []
 
     invisibleLayersCount = 0;
     invisibleLayersSize = []
@@ -50,40 +51,36 @@ class NeuronFullNet{
     outputLayerSize = 0
     outputLayer = []
 
-    setSizes(inputSliceSize, invisibleLayersCount, invisibleLayersSize, outputLayerSize){
-        this.inputSliceSize = inputSliceSize;
+    setSizes(inputLayersSize, invisibleLayersCount, invisibleLayersSize, outputLayerSize){
+        this.inputLayerseSize = inputLayersSize;
         this.invisibleLayersCount = invisibleLayersCount;
         this.invisibleLayersSize = invisibleLayersSize;
         this.outputLayerSize = outputLayerSize;
     }
 
     genNeurons(){
-        this.inputSlice = [];
+        this.inputLayers = [];
         this.invisibleLayers = [[]]
         this.outputLayer = []
-        for(let i = 0; i < this.inputSliceSize; i++){
-            this.inputSlice.push(new Neuron);
+        for(let i = 0; i < this.inputLayersSize; i++){
+            this.inputLayers.push(new Neuron());
         }
         for(let i = 0; i < this.invisibleLayersCount; i++){
             this.invisibleLayers.push([]);
             for(let j = 0; j < this.invisibleLayersSize[i]; j++){
-                this.invisibleLayers[i].push(new Neuron);
+                this.invisibleLayers[i].push(new Neuron());
             }
         }
         for(let i = 0; i < this.outputLayerSize; i++){
-            this.outputLayer.push(new Neuron);
+            this.outputLayer.push(new Neuron());
         }
     }
 
     genRandParam(){
-        for(let i = 0; i < this.inputSliceSize; i++){
-
-        }
         for(let i = 0; i < this.invisibleLayersCount; i++){
-            this.invisibleLayers.push([]);
             for(let j = 0; j < this.invisibleLayersSize[i]; j++){
                 if(i === 0) {
-                    this.invisibleLayers[i][j].setWeights(this.inputSliceSize, randParams(this.inputSliceSize), randParam());
+                    this.invisibleLayers[i][j].setWeights(this.inputLayersSize, randParams(this.inputLayersSize), randParam());
                 }
                 else{
                     this.invisibleLayers[i][j].setWeights(this.invisibleLayersSize[i - 1], randParams(this.invisibleLayersSize[i - 1]), randParam());
@@ -94,6 +91,52 @@ class NeuronFullNet{
             this.outputLayer[i].setWeights(this.invisibleLayersSize[this.invisibleLayersCount - 1], randParams(this.invisibleLayersSize[this.invisibleLayersCount - 1]), randParam());
         }
     }
+
+    setInput(input){
+        for(let i = 0; i < this.inputLayersSize; i++){
+            this.inputLayers[i].output = input[i];
+        }
+    }
+
+    genOutput(){
+        for(let i = 0; i < this.invisibleLayersCount; i++){
+            for(let j = 0; j < this.invisibleLayersSize[i]; j++){
+                if(i === 0) {
+                    this.invisibleLayers[i][j].result(this.inputLayers);
+                }
+                else{
+                    this.invisibleLayers[i][j].result(this.invisibleLayers[i - 1]);
+                }
+            }
+        }
+        for(let i = 0; i < this.outputLayerSize; i++){
+            this.outputLayer[i].result(this.invisibleLayers[this.invisibleLayersCount - 1]);
+        }
+    }
+
+    printOutput(){
+        for(let i = 0; i < this.outputLayerSize; i++){
+            console.log(this.outputLayer[i].output)
+            console.log("\n")
+        }
+    }
 }
+
+
+let inputLayersSize = 25
+let invisibleLayersCount = 5
+let invisibleLayersSize = [25, 25, 25, 25, 25]
+let outputLayerSize = 10
+
+input = [0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0]
+
+let neuroNet = new NeuronFullNet();
+neuroNet.setSizes(inputLayersSize, invisibleLayersCount, invisibleLayersSize, outputLayerSize);
+neuroNet.genNeurons()
+neuroNet.genRandParam()
+neuroNet.setInput(input)
+neuroNet.genOutput()
+neuroNet.printOutput()
+
 
 
