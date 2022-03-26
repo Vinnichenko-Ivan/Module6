@@ -4,8 +4,8 @@ let drawLines = true
 
 let autoRun = true
 
-let xs = 400;
-let ys = 400;
+let weight = 400;
+let height = 400;
 
 let globalClusterCount = 4;
 
@@ -36,7 +36,7 @@ function lenBetweenPoints(a, b){
 
 class Field{
     points = [];
-    k = 0;
+    clusterCount = 0;
     clusterCenters = []
     addPoint(point){
         this.points.push(point)
@@ -44,7 +44,7 @@ class Field{
 
     rerun(){
         this.clusterCenters = []
-        this.k = 0
+        this.clusterCount = 0
         this.points.forEach(function (point){
             point.color = defColor
             point.id = -1;
@@ -75,46 +75,46 @@ function dataDist(area){
     })
 }
 
-function newCC(area){
+function newClusterCenters(area){
     let clusterCentersCopy = []
-    let newCCentersCounts = []
-    for (let i = 0; i < area.k; i++)
+    let newClusterCentersCounts = []
+    for (let i = 0; i < area.clusterCount; i++)
     {
         clusterCentersCopy.push(new Point(area.clusterCenters[i].x,  area.clusterCenters[i].y))
         area.clusterCenters[i].x = 0
         area.clusterCenters[i].y = 0
-        newCCentersCounts.push(0);
+        newClusterCentersCounts.push(0);
 
     }
     area.points.forEach(function (point){
         area.clusterCenters[point.id].x += point.x;
         area.clusterCenters[point.id].y += point.y;
-        newCCentersCounts[point.id]++;
+        newClusterCentersCounts[point.id]++;
     })
-    for (let i = 0; i < area.k; i++)
+    for (let i = 0; i < area.clusterCount; i++)
     {
-        if(newCCentersCounts[i] === 0) {
+        if(newClusterCentersCounts[i] === 0) {
             area.clusterCenters[i].x = clusterCentersCopy[i].x;
             area.clusterCenters[i].y = clusterCentersCopy[i].y;
         }
         else {
-            area.clusterCenters[i].x /= newCCentersCounts[i];
-            area.clusterCenters[i].y /= newCCentersCounts[i];
+            area.clusterCenters[i].x /= newClusterCentersCounts[i];
+            area.clusterCenters[i].y /= newClusterCentersCounts[i];
         }
     }
 
 }
 
-function clInit(k, area){
-    area.k = k
-    for (let i = 0; i < k; i++) {
-        area.clusterCenters.push(new Point(randDouble(0, xs), randDouble(0, ys)));
+function clusterInit(clusterCount, area){
+    area.clusterCount = clusterCount
+    for (let i = 0; i < clusterCount; i++) {
+        area.clusterCenters.push(new Point(randDouble(0, weight), randDouble(0, height)));
     }
 }
 
 const checkBoxLineToCenter = document.getElementById('linesToCentres')
 const checkBoxAutoRun = document.getElementById('autoRun')
-const checkBoxCC = document.getElementById('clusterCenters')
+const checkBoxClusterCentres = document.getElementById('clusterCenters')
 const buttonClear = document.getElementById('clear')
 const buttonRerun = document.getElementById('rerun')
 const buttonIter = document.getElementById('iter')
@@ -123,11 +123,11 @@ const canvas = document.getElementById('mainField');
 const context = canvas.getContext('2d');
 
 checkBoxAutoRun.checked = autoRun
-checkBoxCC.checked = drawCenters
+checkBoxClusterCentres.checked = drawCenters
 checkBoxLineToCenter.checked = drawLines
 
-xs = canvas.width;
-ys = canvas.height;
+weight = canvas.width;
+height = canvas.height;
 
 let mainField = new Field();
 
@@ -137,7 +137,7 @@ function loop() {
 
     if(autoRun) {
         dataDist(mainField)
-        newCC(mainField)
+        newClusterCenters(mainField)
     }
 
     mainField.points.forEach(function (point){
@@ -167,17 +167,17 @@ function loop() {
     }
 }
 
-clInit(globalClusterCount, mainField)
+clusterInit(globalClusterCount, mainField)
 
 canvas.addEventListener('mousedown', function (event) {
     const dx = this.offsetLeft;
     const dy = this.offsetTop;
-    if (event.which === 1){
+    if (event.buttons === 1){
         mainField.addPoint(new Point(event.x - dx, event.y - dy))
 
     }
 
-    if (event.which === 2){
+    if (event.buttons === 4){
         let arrayForDelete = []
         mainField.points.forEach(function (point, index){
             let p = new Point(event.x - dx, event.y - dy)
@@ -193,7 +193,6 @@ canvas.addEventListener('mousedown', function (event) {
         })
     }
 
-
 });
 
 checkBoxLineToCenter.addEventListener('change', function() {
@@ -206,20 +205,20 @@ checkBoxAutoRun.addEventListener('change', function() {
 });
 
 
-checkBoxCC.addEventListener('change', function() {
+checkBoxClusterCentres.addEventListener('change', function() {
     drawCenters = this.checked;
 });
 
 
 buttonRerun.addEventListener('click', function() {
     mainField.rerun()
-    clInit(globalClusterCount, mainField)
+    clusterInit(globalClusterCount, mainField)
 });
 
 clusterCount.addEventListener('click', function() {
     globalClusterCount = clusterCount.value;
     mainField.rerun()
-    clInit(globalClusterCount, mainField)
+    clusterInit(globalClusterCount, mainField)
 });
 
 buttonClear.addEventListener('click', function() {
@@ -228,7 +227,7 @@ buttonClear.addEventListener('click', function() {
 
 buttonIter.addEventListener('click', function() {
     dataDist(mainField)
-    newCC(mainField)
+    newClusterCenters(mainField)
 });
 
 requestAnimationFrame(loop);
