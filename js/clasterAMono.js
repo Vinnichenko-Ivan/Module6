@@ -46,7 +46,7 @@ class Fild{
     rerun(){
         this.clasterCenters = []
         this.k = 0
-        this.points.forEach(function (point, index){
+        this.points.forEach(function (point){
             point.color = defColor
             point.id = -1;
         });
@@ -55,7 +55,6 @@ class Fild{
     clear(){
         this.points = []
     }
-
 }
 
 function randDouble(min, max){
@@ -88,7 +87,7 @@ function newCC(area){
         newCCentersCounts.push(0);
 
     }
-    area.points.forEach(function (point, j){
+    area.points.forEach(function (point){
         area.clasterCenters[point.id].x += point.x;
         area.clasterCenters[point.id].y += point.y;
         newCCentersCounts[point.id]++;
@@ -124,6 +123,10 @@ const clasterCount = document.getElementById('CCount');
 const canvas = document.getElementById('mainFild');
 const context = canvas.getContext('2d');
 
+checkBoxAutoRun.checked = autoRun
+checkBoxCC.checked = drawCenters
+checkBoxLineToCenter.checked = drawLines
+
 
 let mainFild = new Fild();
 
@@ -136,7 +139,7 @@ function loop() {
         newCC(mainFild)
     }
 
-    mainFild.points.forEach(function (point, index){
+    mainFild.points.forEach(function (point){
         context.fillStyle = point.color
         context.fillRect(point.x - 1, point.y - 1, 2, 2);
     });
@@ -149,8 +152,8 @@ function loop() {
     }
 
     if(drawLines){
-        mainFild.points.forEach(function (point, index){
-            if(point.id != -1)
+        mainFild.points.forEach(function (point){
+            if(point.id !== -1)
             {
                 context.strokeStyle = point.color
                 context.beginPath();
@@ -186,7 +189,7 @@ canvas.addEventListener('mousedown', function (event) {
             }
         });
         arrayForDelete.reverse()
-        arrayForDelete.forEach(function (p, index){
+        arrayForDelete.forEach(function (p){
             mainFild.points.splice(p, 1);
         })
     }
@@ -195,29 +198,17 @@ canvas.addEventListener('mousedown', function (event) {
 });
 
 checkBoxLineToCenter.addEventListener('change', function() {
-    if (this.checked) {
-        drawLines = true
-    } else {
-        drawLines = false
-    }
+    drawLines = this.checked;
 });
 
 
 checkBoxAutoRun.addEventListener('change', function() {
-    if (this.checked) {
-        autoRun = true
-    } else {
-        autoRun = false
-    }
+    autoRun = this.checked;
 });
 
 
 checkBoxCC.addEventListener('change', function() {
-    if (this.checked) {
-        drawCenters = true
-    } else {
-        drawCenters = false
-    }
+    drawCenters = this.checked;
 });
 
 
