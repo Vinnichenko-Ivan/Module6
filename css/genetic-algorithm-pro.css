@@ -1,0 +1,8 @@
+#mainButton{
+    width: 10%;
+    height: 40px;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    margin: 10px;
+}
