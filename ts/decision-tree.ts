@@ -7,10 +7,10 @@ import {soybean} from "./data/soybean";
 import {diabetes} from "./data/diabetes";
 import {glass} from "./data/glass";
 
-test(iris, 100);
+test(glass, 100);
 
 function test(dataset: Dataset, iterations: number) {
-    printTree(dataset);
+    drawTree(dataset);
     average(dataset, 0.99, iterations);
     average(dataset, 0.9, iterations);
     average(dataset, 0.5, iterations);
@@ -59,8 +59,9 @@ function average(sourceDataset: Dataset, testPercent: number, iterations: number
     console.log(`[процент тестов = ${testPercent * 100}%] средний процент ошибок: ${(totalErrors / iterations).toFixed(2)}% за ${ms} мс`);
 }
 
-function printTree(dataset: Dataset) {
+function drawTree(dataset: Dataset) {
     let tree = new Id3Tree();
     tree.build(dataset);
     console.log(tree.toString());
+    tree.appendHTMLChildren($('#decision-tree')[0]);
 }

@@ -8,9 +8,111 @@ body {
     background: wheat;
     display: flex;
     align-items: center;
-    justify-content: center;
+
+    width: 100%;
 }
 
-canvas {
-    border: 1px solid white;
+/* Дерево */
+
+.tree,
+.tree ul,
+.tree li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+.tree {
+    margin: 0 0 1em;
+    text-align: center;
+}
+
+.tree,
+.tree ul {
+    display: table;
+}
+
+.tree ul {
+    width: 100%;
+}
+
+.tree li {
+    display: table-cell;
+    padding: .5em 0;
+    vertical-align: top;
+}
+
+.tree li:before {
+    outline: solid 1px #666;
+    content: "";
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.tree li:first-child:before {
+    left: 50%;
+}
+
+.tree li:last-child:before {
+    right: 50%;
+}
+
+.tree span {
+    display: inline-block;
+    margin: 0 .2em .5em;
+    padding: .2em .5em;
+    position: relative;
+}
+
+.tree ul:before,
+.tree span:before {
+    outline: solid 1px #666;
+    content: "";
+    height: .5em;
+    left: 50%;
+    position: absolute;
+}
+
+.tree ul:before {
+    top: -.5em;
+}
+
+.tree span:before {
+    top: -.55em;
+}
+
+.tree>li {
+    margin-top: 0;
+}
+
+.tree>li:before,
+.tree>li:after,
+.tree>li>span:before {
+    outline: none;
+}
+
+/* Дерево решений */
+
+.tree .root {
+    border: solid .2em #620101;
+    border-radius: 1em;
+
+    background-color: #ea7373;
+}
+
+.tree .node {
+    border: solid .1em #666;
+    border-radius: .1em;
+
+    background-color: #e7b279;
+}
+
+.tree .leaf {
+    border: solid .1em #002277;
+    border-radius: 5em;
+
+    background-color: #a8c0ef;
 }

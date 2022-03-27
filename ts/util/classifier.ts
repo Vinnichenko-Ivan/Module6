@@ -94,6 +94,8 @@ export interface ClassifierTree {
      */
     classify(template: Template): number;
 
+    appendHTMLChildren(parentElement: HTMLElement): void;
+
     toString(): string;
 
 }

@@ -3,6 +3,21 @@ import {Attribute, Dataset, Template} from "./csv";
 import {entropy} from "./util";
 
 /**
+ * Минимальное количество элементов в подмножествах, на которые можно разделить множество
+ */
+const minSubsetSize = 2;
+
+/**
+ * Порог прироста информации, выше которого разделение не будут игнорироваться
+ */
+const gainThreshold = 0;
+
+/**
+ * Максимальная глубина дерева
+ */
+const maxTreeDeep = 5;
+
+/**
  * Вычисление энтропии до разбиения:
  * @param distribution распределение
  * @return энтропия
@@ -97,7 +112,7 @@ class EnumSplit implements Split {
             }
         }
 
-        if (bags.check(2)) {
+        if (bags.check(minSubsetSize)) {
             this._infoGain = infoGain(bags);
             return true;
         }
@@ -184,7 +199,7 @@ class NumberSplit implements Split {
             }
             let gain = infoGain(bags);
 
-            if (bags.check(2) && (this._infoGain == undefined || gain > this._infoGain)) {
+            if (bags.check(minSubsetSize) && (this._infoGain == undefined || gain > this._infoGain)) {
                 this._threshold = threshold;
                 this._infoGain = gain;
             }
@@ -226,7 +241,7 @@ function findBestSplit(dataset: Dataset): Split {
     // Принадлежат ли все экземпляры одному классу
     // или недостаточно экземпляров для разделения
     let distribution = Distribution.of(dataset);
-    if (distribution.totalCount < 4 || distribution.totalCount == distribution.perClass[distribution.maxClass]) {
+    if (distribution.totalCount < minSubsetSize * 2 || distribution.totalCount == distribution.perClass[distribution.maxClass]) {
         return null;
     }
 
@@ -269,13 +284,23 @@ function findBestSplit(dataset: Dataset): Split {
         }
     }
 
+    if (maxInfoGain <= gainThreshold) {
+        return null;
+    }
+
     return bestSplit;
 }
 
 /**
  * Условие перехода на узел ниже
  */
-interface Condition {
+abstract class Condition {
+
+    protected readonly _attribute: Attribute;
+
+    protected constructor(attribute: Attribute) {
+        this._attribute = attribute;
+    }
 
     /**
      * Проверяет образец по условию.
@@ -284,23 +309,30 @@ interface Condition {
      * @param template образец
      * @return true, если образец удовлетворяет условию
      */
-    check(template: Template): boolean;
+    abstract check(template: Template): boolean;
 
-    toString(): string;
+    abstract displayOperator(): string;
 
+    abstract displayValue(): string;
+
+    displayAttribute(): string {
+        return this._attribute.name;
+    }
+
+    toString(): string {
+        return this.displayAttribute() + ' ' + this.displayOperator() + ' ' + this.displayValue();
+    }
 }
 
 /**
  * Дискретное условие (equals)
  */
-class EnumCondition implements Condition {
-
-    private readonly _attribute: Attribute;
+class EnumCondition extends Condition {
 
     private readonly _value: number;
 
     constructor(attribute: Attribute, value: number) {
-        this._attribute = attribute;
+        super(attribute);
         this._value = value;
     }
 
@@ -308,24 +340,26 @@ class EnumCondition implements Condition {
         return template.value(this._attribute) == this._value;
     }
 
-    toString(): string {
-        return this._attribute.name + " = " + this._attribute.values[this._value];
+    displayOperator(): string {
+        return '=';
+    }
+
+    displayValue(): string {
+        return this._attribute.values[this._value];
     }
 }
 
 /**
  * Числовое условие (<= или >)
  */
-class NumberCondition implements Condition {
-
-    private readonly _attribute: Attribute;
+class NumberCondition extends Condition {
 
     private readonly _value: number;
 
     private readonly _lessOrEquals: boolean;
 
     constructor(attribute: Attribute, value: number, lessOrEquals: boolean) {
-        this._attribute = attribute;
+        super(attribute);
         this._value = value;
         this._lessOrEquals = lessOrEquals;
     }
@@ -334,8 +368,12 @@ class NumberCondition implements Condition {
         return (template.value(this._attribute) <= this._value) == this._lessOrEquals;
     }
 
-    toString(): string {
-        return this._attribute.name + (this._lessOrEquals ? ' <= ' : ' > ') + this._value;
+    displayOperator(): string {
+        return this._lessOrEquals ? '⩽' : '>';
+    }
+
+    displayValue(): string {
+        return parseFloat(this._value.toFixed(3)).toString();
     }
 }
 
@@ -356,37 +394,7 @@ export class Id3Tree implements ClassifierTree {
 
     build(dataset: Dataset) {
         this._dataset = dataset;
-        this.buildRecursive(dataset);
-    }
-
-    private buildRecursive(dataset: Dataset) {
-        let bags = Distribution.of(dataset);
-        let split = findBestSplit(dataset);
-
-        this._class = bags.maxClass;
-        this._children = [];
-
-        if (split != undefined) {
-            let sets = split.split();
-            let conditions = split.conditions();
-
-            for (let i = 0; i < sets.length; i++) {
-                if (sets[i].templateCount === 0) {
-                    continue;
-                }
-
-                let child = new Id3Tree();
-                child._condition = conditions[i];
-                child._dataset = this._dataset;
-                child.build(sets[i]);
-
-                this._children.push(child);
-            }
-            this._leaf = false;
-        }
-        else {
-            this._leaf = true;
-        }
+        this.buildRecursive(dataset, 0);
     }
 
     classify(template: Template): number {
@@ -399,8 +407,79 @@ export class Id3Tree implements ClassifierTree {
         return this._class;
     }
 
+    appendHTMLChildren(parentElement: HTMLElement) {
+        if (this._leaf) {
+            let liElement = parentElement.appendChild(document.createElement('li'));
+            let spanElement = liElement.appendChild(document.createElement('span'));
+
+            spanElement.innerText = this._dataset.class.values[this._class];
+            spanElement.classList.add('leaf')
+        }
+        else {
+            for (const child of this._children) {
+                let liElement = parentElement.appendChild(document.createElement('li'));
+                let spanElement = liElement.appendChild(document.createElement('span'));
+                let ulElement = liElement.appendChild(document.createElement('ul'));
+
+                let condition = child._condition;
+                spanElement.innerHTML = `${condition.displayAttribute()}<br>${condition.displayOperator()} ${condition.displayValue()}`;
+                spanElement.classList.add('node')
+                child.appendHTMLChildren(ulElement);
+            }
+        }
+    }
+
     toString(): string {
         return this.toStringRecursive(0);
+    }
+
+    private static equalsChildren(array: Id3Tree[]): boolean {
+        if (array.length === 0 || !array[0]._leaf) {
+            return false;
+        }
+
+        let classIndex = array[0]._class;
+        for (let i = 1; i < array.length; i++) {
+            if (!array[i]._leaf || array[i]._class != classIndex) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private buildRecursive(dataset: Dataset, deep: number): void {
+        let bags = Distribution.of(dataset);
+
+        this._class = bags.maxClass;
+        this._leaf = true;
+        this._children = [];
+
+        if (deep < maxTreeDeep) {
+            let split = findBestSplit(dataset);
+
+            if (split != undefined) {
+                let sets = split.split();
+                let conditions = split.conditions();
+                let children = []
+
+                for (let i = 0; i < sets.length; i++) {
+                    if (sets[i].templateCount === 0) {
+                        continue;
+                    }
+
+                    let child = new Id3Tree();
+                    child._condition = conditions[i];
+                    child._dataset = this._dataset;
+                    child.buildRecursive(sets[i], deep + 1);
+                    children.push(child);
+                }
+
+                if (!Id3Tree.equalsChildren(children)) {
+                    this._leaf = false;
+                    this._children = children;
+                }
+            }
+        }
     }
 
     private toStringRecursive(deep: number): string {

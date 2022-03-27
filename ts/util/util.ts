@@ -38,7 +38,7 @@ export function numberMatrix(height: number, width: number): number[][] {
  * @param num число
  */
 export function log2linear(num: number): number {
-    return num === 0 ? 0 : num * Math.log(num);
+    return num === 0 ? 0 : num * Math.log2(num);
 }
 
 /**
