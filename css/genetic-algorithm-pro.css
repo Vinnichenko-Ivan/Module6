@@ -9,7 +9,7 @@
 #mainText{
     margin: 50px;
     width: 50%;
-    height: auto;
+    height: 500px;
     position: relative;
     left: 35%;
     transform: translate(-50%, 0);

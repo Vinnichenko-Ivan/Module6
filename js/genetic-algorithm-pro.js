@@ -9,20 +9,53 @@ window.addEventListener("load", function onWindowLoad() {
     }
 
 
+
+    //------------------------------------------------------------------------------------------
+
+    //ВАЖНЫЕ КОНСТАНТЫ ПО АЛГОРИТМУ
+    const N = 200;//размер популяции
+    const MutationPercent = 0.8;//процент мутаций
+    const NumberOfGenerations = 200;//количество поколений
+    //const MaxNumberOfWithoutResultGenerations = ...;
+    const NumberOfDescendants = N;
+    const ChromosomeMinLength = 1;
+    const ChromosomeMaxLength = 70;
+
+    //------------------------------------------------------------------------------------------
+
+
+
     //~~~~~~~~~~~~~~~~~~~~НАБОР КОМАНД~~~~~~~~~~~~~~~~~~~~
-    let numberOfFibonacciNumbers = 3;
+    let numberOfFibonacciNumbers = 10;
+
     let functionsArray = [];
     for(let i = 0; i < numberOfFibonacciNumbers; i++)
     {
+        //Экзотическое:
+
+        //Разные условия:
+        functionsArray.push(`if(arr[${i}] === arr[${getRandomInt(0, numberOfFibonacciNumbers)}])\n  arr[${i}]++;\n`);
+        functionsArray.push(`if(arr[${i}] >= arr[${getRandomInt(0, numberOfFibonacciNumbers)}])\n  arr[${i}]--;\n`);
+
+        //Простые операции:
+        functionsArray.push(`arr[${i}]=arr[${getRandomInt(0, numberOfFibonacciNumbers)}];\n`);
+        functionsArray.push(`arr[${i}]+=arr[${getRandomInt(0, numberOfFibonacciNumbers)}];\n`);
+        functionsArray.push(`arr[${i}]-=arr[${getRandomInt(0, numberOfFibonacciNumbers)}];\n`);
         functionsArray.push(`arr[${i}]++;\n`);
+        functionsArray.push(`arr[${i}]+=2;\n`);
+        functionsArray.push(`arr[${i}]+=3;\n`);
         functionsArray.push(`arr[${i}]--;\n`);
+        functionsArray.push(`arr[${i}]-=2;\n`);
+        functionsArray.push(`arr[${i}]-=3;\n`);
     }
+
+    let FibonacciNumbers = [];
+    for(let a = 0, b = 1, i = 0; i < numberOfFibonacciNumbers; i++, [a, b]=[b, a+b])
+        FibonacciNumbers[i] = a;
 
 
     //нахождение приспособленности хромосомы
     function findFitness(chromosome) {
-
-        //0 1 1 2 3 5 8 13 21 34
 
         let arr = new Array(numberOfFibonacciNumbers);
         for(let i = 0; i < arr.length; i++)
@@ -36,12 +69,20 @@ window.addEventListener("load", function onWindowLoad() {
         try {
             eval(s);
             let sum = 0;
-            for(let a = 0, b = 1, i = 0; i < numberOfFibonacciNumbers; i++, [a, b]=[b, a+b])
-                sum+=Math.abs(a-arr[i]);
+            for(let i = 0; i < numberOfFibonacciNumbers; i++)
+                sum+=Math.abs(FibonacciNumbers[i]-arr[i]);
             chromosome.fitness = sum;
         } catch {
             chromosome.fitness = Infinity;
         }
+
+        s = `let numberOfFibonacciNumbers = ${numberOfFibonacciNumbers};\n` +
+            "let arr = new Array(numberOfFibonacciNumbers);\n" +
+            "for(let i = 0; i < arr.length; i++)\n" +
+            "  arr[i] = 0;\n\n" +
+            s +
+            "\nfor(let i = 0; i < arr.length; i++)\n" +
+            "  console.log(arr[i])";
 
         return s;
     }
@@ -57,20 +98,6 @@ window.addEventListener("load", function onWindowLoad() {
     function algorithm() {
 
         //------------------------------------------------------------------------------------------
-
-        //ВАЖНЫЕ КОНСТАНТЫ ПО АЛГОРИТМУ
-        const N = numberOfFibonacciNumbers*5;//размер популяции
-        const MutationPercent = 0.5;//процент мутаций
-        const NumberOfGenerations = Math.pow(numberOfFibonacciNumbers, 2);//количество поколений
-        //const MaxNumberOfWithoutResultGenerations = ...;
-        const NumberOfDescendants = N * 2;
-        const ChromosomeMinLength = numberOfFibonacciNumbers*2;
-        const ChromosomeMaxLength = numberOfFibonacciNumbers*numberOfFibonacciNumbers*2;
-
-        //------------------------------------------------------------------------------------------
-
-
-        //------------------------------------------------------------------------------------------
         //Генерация начальной популяции - создаем случайные начальные хромосомы
 
         let chromosome = {
@@ -79,9 +106,11 @@ window.addEventListener("load", function onWindowLoad() {
         };
         for (let i = 0; i < chromosome.arr.length; i++)
             chromosome.arr[i] = getRandomInt(0, functionsArray.length);
+        /*
         chromosome.arr.sort(function (a, b) {
             return a - b
         });
+         */
         findFitness(chromosome);
 
         let population = [{
@@ -96,9 +125,11 @@ window.addEventListener("load", function onWindowLoad() {
             };
             for (let i = 0; i < chromosome.arr.length; i++)
                 chromosome.arr[i] = getRandomInt(0, functionsArray.length);
+            /*
             chromosome.arr.sort(function (a, b) {
                 return a - b
             });
+             */
             findFitness(chromosome);
 
             population.push({arr: chromosome.arr.slice(0, chromosome.arr.length), fitness: chromosome.fitness});
@@ -126,7 +157,7 @@ window.addEventListener("load", function onWindowLoad() {
 
 
                 //ВНИМАНИЕ!!!!!!!!!!!!!!!
-                //НЕ ЗАБЫТЬ ДОБАВИТЬ РАЗНЫЕ РЕЖИМА РАЗРЕЗА ХРОМОСОМЫ!!!!!!!!!!
+                //НЕ ЗАБЫТЬ ДОБАВИТЬ РАЗНЫЕ РЕЖИМЫ РАЗРЕЗА ХРОМОСОМЫ!!!!!!!!!!
 
 
 
@@ -146,6 +177,17 @@ window.addEventListener("load", function onWindowLoad() {
                 }
 
 
+
+
+
+
+                //ВНИМАНИЕ!!!!!!!!!!!!!!!
+                //НЕ ЗАБЫТЬ ДОБАВИТЬ РАЗНЫЕ РЕЖИМЫ МУТАЦИИ!!!!!!!!!!
+
+
+
+
+
                 //------------------------------------------------------------------------------------------
                 //Мутация
                 if (Math.random() < MutationPercent) {
@@ -155,13 +197,6 @@ window.addEventListener("load", function onWindowLoad() {
                     descendant2.arr[getRandomInt(0, descendant2.arr.length)] = getRandomInt(0, functionsArray.length);
                 }
                 //------------------------------------------------------------------------------------------
-
-                descendant1.arr.sort(function (a, b) {
-                    return a - b
-                });
-                descendant2.arr.sort(function (a, b) {
-                    return a - b
-                });
 
                 //посчитаем приспособленность полученных потомков
                 findFitness(descendant1);
