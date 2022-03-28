@@ -6,8 +6,20 @@ import {iris} from "./data/iris";
 import {soybean} from "./data/soybean";
 import {diabetes} from "./data/diabetes";
 import {glass} from "./data/glass";
+import {loadDatasetFromString} from "./util/loader";
 
-test(glass, 100);
+document.getElementById('load-dataset').onclick = () => {
+    let files = (<HTMLInputElement>document.getElementById('file-dataset')).files;
+    let named = (<HTMLInputElement>document.getElementById('named-dataset')).value == 'on';
+    let reader = new FileReader();
+    reader.onload = e => {
+        let dataset = loadDatasetFromString(<string>e.target.result, undefined, named);
+        drawTree(dataset);
+    }
+    reader.readAsText(files[0], "UTF-8");
+};
+
+test(diabetes, 100);
 
 function test(dataset: Dataset, iterations: number) {
     drawTree(dataset);
@@ -62,6 +74,7 @@ function average(sourceDataset: Dataset, testPercent: number, iterations: number
 function drawTree(dataset: Dataset) {
     let tree = new Id3Tree();
     tree.build(dataset);
-    console.log(tree.toString());
+    console.info(tree.toString());
+    $('#decision-tree')[0].innerHTML = '';
     tree.appendHTMLChildren($('#decision-tree')[0]);
 }

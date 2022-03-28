@@ -5,11 +5,32 @@ body {
 }
 
 body {
-    background: wheat;
     display: flex;
-    align-items: center;
+    flex-direction: column;
 
-    width: 100%;
+    background: wheat;
+
+    font-family: 'Inter', serif;
+    font-size: 16px;
+}
+
+/* Стиль верхней менюшки */
+.top {
+    background: white;
+
+    display: flex;
+    flex-direction: row;
+
+    justify-content: center;
+    align-items: center;
+}
+
+/* Стиль контента */
+.content {
+    display: flex;
+
+    align-items: center;
+    height: 100%;
 }
 
 /* Дерево */

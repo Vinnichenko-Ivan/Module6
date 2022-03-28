@@ -9,16 +9,16 @@ import {AttributeEnum, AttributeNumber, ClassImpl, DatasetImpl, TemplateImpl} fr
  * @param splitter разделитель атрибутов в строках. По умолчанию ';'.
  * @return {Dataset} набор данных
  */
-export function loadDatasetFromString(string: string, classIndex: number, namedAttributes?: boolean, splitter?: string): Dataset {
+export function loadDatasetFromString(string: string, classIndex?: number, namedAttributes?: boolean, splitter?: string): Dataset {
     if (splitter == undefined) {
-        splitter = ';';
+        splitter = string.includes(';') ? ';' : ',';
     }
 
     let lines = string.split('\n');
     let array = [];
 
     for (let i = 0; i < lines.length; i++) {
-        if (lines[i].length === 0) {
+        if (lines[i].length === 0 || lines[i].match(/^( *%)/)) {
             continue;
         }
         let attributes = [];
@@ -39,9 +39,13 @@ export function loadDatasetFromString(string: string, classIndex: number, namedA
  * @param namedAttributes присутствует ли строка с именами атрибутов? По умолчанию false.
  * @return {Dataset} набор данных
  */
-export function loadDatasetFromData(table: string[][], classIndex: number, namedAttributes?: boolean): Dataset {
+export function loadDatasetFromData(table: string[][], classIndex?: number, namedAttributes?: boolean): Dataset {
     let attributes = [];
-    let templates = []
+    let templates = [];
+
+    if (classIndex == undefined) {
+        classIndex = table[0].length - 1;
+    }
 
     // Загружаем атрибуты
     for (let i = 0; i < table[0].length; i++) {

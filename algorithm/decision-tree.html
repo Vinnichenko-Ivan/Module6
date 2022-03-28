@@ -14,11 +14,22 @@
     <script data-main="../ts/decision-tree" src="https://requirejs.org/docs/release/2.3.6/comments/require.js"></script>
 </head>
 <body>
-    <ul class="tree">
-        <li>
-            <span class="root">Корень</span>
-            <ul id="decision-tree"></ul>
-        </li>
-    </ul>
+    <div class="top">
+        <div>
+            <input id="file-dataset" type="file">
+            <label for="named-dataset"></label><input id="named-dataset" type="checkbox">
+        </div>
+        <div>
+            <button id="load-dataset">Загрузить выборку данных</button>
+        </div>
+    </div>
+    <div class="content">
+        <ul class="tree">
+            <li>
+                <span class="root">Корень</span>
+                <ul id="decision-tree"></ul>
+            </li>
+        </ul>
+    </div>
 </body>
 </html>
