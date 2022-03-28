@@ -6,3 +6,11 @@
     transform: translate(-50%, 0);
     margin: 10px;
 }
+#mainText{
+    margin: 50px;
+    width: 50%;
+    height: auto;
+    position: relative;
+    left: 35%;
+    transform: translate(-50%, 0);
+}

@@ -10,28 +10,23 @@ window.addEventListener("load", function onWindowLoad() {
 
 
     //~~~~~~~~~~~~~~~~~~~~НАБОР КОМАНД~~~~~~~~~~~~~~~~~~~~
+    let numberOfFibonacciNumbers = 3;
     let functionsArray = [];
-    functionsArray.push("a++;");
-    functionsArray.push("a--;");
-    functionsArray.push("b++;");
-    functionsArray.push("b--;");
-    functionsArray.push("c++;");
-    functionsArray.push("c--;");
-    functionsArray.push("d++;");
-    functionsArray.push("d--;");
-    functionsArray.push("e++;");
-    functionsArray.push("e--;");
-    functionsArray.push("f++;");
-    functionsArray.push("f--;");
-    functionsArray.push("g++;");
-    functionsArray.push("g--;");
+    for(let i = 0; i < numberOfFibonacciNumbers; i++)
+    {
+        functionsArray.push(`arr[${i}]++;\n`);
+        functionsArray.push(`arr[${i}]--;\n`);
+    }
 
 
     //нахождение приспособленности хромосомы
     function findFitness(chromosome) {
 
         //0 1 1 2 3 5 8 13 21 34
-        let a = 0, b = 0, c = 0, d = 0, e = 0, f = 0, g = 0;
+
+        let arr = new Array(numberOfFibonacciNumbers);
+        for(let i = 0; i < arr.length; i++)
+            arr[i] = 0;
 
         let s = "";
 
@@ -40,7 +35,10 @@ window.addEventListener("load", function onWindowLoad() {
 
         try {
             eval(s);
-            chromosome.fitness = Math.abs(a) + Math.abs(b - 1) + Math.abs(c - 1) + Math.abs(d - 2) + Math.abs(e - 3) + Math.abs(f - 5) + Math.abs(g - 8);
+            let sum = 0;
+            for(let a = 0, b = 1, i = 0; i < numberOfFibonacciNumbers; i++, [a, b]=[b, a+b])
+                sum+=Math.abs(a-arr[i]);
+            chromosome.fitness = sum;
         } catch {
             chromosome.fitness = Infinity;
         }
@@ -61,13 +59,13 @@ window.addEventListener("load", function onWindowLoad() {
         //------------------------------------------------------------------------------------------
 
         //ВАЖНЫЕ КОНСТАНТЫ ПО АЛГОРИТМУ
-        const N = 40;//размер популяции
+        const N = numberOfFibonacciNumbers*5;//размер популяции
         const MutationPercent = 0.5;//процент мутаций
-        const NumberOfGenerations = 100;//количество популяций
+        const NumberOfGenerations = Math.pow(numberOfFibonacciNumbers, 2);//количество поколений
         //const MaxNumberOfWithoutResultGenerations = ...;
         const NumberOfDescendants = N * 2;
-        const ChromosomeMinLength = 1;
-        const ChromosomeMaxLength = 40;
+        const ChromosomeMinLength = numberOfFibonacciNumbers*2;
+        const ChromosomeMaxLength = numberOfFibonacciNumbers*numberOfFibonacciNumbers*2;
 
         //------------------------------------------------------------------------------------------
 
@@ -194,7 +192,7 @@ window.addEventListener("load", function onWindowLoad() {
                 bestCode = findFitness(population[0]);
                 mainText.textContent = it.toString();
                 mainText.textContent += ' ' + population[0].fitness;
-                mainText.textContent += ' ' + bestCode;
+                mainText.textContent += '\n\n' + bestCode;
             }
         }
     }
