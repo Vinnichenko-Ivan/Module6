@@ -147,11 +147,15 @@ class NeuronFullNet{
 
     softMax(){
         let total = 0
+        let maxim = - 100000000000000
         this.outputLayer.forEach(function (i) {
-            total += Math.exp(i.output);
+            maxim = Math.max(maxim,i.output)
+        })
+        this.outputLayer.forEach(function (i) {
+            total += Math.exp(i.output - maxim );
         })
         this.outputLayer.forEach(function (i, index) {
-            i.output = Math.exp(i.output)/total;
+            i.output = Math.exp(i.output - maxim )/total;
         })
     }
 
@@ -217,8 +221,6 @@ class NeuronFullNet{
 
     newWeight(n, l){
         let t1 = n.error * derivSigmoid(n.total);
-        // let temp1 = n.input[l] * derivSigmoid(n.total);
-        // let temp2 = n.output * this.learningRate;
         let temp = n.weights[l] - t1 * this.learningRate * n.input[l];
         return temp;
     }
@@ -237,11 +239,6 @@ class NeuronFullNet{
 
 
         for(let i = 0; i < 10; i++){
-            // let a = derivSigmoid(this.outputLayer[i].total);
-            // let temp = derivSigmoid(this.outputLayer[i].total) * dOutput[i];
-            //
-            // let deltas = []
-            //deltas.push(temp *  dOutput[i])
             for(let j = 0; j < this.invisibleLayersSize[this.invisibleLayersCount - 1]; j++){
                 let newWeight = this.newWeight(this.outputLayer[i], j);
                 this.invisibleLayers[this.invisibleLayersCount - 1][j].error += this.outputLayer[i].weights[j] * this.t1(this.outputLayer[i], j);
@@ -251,7 +248,6 @@ class NeuronFullNet{
 
         for(let i = this.invisibleLayersCount - 1; i > 0; i--){
             for(let j = 0; j < this.invisibleLayersSize[i]; j++){
-                //let temp = derivSigmoid(this.invisibleLayers[i][j].total) * this.invisibleLayers[i][j].error;
                 for(let l = 0; l < this.invisibleLayersSize[i - 1]; l++){
                     let newWeight = this.newWeight(this.invisibleLayers[i][j], l);
                     this.invisibleLayers[i - 1][l].error += this.invisibleLayers[i][j].weights[l] * this.t1(this.invisibleLayers[i][j], l)
@@ -260,7 +256,6 @@ class NeuronFullNet{
             }
         }
         for(let j = 0; j < this.invisibleLayersSize[0]; j++){
-            // let temp = derivSigmoid(this.invisibleLayers[0][j].total) * this.invisibleLayers[0][j].error;
             for(let l = 0; l < this.inputLayersSize; l++){
                 let newWeight =  this.newWeight(this.invisibleLayers[0][j], l);
                 this.invisibleLayers[0][j].weights[l] = newWeight;
@@ -273,7 +268,7 @@ class NeuronFullNet{
 
 let inputLayersSize = 25
 let invisibleLayersCount = 1
-let invisibleLayersSize = [10]
+let invisibleLayersSize = [25]
 let outputLayerSize = 10
 
 function matrixToLineMatrix(matrix){
@@ -523,7 +518,7 @@ form.addEventListener("change", handleFiles, false);
 function handleFiles() {
     const fileList = this.files;
     let reader = new FileReader();
-   // reader.readAsDataURL(file);
+    // reader.readAsDataURL(file);
     reader.onload = function(e) {
         console.log( e.target.result) ;
         tests = JSON.parse(e.target.result);
@@ -535,3 +530,4 @@ function handleFiles() {
 
 }
 requestAnimationFrame(loop);
+
