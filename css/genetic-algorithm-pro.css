@@ -1,16 +1,19 @@
 #mainButton{
+    margin-block: 2%;
     width: 10%;
     height: 40px;
     position: relative;
     left: 50%;
     transform: translate(-50%, 0);
-    margin: 10px;
 }
-#mainText{
-    margin: 50px;
-    width: 50%;
+#textsContainer{
+    position: center;
+    text-align: center;
+    margin: 20px;
+}
+textarea{
+    margin-inline: 20px;
+    width: 35%;
     height: 500px;
-    position: relative;
-    left: 35%;
-    transform: translate(-50%, 0);
+    resize: none;
 }

@@ -9,7 +9,16 @@
 
 <button id="mainButton">ВАу!</button>
 
-<textarea id="mainText"></textarea>
+<div id="textsContainer">
+<textarea readonly id="exampleCode">
+let a = 0, b = 1;
+for (i = 0; i < n; i++)
+    [a, b] = [b, a + b];
+console.log(a);
+</textarea>
+
+<textarea readonly id="mainText"></textarea>
+</div>
 
 <script src="../js/genetic-algorithm-pro.js"></script>
 </body>
