@@ -1,4 +1,10 @@
+body{
+    background: #ffe;
+}
 #mainButton, #showModalWindow{
+    background: #ffefef;
+    border: 2px solid #eedede;
+    border-radius: 8px;
     margin-inline: 1%;
     width: 10%;
     height: 50px;
@@ -17,6 +23,8 @@
     margin: 20px;
 }
 .mainCode{
+    border: 2px solid #eedede;
+    border-radius: 8px;
     margin-inline: 20px;
     width: 35%;
     height: 500px;
@@ -27,6 +35,11 @@
     resize: none;
     width: 30%;
     height: 100px;
+    position: absolute;
+    left: 35%;
+    top: 10%;
+    border: 2px solid #4e9dce;
+    border-radius: 8px;
 }
 #addCommandDiv{
     height: 250px;
@@ -39,14 +52,19 @@
     height: 50px;
     text-align: center;
     align-items: center;
-
+    position: absolute;
+    bottom: 5%;
+    left: 45%;
+    border: 2px solid #4e9dce;
+    border-radius: 8px;
+    background: #eeffff;
 }
 
 #modalWindow {
     width: 60%;
     height: 400px;
     padding: 15px;
-    border: 3px solid #fff;
+    border: 3px solid #4e9dce;
     border-radius: 10px;
     color: #aaa;
     position: absolute;
@@ -69,15 +87,16 @@
 #modalWindow:target {display: block;}
 .close {
     border-radius: 8px;
-    display: inline-block;
-    border: 1px solid #333;
+    border: 2px solid #4e9dce;
     color: #333;
     padding: 0 12px;
     margin: 10px;
     text-decoration: none;
-    background: #f2f2f2;
     font-size: 14pt;
-    cursor:pointer;
+    position: absolute;
+    left: 90%;
+    bottom: 90%;
+    background: #eeffff;
 }
 #shadow:target {display: block;}
-.close:hover {background: #ddd;}
+.close:hover {background: #bbeded;}

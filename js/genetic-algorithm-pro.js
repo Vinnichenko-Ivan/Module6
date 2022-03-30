@@ -3,6 +3,10 @@ window.addEventListener("load", function onWindowLoad() {
 
     let mainButton = document.getElementById("mainButton");
     let mainText = document.getElementById("mainText");
+    let addCommand = document.getElementById("addCommand");
+    let addCodeText = document.getElementById("addCodeText");
+
+    let mainCommands = [];
 
     // Algorithm Modes:
     // 1 - генерируемый код создает массив из numberOfFibonacciNumbers первых чисел Фибоначчи
@@ -18,6 +22,11 @@ window.addEventListener("load", function onWindowLoad() {
             algorithm();
         } else
             algorithmIsWorking = 0;
+    }
+
+    addCommand.onclick = function (){
+        mainCommands.push(addCodeText.value+'\n');
+        addCodeText.value = "";
     }
 
 
@@ -70,6 +79,7 @@ window.addEventListener("load", function onWindowLoad() {
         if (algorithmMode === 1) {
             for (let i = 0; i < numberOfFibonacciNumbers; i++) {
                 //Экзотическое:
+                functionsArray.push(...mainCommands);
 
                 //Разные условия:
                 functionsArray.push(`if(arr[${i}] === arr[${getRandomInt(0, numberOfFibonacciNumbers)}])\n  arr[${i}]++;\n`);
@@ -88,6 +98,8 @@ window.addEventListener("load", function onWindowLoad() {
             }
         } else {
             for (let i = 0; i < 4; i++) {
+                functionsArray.push(...mainCommands);
+
                 functionsArray.push(`a++;\n`);
                 functionsArray.push(`a--;\n`);
                 functionsArray.push(`b++;\n`);
