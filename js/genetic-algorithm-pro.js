@@ -7,6 +7,7 @@ window.addEventListener("load", function onWindowLoad() {
     let addCodeText = document.getElementById("addCodeText");
     let whatCommandsUse = document.getElementById("whatCommandsUse");
     let clearCommands = document.getElementById("clearCommands");
+    let changeMode = document.getElementById("changeMode");
 
     let usersCommands = [''];
 
@@ -46,6 +47,13 @@ window.addEventListener("load", function onWindowLoad() {
 
     clearCommands.onclick = function (){
         usersCommands = [''];
+    }
+
+    changeMode.onclick = function (){
+        if(algorithmMode === 1)
+            algorithmMode = 2
+        else
+            algorithmMode = 1
     }
 
 

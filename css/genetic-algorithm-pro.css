@@ -4,7 +4,7 @@ body{
 button:hover{
     cursor: pointer;
 }
-#mainButton, #showModalWindow, #whatCommandsUse, #clearCommands{
+#mainButton, #showModalWindow, #whatCommandsUse, #clearCommands, #changeMode{
     background: #ffefef;
     border: 2px solid #eecece;
     border-radius: 8px;
@@ -16,7 +16,7 @@ button:hover{
     text-align: center;
     align-items: center;
 }
-#mainButton:hover, #showModalWindow:hover, #whatCommandsUse:hover, #clearCommands:hover{
+#mainButton:hover, #showModalWindow:hover, #whatCommandsUse:hover, #clearCommands:hover, #changeMode:hover{
     background: #f6e6e6;
     cursor: pointer;
 }
