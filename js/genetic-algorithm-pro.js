@@ -5,8 +5,10 @@ window.addEventListener("load", function onWindowLoad() {
     let mainText = document.getElementById("mainText");
     let addCommand = document.getElementById("addCommand");
     let addCodeText = document.getElementById("addCodeText");
+    let whatCommandsUse = document.getElementById("whatCommandsUse");
+    let clearCommands = document.getElementById("clearCommands");
 
-    let mainCommands = [];
+    let usersCommands = [''];
 
     // Algorithm Modes:
     // 1 - генерируемый код создает массив из numberOfFibonacciNumbers первых чисел Фибоначчи
@@ -15,9 +17,11 @@ window.addEventListener("load", function onWindowLoad() {
 
     let algorithmIsWorking = 0;
 
+    let onlyUsersCommands = 0;
+
     mainButton.onclick = function () {
         if (algorithmIsWorking === 0) {
-            mainButton.textContent = "Break";
+            mainButton.textContent = "Прервать";
             algorithmIsWorking = 1;
             algorithm();
         } else
@@ -25,8 +29,23 @@ window.addEventListener("load", function onWindowLoad() {
     }
 
     addCommand.onclick = function (){
-        mainCommands.push(addCodeText.value+'\n');
+        usersCommands.push(addCodeText.value+'\n');
         addCodeText.value = "";
+    }
+
+    whatCommandsUse.onclick = function (){
+        if(onlyUsersCommands) {
+            whatCommandsUse.textContent = "Пользовательские";
+            onlyUsersCommands = 0;
+        }
+        else {
+            whatCommandsUse.textContent = "По умолчанию";
+            onlyUsersCommands = 1;
+        }
+    }
+
+    clearCommands.onclick = function (){
+        usersCommands = [''];
     }
 
 
@@ -76,46 +95,51 @@ window.addEventListener("load", function onWindowLoad() {
 
 
         let functionsArray = [];
-        if (algorithmMode === 1) {
-            for (let i = 0; i < numberOfFibonacciNumbers; i++) {
-                //Экзотическое:
-                functionsArray.push(...mainCommands);
 
-                //Разные условия:
-                functionsArray.push(`if(arr[${i}] === arr[${getRandomInt(0, numberOfFibonacciNumbers)}])\n  arr[${i}]++;\n`);
-                functionsArray.push(`if(arr[${i}] >= arr[${getRandomInt(0, numberOfFibonacciNumbers)}])\n  arr[${i}]--;\n`);
+        if(onlyUsersCommands)
+            functionsArray.push(...usersCommands);
+        else {
+            if (algorithmMode === 1) {
+                for (let i = 0; i < numberOfFibonacciNumbers; i++) {
+                    //Экзотическое:
+                    functionsArray.push(...usersCommands);
 
-                //Простые операции:
-                functionsArray.push(`arr[${i}]=arr[${getRandomInt(0, numberOfFibonacciNumbers)}];\n`);
-                functionsArray.push(`arr[${i}]+=arr[${getRandomInt(0, numberOfFibonacciNumbers)}];\n`);
-                functionsArray.push(`arr[${i}]-=arr[${getRandomInt(0, numberOfFibonacciNumbers)}];\n`);
-                functionsArray.push(`arr[${i}]++;\n`);
-                functionsArray.push(`arr[${i}]+=2;\n`);
-                functionsArray.push(`arr[${i}]+=3;\n`);
-                functionsArray.push(`arr[${i}]--;\n`);
-                functionsArray.push(`arr[${i}]-=2;\n`);
-                functionsArray.push(`arr[${i}]-=3;\n`);
-            }
-        } else {
-            for (let i = 0; i < 4; i++) {
-                functionsArray.push(...mainCommands);
+                    //Разные условия:
+                    functionsArray.push(`if(arr[${i}] === arr[${getRandomInt(0, numberOfFibonacciNumbers)}])\n  arr[${i}]++;\n`);
+                    functionsArray.push(`if(arr[${i}] >= arr[${getRandomInt(0, numberOfFibonacciNumbers)}])\n  arr[${i}]--;\n`);
 
-                functionsArray.push(`a++;\n`);
-                functionsArray.push(`a--;\n`);
-                functionsArray.push(`b++;\n`);
-                functionsArray.push(`b--;\n`);
-                functionsArray.push(`c++;\n`);
-                functionsArray.push(`c--;\n`);
-                functionsArray.push(`[a, b] = [b, a+b];\n`);
-                functionsArray.push(`[b, c] = [c, a+b];\n`);
-                functionsArray.push(`[b, c] = [a, a+b];\n`);
-                functionsArray.push(`[a, b] = [c, a+b];\n`);
-                functionsArray.push(`[a, b] = [b-a, a];\n`);
-                functionsArray.push(`[a, c] = [c, a];\n`);
-                functionsArray.push(`for(let j = ${getRandomInt(0, numberOfFibonacciNumbers)}; j < n; j++)\n  [a, b] = [b, a+b];\n`);
-                functionsArray.push(`for(let j = ${getRandomInt(0, numberOfFibonacciNumbers)}; j < n; j++)\n  [a, b] = [b, a+b];\n`);
-                functionsArray.push(`for(let j = ${getRandomInt(0, numberOfFibonacciNumbers)}; j < n; j++)\n  [a, c] = [c, a+b];\n`);
-                functionsArray.push(`for(let j = ${getRandomInt(0, numberOfFibonacciNumbers)}; j < n; j++)\n  [a, b] = [b, c+b];\n`);
+                    //Простые операции:
+                    functionsArray.push(`arr[${i}]=arr[${getRandomInt(0, numberOfFibonacciNumbers)}];\n`);
+                    functionsArray.push(`arr[${i}]+=arr[${getRandomInt(0, numberOfFibonacciNumbers)}];\n`);
+                    functionsArray.push(`arr[${i}]-=arr[${getRandomInt(0, numberOfFibonacciNumbers)}];\n`);
+                    functionsArray.push(`arr[${i}]++;\n`);
+                    functionsArray.push(`arr[${i}]+=2;\n`);
+                    functionsArray.push(`arr[${i}]+=3;\n`);
+                    functionsArray.push(`arr[${i}]--;\n`);
+                    functionsArray.push(`arr[${i}]-=2;\n`);
+                    functionsArray.push(`arr[${i}]-=3;\n`);
+                }
+            } else {
+                for (let i = 0; i < 4; i++) {
+                    functionsArray.push(...usersCommands);
+
+                    functionsArray.push(`a++;\n`);
+                    functionsArray.push(`a--;\n`);
+                    functionsArray.push(`b++;\n`);
+                    functionsArray.push(`b--;\n`);
+                    functionsArray.push(`c++;\n`);
+                    functionsArray.push(`c--;\n`);
+                    functionsArray.push(`[a, b] = [b, a+b];\n`);
+                    functionsArray.push(`[b, c] = [c, a+b];\n`);
+                    functionsArray.push(`[b, c] = [a, a+b];\n`);
+                    functionsArray.push(`[a, b] = [c, a+b];\n`);
+                    functionsArray.push(`[a, b] = [b-a, a];\n`);
+                    functionsArray.push(`[a, c] = [c, a];\n`);
+                    functionsArray.push(`for(let j = ${getRandomInt(0, numberOfFibonacciNumbers)}; j < n; j++)\n  [a, b] = [b, a+b];\n`);
+                    functionsArray.push(`for(let j = ${getRandomInt(0, numberOfFibonacciNumbers)}; j < n; j++)\n  [a, b] = [b, a+b];\n`);
+                    functionsArray.push(`for(let j = ${getRandomInt(0, numberOfFibonacciNumbers)}; j < n; j++)\n  [a, c] = [c, a+b];\n`);
+                    functionsArray.push(`for(let j = ${getRandomInt(0, numberOfFibonacciNumbers)}; j < n; j++)\n  [a, b] = [b, c+b];\n`);
+                }
             }
         }
 
@@ -226,7 +250,7 @@ window.addEventListener("load", function onWindowLoad() {
         let id = setInterval(function () {
 
             if (it >= NumberOfGenerations || withoutResultIterations >= MaxNumberOfWithoutResultGenerations || bestFitness === 0 || !algorithmIsWorking) {
-                mainButton.textContent = "Start";
+                mainButton.textContent = "Начать";
                 algorithmIsWorking = 0;
                 clearInterval(id);
             }

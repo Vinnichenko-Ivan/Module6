@@ -1,9 +1,12 @@
 body{
     background: #ffe;
 }
-#mainButton, #showModalWindow{
+button:hover{
+    cursor: pointer;
+}
+#mainButton, #showModalWindow, #whatCommandsUse, #clearCommands{
     background: #ffefef;
-    border: 2px solid #eedede;
+    border: 2px solid #eecece;
     border-radius: 8px;
     margin-inline: 1%;
     width: 10%;
@@ -12,6 +15,10 @@ body{
     display: inline-grid;
     text-align: center;
     align-items: center;
+}
+#mainButton:hover, #showModalWindow:hover, #whatCommandsUse:hover, #clearCommands:hover{
+    background: #f6e6e6;
+    cursor: pointer;
 }
 #buttonsContainer{
     display: flex;
@@ -86,17 +93,15 @@ body{
 }
 #modalWindow:target {display: block;}
 .close {
+    width: 10%;
+    height: 10%;
     border-radius: 8px;
     border: 2px solid #4e9dce;
     color: #333;
-    padding: 0 12px;
-    margin: 10px;
-    text-decoration: none;
-    font-size: 14pt;
     position: absolute;
-    left: 90%;
-    bottom: 90%;
+    left: 88%;
+    bottom: 85%;
     background: #eeffff;
 }
 #shadow:target {display: block;}
-.close:hover {background: #bbeded;}
+.close:hover, #addCommand:hover {background: #bbeded;}

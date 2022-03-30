@@ -8,8 +8,10 @@
 <body>
 
 <div id="buttonsContainer">
-<button onclick="window.location.href = '#shadow'" id="showModalWindow">Добавить команды</button>
-<button id="mainButton">ВАу!</button>
+    <button onclick="window.location.href = '#shadow'" id="showModalWindow">Добавить команды</button>
+    <button id="mainButton">ВАу!</button>
+    <button id="whatCommandsUse">Пользовательские</button>
+    <button id="clearCommands">Сброс</button>
 </div>
 
 <div id="textsContainer">
@@ -25,7 +27,7 @@ console.log(a);
 <div id="shadow">
     <div id="modalWindow">
         <label for="addCodeText"></label><textarea id="addCodeText"></textarea>
-        <a href="#" class="close">Закрыть</a>
+        <button onclick="window.location.href = '#'" class="close">Закрыть</button>
         <button id="addCommand">Добавить</button>
     </div>
 </div>
