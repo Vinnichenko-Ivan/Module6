@@ -7,17 +7,32 @@
 </head>
 <body>
 
+<div id="buttonsContainer">
+<button onclick="window.location.href = '#shadow'" id="showModalWindow">Добавить команды</button>
 <button id="mainButton">ВАу!</button>
+</div>
 
 <div id="textsContainer">
-<textarea readonly id="exampleCode">
-let a = 0, b = 1;
-for (i = 0; i < n; i++)
+<label for="exampleCode"></label><textarea readonly id="exampleCode" class="mainCode">
+let a = 0, b = 1, n = 10;
+for (i = 1; i < n; i++)
     [a, b] = [b, a + b];
 console.log(a);
 </textarea>
 
-<textarea readonly id="mainText"></textarea>
+    <label for="mainText"></label><textarea readonly id="mainText" class="mainCode"></textarea>
+</div>
+
+<div id="shadow">
+    <div id="modalWindow">
+        <label>
+            <textarea id="addCodeText"></textarea>
+        </label>
+        <a href="#" class="close">Закрыть</a>
+        <div id="addCommandDiv">
+            <button id="addCommand">Добавить</button>
+        </div>
+    </div>
 </div>
 
 <script src="../js/genetic-algorithm-pro.js"></script>

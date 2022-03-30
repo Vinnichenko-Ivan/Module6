@@ -7,7 +7,7 @@ window.addEventListener("load", function onWindowLoad() {
     // Algorithm Modes:
     // 1 - генерируемый код создает массив из numberOfFibonacciNumbers первых чисел Фибоначчи
     // 2 - генерируемый код возвращает число, близкое к заданному пользователем n-ому числу Фибоначчи
-    let algorithmMode = 1;
+    let algorithmMode = 2;
 
     let algorithmIsWorking = 0;
 

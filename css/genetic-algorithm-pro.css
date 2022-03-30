@@ -1,19 +1,83 @@
-#mainButton{
-    margin-block: 2%;
+#mainButton, #showModalWindow{
+    margin-inline: 1%;
     width: 10%;
-    height: 40px;
+    height: 50px;
     position: relative;
-    left: 50%;
-    transform: translate(-50%, 0);
+    display: inline-grid;
+    text-align: center;
+    align-items: center;
+}
+#buttonsContainer{
+    display: flex;
+    justify-content: center;
 }
 #textsContainer{
     position: center;
     text-align: center;
     margin: 20px;
 }
-textarea{
+.mainCode{
     margin-inline: 20px;
     width: 35%;
     height: 500px;
     resize: none;
 }
+
+#addCodeText{
+    resize: none;
+    width: 30%;
+    height: 100px;
+}
+#addCommandDiv{
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+#addCommand{
+    width: 10%;
+    height: 50px;
+    text-align: center;
+    align-items: center;
+
+}
+
+#modalWindow {
+    width: 60%;
+    height: 400px;
+    padding: 15px;
+    border: 3px solid #fff;
+    border-radius: 10px;
+    color: #aaa;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    background: #ffe;
+}
+#shadow {
+    background: rgba(102, 102, 102, 0.5);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+}
+#modalWindow:target {display: block;}
+.close {
+    border-radius: 8px;
+    display: inline-block;
+    border: 1px solid #333;
+    color: #333;
+    padding: 0 12px;
+    margin: 10px;
+    text-decoration: none;
+    background: #f2f2f2;
+    font-size: 14pt;
+    cursor:pointer;
+}
+#shadow:target {display: block;}
+.close:hover {background: #ddd;}
