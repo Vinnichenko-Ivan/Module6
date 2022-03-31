@@ -58,6 +58,11 @@ class Field{
     copyFromFieldWithoutClusters(field){
         this.points = JSON.parse(JSON.stringify(field.points));
         this.clusterCount = field.clusterCount;
+        this.points.forEach(function (point,index){
+            point.id = -1;
+            point.color = defColor;
+        })
+        this.clusterCenters = JSON.parse(JSON.stringify(field.clusterCenters.slice()));
     }
 }
 
@@ -105,6 +110,98 @@ function newClusterCenters(area){
         else {
             area.clusterCenters[i].x /= newClusterCentersCounts[i];
             area.clusterCenters[i].y /= newClusterCentersCounts[i];
+        }
+    }
+
+}
+
+function sizeOfComp(matrix, point)
+{
+    let n = matrix.length;
+    let matrixPs = new Array(n).fill(0);
+    let mass = [];
+    mass.push(point);
+    matrixPs[point] = 1;
+    while(mass.length != 0)
+    {
+        let p = mass[mass.length - 1];
+        mass.pop();
+        for(let i = 0; i < n; i++){
+            if(matrixPs[i] == 0 && matrix[p][i] != 0){
+                matrixPs[i] = 1;
+                mass.push(i);
+            }
+        }
+    }
+    return matrixPs;
+
+}
+
+function compare(a, b) {
+    if (a[2] < b[2]) {
+        return -1;
+    }
+    if (a[2] > b[2]) {
+        return 1;
+    }
+    return 0;
+}
+
+
+function graphGenClusterCenters(field){
+    let graph = []
+    let graphAnswer = []
+    let matrix = new Array(field.points.length).fill(0).map( () => new Array(field.points.length).fill(0))
+    for(let i = 0; i < field.points.length; i++)
+    {
+       for(let j = i + 1; j < field.points.length; j++)
+       {
+           let temp = [i, j, lenBetweenPoints(field.points[i], field.points[j])];
+           graph.push(temp)
+       }
+    }
+    graph.sort(compare);
+    for(let i = 0; i < graph.length; i++){
+        let start = sizeOfComp(matrix, graph[i][0]);
+        matrix[graph[i][0]][graph[i][1]] = graph[i][2];
+        matrix[graph[i][1]][graph[i][0]] = graph[i][2];
+        let end = sizeOfComp(matrix, graph[i][0]);
+        if(JSON.stringify(start) === JSON.stringify(end))
+        {
+            matrix[graph[i][0]][graph[i][1]] = 0;
+            matrix[graph[i][0]][graph[i][1]] = 0;
+        }
+        else
+        {
+            graphAnswer.push(graph[i]);
+        }
+    }
+    graphAnswer.sort(compare);
+    for(let i = 0; i < field.clusterCount - 1; i++)
+    {
+        graphAnswer.pop();
+    }
+    matrix = new Array(field.points.length).fill(0).map( () => new Array(field.points.length).fill(0))
+    for(let i = 0; i < graphAnswer.length; i++) {
+        matrix[graphAnswer[i][0]][graphAnswer[i][1]] = graphAnswer[i][2]
+        matrix[graphAnswer[i][1]][graphAnswer[i][0]] = graphAnswer[i][2]
+    }
+
+    let flag = new Array(field.points.length).fill(0);
+    let counter = 0;
+    for(let i = 0; i < field.points.length; i++){
+        if(flag[i] == 0) {
+            field.clusterCenters[counter].id = counter;
+            field.clusterCenters[counter].color = colorIndex[counter];
+            let temp1 = sizeOfComp(matrix, i)
+            for (let j = 0; j < field.points.length; j++) {
+                if(temp1[j] == 1){
+                    field.points[j].id = counter;
+                    field.points[j].color = colorIndex[counter];
+                    flag[j] = 1;
+                }
+            }
+            counter++;
         }
     }
 
@@ -185,10 +282,14 @@ function drawField(field, context, canvas, scale){
 
 function loop() {
     requestAnimationFrame(loop);
+
     drawField(mainField, mainContext, mainCanvas, 1)
     drawField(fieldAlgo1, context1, canvas1, 0.5)
+
     drawField(fieldAlgo2, context2, canvas2, 0.5)
+
     drawField(fieldAlgo3, context3, canvas3, 0.5)
+
     drawField(fieldAlgo4, context4, canvas4, 0.5)
     if(autoRun) {
         dataDist(mainField)
@@ -197,6 +298,10 @@ function loop() {
 }
 
 clusterInit(globalClusterCount, mainField)
+clusterInit(globalClusterCount, fieldAlgo1)
+clusterInit(globalClusterCount, fieldAlgo2)
+clusterInit(globalClusterCount, fieldAlgo3)
+clusterInit(globalClusterCount, fieldAlgo4)
 
 mainCanvas.addEventListener('mousedown', function (event) {
     const dx = this.offsetLeft;
@@ -261,6 +366,25 @@ buttonClear.addEventListener('click', function() {
 buttonIter.addEventListener('click', function() {
     dataDist(mainField)
     newClusterCenters(mainField)
+
+    graphGenClusterCenters(fieldAlgo1)
+    newClusterCenters(fieldAlgo1)
+
+
+    graphGenClusterCenters(fieldAlgo2)
+    newClusterCenters(fieldAlgo2)
+    dataDist(fieldAlgo2)
+    newClusterCenters(fieldAlgo2)
+    dataDist(fieldAlgo2)
+    newClusterCenters(fieldAlgo2)
+    dataDist(fieldAlgo2)
+    newClusterCenters(fieldAlgo2)
+    dataDist(fieldAlgo2)
+    newClusterCenters(fieldAlgo2)
+    dataDist(fieldAlgo2)
+    newClusterCenters(fieldAlgo2)
+    dataDist(fieldAlgo2)
+    newClusterCenters(fieldAlgo2)
 });
 
 requestAnimationFrame(loop);
