@@ -62,6 +62,11 @@ class Neuron{
 
 }
 
+class SaveOBJ{
+    invisibleLayers = []
+    outputLayer = []
+}
+
 class NeuronFullNet{
     learningRate = 0.04
 
@@ -113,6 +118,35 @@ class NeuronFullNet{
         }
         for(let i = 0; i < this.outputLayerSize; i++){
             this.outputLayer[i].setWeights(this.invisibleLayersSize[this.invisibleLayersCount - 1], randParams(this.invisibleLayersSize[this.invisibleLayersCount - 1]), randParam());
+        }
+    }
+
+    toSaveObj(){
+        let saveObj = new SaveOBJ;
+        for(let i = 0; i < this.invisibleLayersCount; i++){
+            for(let j = 0; j < this.invisibleLayersSize[i]; j++){
+                saveObj.invisibleLayers.push(JSON.parse(JSON.stringify(this.invisibleLayersSize[i][j].weights)))
+            }
+        }
+        for(let i = 0; i < this.outputLayerSize; i++){
+            saveObj.outputLayer.push(JSON.parse(JSON.stringify(this.outputLayer[i].weights)))
+        }
+        return saveObj;
+    }
+
+    fromSaveObj(saveObj) {
+        for(let i = 0; i < this.invisibleLayersCount; i++){
+            for(let j = 0; j < this.invisibleLayersSize[i]; j++){
+                if(i === 0) {
+                    this.invisibleLayers[i][j].setWeights(this.inputLayersSize, (JSON.parse(JSON.stringify(saveObj.invisibleLayers[i][j]))), randParam());
+                }
+                else{
+                    this.invisibleLayers[i][j].setWeights(this.invisibleLayersSize[i - 1], (JSON.parse(JSON.stringify(saveObj.invisibleLayers[i][j]))), randParam());
+                }
+            }
+        }
+        for(let i = 0; i < this.outputLayerSize; i++){
+            this.outputLayer[i].setWeights(this.invisibleLayersSize[this.invisibleLayersCount - 1], (JSON.parse(JSON.stringify(saveObj.outputLayer[i]))), randParam());
         }
     }
 
@@ -384,9 +418,11 @@ neuroNet.genRandParam()
 const run = document.getElementById('run');
 const canvas = document.getElementById('drawer');
 const context = canvas.getContext('2d');
-const addButton = document.getElementById('add')
-const saveButton = document.getElementById('save')
+const addButton = document.getElementById('add');
+const saveButton = document.getElementById('save');
+const saveKButton = document.getElementById('saveK');
 const answerInput = document.getElementById('answerInput');
+const answer = document.getElementById('answer');
 const getButton = document.getElementById('get');
 const form = document.getElementById('getter');
 
@@ -465,7 +501,9 @@ canvas.addEventListener('mousedown', function (event) {
 
     neuroNet.setInput(matrixToLineMatrix(inputNoLine))
     neuroNet.genOutput()
-    console.log(neuroNet.out());
+    let a = neuroNet.out();
+    answer.innerHTML = a;
+    console.log(a);
 
 });
 
@@ -484,6 +522,9 @@ function download(content, fileName, contentType) {
     a.click();
 }
 
+saveKButton.addEventListener('click', function() {
+    download( JSON.stringify(neuroNet.toSaveObj()), 'json.txt', 'text/plain');
+});
 
 saveButton.addEventListener('click', function() {
     download( JSON.stringify(tests), 'json.txt', 'text/plain');
