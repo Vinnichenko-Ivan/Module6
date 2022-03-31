@@ -10,12 +10,38 @@ body{
     left: 50%;
     transform: translate(-50%, 0);
     border-style: dashed;
-    margin: 40px;
 }
+
+
+
+
+
+
+#buttonsContainer{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin: 20px;
+}
+#clear, #food, #walls, #ants, #erase{
+    margin: 1%;
+    width: 10%;
+    height: 40px;
+}
+
+
+
+
+
+
+
+
+
 
 /*
 Дальше главное меню:
  */
+
 header {
     background: black;
     text-align: center;
