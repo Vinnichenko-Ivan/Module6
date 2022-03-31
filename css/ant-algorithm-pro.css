@@ -21,13 +21,48 @@ body{
     display: flex;
     justify-content: center;
     align-content: center;
-    margin: 20px;
+    margin-top: 20px;
+    margin-bottom: 0;
 }
 #clear, #food, #walls, #ants, #erase{
     margin: 1%;
     width: 10%;
     height: 40px;
 }
+#brushWidthDiv{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin: 20px;
+}
+#brushWidth{
+    -webkit-appearance: none;
+    width: 20%;
+    height: 20px;
+    border-radius: 10px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+#brushWidth::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+#brushWidth::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+#brushWidth:hover{opacity: 1;}
 
 
 
