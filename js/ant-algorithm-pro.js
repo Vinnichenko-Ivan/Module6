@@ -3,7 +3,9 @@ window.addEventListener("load", function onWindowLoad() {
     let MyCanvas = document.getElementById("myCanvas");
     let ctx = MyCanvas.getContext('2d');
 
-    let mapPixelScale = 5;//каждый i-ый пиксель хранит объект, остальные - просто для вида
+    //САМАЯ ВАЖНАЯ ВЕЩЬ!!! ПОЗВОЛЯЕТ УВЕЛИЧИТЬ ФПС!!!
+    let mapPixelScale = 20;//каждый i-ый пиксель хранит объект, остальные - лишь картинка
+
     let mainObjects = new Array(MyCanvas.width / mapPixelScale);
     for (let i = 0; i < mainObjects.length; i++) {
         mainObjects[i] = new Array(MyCanvas.height / mapPixelScale);
@@ -14,30 +16,33 @@ window.addEventListener("load", function onWindowLoad() {
                 y: j * mapPixelScale,
                 food: 0,
                 wall: false,
-                toHomePheromones: 0,
-                toFoodPheromones: 0,
                 next: function () {
                     if (this.wall) {
 
                         //СТЕНА
                         ctx.strokeStyle = WallsColor;
+                        ctx.fillStyle = WallsColor;
                         ctx.beginPath();
                         ctx.arc(this.x+mapPixelScale/2, this.y+mapPixelScale/2, mapPixelScale/2, 0, Math.PI * 2, false);
                         ctx.closePath();
-                        ctx.fillStyle = WallsColor;
                         ctx.fill();
                         ctx.stroke();
                     } else {
 
                         //ЕДА
-                        ctx.strokeStyle = '#00'+this.food.toString(16)+'00';
-                        ctx.fillStyle = '#00'+this.food.toString(16)+'00';
+                        if(this.food<16){
+                            ctx.strokeStyle = `#000${(this.food).toString(16)}00`;
+                            ctx.fillStyle = `#000${(this.food).toString(16)}00`;
+                        }
+                        else {
+                            ctx.strokeStyle = `#00${(this.food).toString(16)}00`;
+                            ctx.fillStyle = `#00${(this.food).toString(16)}00`;
+                        }
                         ctx.beginPath();
                         ctx.arc(this.x+mapPixelScale/2, this.y+mapPixelScale/2, mapPixelScale/2, 0, Math.PI * 2, false);
                         ctx.closePath();
                         ctx.fill();
                         ctx.stroke();
-
                     }
                 }
             }
@@ -54,11 +59,7 @@ window.addEventListener("load", function onWindowLoad() {
 
     let drawingMode = new Array(4);//0 - еда, 1 - стены, 2 - муравьи, 3 - ластик
 
-    const FoodColor = "blue";
     const WallsColor = "gray";
-    const AntsColor = "black";
-    const toHomePheromonesColor = "purple";
-    const toFoodPheromonesColor = "green";
 
 
     //---------------------------------------------------------
@@ -69,7 +70,8 @@ window.addEventListener("load", function onWindowLoad() {
         for (let i = 0; i < mainObjects.length; i++) {
             for (let j = 0; j < mainObjects[i].length; j++) {
                 mainObjects[i][j].notEmpty = false;
-                mainObjects[i][j].wall = 0;
+                mainObjects[i][j].wall = false;
+                mainObjects[i][j].food = 0;
             }
         }
         drawingMode[0] = false;
@@ -106,6 +108,8 @@ window.addEventListener("load", function onWindowLoad() {
     MyCanvas.onmousemove = function (e) {
         if (e.buttons > 0 && e.offsetX >= 0 && e.offsetY >= 0 && e.offsetX <= MyCanvas.width && e.offsetY <= MyCanvas.height) {
             if (drawingMode[0]) {
+
+                //ЕДА!!!
                 let x = Math.floor(e.offsetX / mapPixelScale);
                 let y = Math.floor(e.offsetY / mapPixelScale);
 
@@ -122,6 +126,7 @@ window.addEventListener("load", function onWindowLoad() {
 
             } else if (drawingMode[1]) {
 
+                //СТЕНА!!!
                 let x = Math.floor(e.offsetX / mapPixelScale);
                 let y = Math.floor(e.offsetY / mapPixelScale);
 
@@ -145,17 +150,19 @@ window.addEventListener("load", function onWindowLoad() {
 
             } else if (drawingMode[3]) {
 
+                //ЛАСТИК!!!
                 let x = Math.floor(e.offsetX / mapPixelScale);
                 let y = Math.floor(e.offsetY / mapPixelScale);
 
                 let width = brushWidth.value;
 
-                for(let i = Math.max(0, x-Math.floor(width/mapPixelScale)); i<Math.min(MyCanvas.width/mapPixelScale, x+Math.floor(width/mapPixelScale)); i++)
+                for(let i = Math.max(0, x-Math.floor(width/mapPixelScale)); i<Math.min(MyCanvas.width/mapPixelScale - 1, x+Math.floor(width/mapPixelScale)); i++)
                 {
-                    for(let j = Math.max(0, y-Math.floor(width/mapPixelScale)); j<Math.min(MyCanvas.height/mapPixelScale, y+Math.floor(width/mapPixelScale)); j++)
+                    for(let j = Math.max(0, y-Math.floor(width/mapPixelScale)); j<Math.min(MyCanvas.height/mapPixelScale - 1, y+Math.floor(width/mapPixelScale)); j++)
                     {
                         mainObjects[i][j].notEmpty = false;
-                        mainObjects[i][j].wall = 0;
+                        mainObjects[i][j].wall = false;
+                        mainObjects[i][j].food = 0;
                     }
                 }
             }
