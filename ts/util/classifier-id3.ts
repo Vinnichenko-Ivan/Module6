@@ -10,12 +10,12 @@ const minSubsetSize = 2;
 /**
  * Порог прироста информации, выше которого разделение не будут игнорироваться
  */
-const gainThreshold = 0;
+const minInfoGain = 0;
 
 /**
  * Максимальная глубина дерева
  */
-const maxTreeDeep = 5;
+const maxTreeDepth = 10;
 
 /**
  * Вычисление энтропии до разбиения:
@@ -284,7 +284,7 @@ function findBestSplit(dataset: Dataset): Split {
         }
     }
 
-    if (maxInfoGain <= gainThreshold) {
+    if (maxInfoGain <= minInfoGain) {
         return null;
     }
 
@@ -392,6 +392,8 @@ export class Id3Tree implements ClassifierTree {
 
     private _class: number;
 
+    private _htmlElement: HTMLElement;
+
     build(dataset: Dataset) {
         this._dataset = dataset;
         this.buildRecursive(dataset, 0);
@@ -408,6 +410,8 @@ export class Id3Tree implements ClassifierTree {
     }
 
     appendHTMLChildren(parentElement: HTMLElement) {
+        this._htmlElement = parentElement;
+
         if (this._leaf) {
             let liElement = parentElement.appendChild(document.createElement('li'));
             let spanElement = liElement.appendChild(document.createElement('span'));
@@ -427,10 +431,6 @@ export class Id3Tree implements ClassifierTree {
                 child.appendHTMLChildren(ulElement);
             }
         }
-    }
-
-    toString(): string {
-        return this.toStringRecursive(0);
     }
 
     private static equalsChildren(array: Id3Tree[]): boolean {
@@ -454,7 +454,7 @@ export class Id3Tree implements ClassifierTree {
         this._leaf = true;
         this._children = [];
 
-        if (deep < maxTreeDeep) {
+        if (deep < maxTreeDepth) {
             let split = findBestSplit(dataset);
 
             if (split != undefined) {
@@ -482,24 +482,16 @@ export class Id3Tree implements ClassifierTree {
         }
     }
 
-    private toStringRecursive(deep: number): string {
-        let string = '';
-
-        let deepStr = '';
-        for (let i = 0; i <= deep; i++) {
-            deepStr += '----';
-        }
-
+    private prune(): void {
         if (this._leaf) {
-            string += deepStr + '> ' + this._dataset.class.values[this._class] + '\n';
+
         }
         else {
-            for (let i = 0; i < this._children.length; i++) {
-                string += deepStr + '[' + this._children[i]._condition + ']\n';
-                string += this._children[i].toStringRecursive(deep + 1);
+            for (const child of this._children) {
+                child.prune();
             }
-        }
 
-        return string;
+
+        }
     }
 }

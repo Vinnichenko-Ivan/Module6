@@ -28,6 +28,7 @@ body {
 /* Стиль контента */
 .content {
     display: flex;
+    flex-direction: column;
 
     align-items: center;
     height: 100%;

@@ -20,10 +20,33 @@
             <label for="named-dataset"></label><input id="named-dataset" type="checkbox">
         </div>
         <div>
-            <button id="load-dataset">Загрузить выборку данных</button>
+            <button id="load-dataset">Загрузить обучающую выборку данных</button>
+        </div>
+        <div>
+            <input id="file-tests" type="file">
+        </div>
+        <div>
+            <button id="load-tests">Загрузить тесты</button>
         </div>
     </div>
     <div class="content">
+        <table>
+            <tr>
+                <th>Всего тестов</th>
+                <th>Классифицировано</th>
+                <th>Успешно</th>
+                <th>Ошибок</th>
+                <th>Процент ошибок</th>
+            </tr>
+            <tr>
+                <td id="result-total"></td>
+                <td id="result-classified"></td>
+                <td id="result-successful"></td>
+                <td id="result-errors"></td>
+                <td id="result-error-percent"></td>
+            </tr>
+        </table>
+        <table id="current-test"></table>
         <ul class="tree">
             <li>
                 <span class="root">Корень</span>

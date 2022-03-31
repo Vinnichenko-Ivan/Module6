@@ -65,7 +65,7 @@ export function loadDatasetFromData(table: string[][], classIndex?: number, name
         }
 
         // Для чисел
-        if (table[name ? 1 : 0][i].match(/^[\d\.\,]+$/)) {
+        if (table[name ? 1 : 0][i].match(/^(\-)?[\d\.\,]+$/)) {
             attributes.push(new AttributeNumber(i, name))
         }
 

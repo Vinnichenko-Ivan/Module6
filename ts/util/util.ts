@@ -38,11 +38,11 @@ export function numberMatrix(height: number, width: number): number[][] {
  * @param num число
  */
 export function log2linear(num: number): number {
-    return num === 0 ? 0 : num * Math.log2(num);
+    return num <= 0 ? 0 : num * Math.log2(num);
 }
 
 /**
- * Вычисление энтропии до разбиения:
+ * Вычисление энтропии:
  * @param bag массив с количеством элементов класса i, где i - номер класса
  * @param total количество всего элементов
  * @return энтропия

@@ -47,6 +47,20 @@ export class Distribution {
         return maxIndex;
     }
 
+    get maxBag(): number {
+        let maxCount = 0;
+        let maxIndex = 0;
+
+        for (let i = 0; i < this.bagCount; i++) {
+            if (this.perBag[i] > maxCount) {
+                maxCount = this.perBag[i];
+                maxIndex = i;
+            }
+        }
+
+        return maxIndex;
+    }
+
     add(bagIndex: number, classIndex: number): void {
         this.perClassPerBag[bagIndex][classIndex]++;
         this.perBag[bagIndex]++;
