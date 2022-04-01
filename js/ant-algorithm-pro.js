@@ -4,7 +4,7 @@ window.addEventListener("load", function onWindowLoad() {
     let ctx = MyCanvas.getContext('2d');
 
     //САМАЯ ВАЖНАЯ ВЕЩЬ!!! ПОЗВОЛЯЕТ УВЕЛИЧИТЬ ФПС!!!
-    let mapPixelScale = 20;//каждый i-ый пиксель хранит объект, остальные - лишь картинка
+    let mapPixelScale = 10;//каждый i-ый пиксель хранит объект, остальные - лишь картинка
 
     let mainObjects = new Array(MyCanvas.width / mapPixelScale);
     for (let i = 0; i < mainObjects.length; i++) {
@@ -20,14 +20,16 @@ window.addEventListener("load", function onWindowLoad() {
                     if (this.wall) {
 
                         //СТЕНА
-                        ctx.strokeStyle = WallsColor;
+                        ctx.fillStyle = WallsColor;
+                        ctx.fillRect(this.x, this.y, mapPixelScale, mapPixelScale);
+                        /*ctx.strokeStyle = WallsColor;
                         ctx.fillStyle = WallsColor;
                         ctx.beginPath();
                         ctx.arc(this.x+mapPixelScale/2, this.y+mapPixelScale/2, mapPixelScale/2, 0, Math.PI * 2, false);
                         ctx.closePath();
                         ctx.fill();
-                        ctx.stroke();
-                    } else {
+                        ctx.stroke();*/
+                    }else if(this.food > 0){
 
                         //ЕДА
                         if(this.food<16){
@@ -119,7 +121,7 @@ window.addEventListener("load", function onWindowLoad() {
                 {
                     for(let j = Math.max(0, y-Math.floor(width/mapPixelScale)); j<Math.min(MyCanvas.height/mapPixelScale, y+Math.floor(width/mapPixelScale)); j++)
                     {
-                        mainObjects[i][j].food = Math.min(255, mainObjects[i][j].food+4);
+                        mainObjects[i][j].food = Math.min(255, mainObjects[i][j].food+6);
                         mainObjects[i][j].notEmpty = true;
                     }
                 }
@@ -156,9 +158,9 @@ window.addEventListener("load", function onWindowLoad() {
 
                 let width = brushWidth.value;
 
-                for(let i = Math.max(0, x-Math.floor(width/mapPixelScale)); i<Math.min(MyCanvas.width/mapPixelScale - 1, x+Math.floor(width/mapPixelScale)); i++)
+                for(let i = Math.max(0, x-Math.floor(width/mapPixelScale)); i<Math.min(MyCanvas.width/mapPixelScale, x+Math.floor(width/mapPixelScale)); i++)
                 {
-                    for(let j = Math.max(0, y-Math.floor(width/mapPixelScale)); j<Math.min(MyCanvas.height/mapPixelScale - 1, y+Math.floor(width/mapPixelScale)); j++)
+                    for(let j = Math.max(0, y-Math.floor(width/mapPixelScale)); j<Math.min(MyCanvas.height/mapPixelScale, y+Math.floor(width/mapPixelScale)); j++)
                     {
                         mainObjects[i][j].notEmpty = false;
                         mainObjects[i][j].wall = false;
