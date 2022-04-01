@@ -12,6 +12,9 @@ body{
     border-style: dashed;
     background: url('https://kartinkin.net/uploads/posts/2021-07/1627408186_14-kartinkin-com-p-pikselnie-teksturi-zemli-krasivo-17.png');
 }
+#extraCanvas{
+    display: none;
+}
 
 
 
