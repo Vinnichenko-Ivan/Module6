@@ -9,10 +9,10 @@ body{
     position: relative;
     left: 50%;
     transform: translate(-50%, 0);
-    border-style: dashed;
+    border-style: solid;
     background: url('https://kartinkin.net/uploads/posts/2021-07/1627408186_14-kartinkin-com-p-pikselnie-teksturi-zemli-krasivo-17.png');
 }
-#extraCanvas{
+#extraCanvas1, #extraCanvas2{
     display: none;
 }
 
