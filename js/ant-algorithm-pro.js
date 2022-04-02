@@ -1,3 +1,5 @@
+import {updateCtx, updateExtraCtx1, updateExtraCtx2} from "./ant-algorithm-pro-extra1.js";
+
 window.addEventListener("load", function onWindowLoad() {
 
     let MyCanvas = document.getElementById("myCanvas");
@@ -11,26 +13,29 @@ window.addEventListener("load", function onWindowLoad() {
     let mapPixelScale = 10;//каждый i-ый пиксель хранит объект, остальные - лишь картинка
     let mapPheromoneScale = 10;//то же самое, но уже для феромонов
 
-    let somethingChanged = true;//делаем перерисовку фона только тогда, когда на нем что-то поменялось
-
     let antStepLength = 1.5;
     let pheromonesDecreasingCoefficient = 0.9;
-    let minPheromoneValue = 0.1;
+    let minPheromoneValue = 0.5;
+    let minDistanceToAnthill = 0.5;
+    let antsNumber = 50;
+    let constForDistanceFromHome = 10000;
 
     let mainObjects = new Array(MyCanvas.width / mapPixelScale);
     let pheromones = new Array(MyCanvas.width / mapPheromoneScale);
+    let somethingChanged = true;//делаем перерисовку фона только тогда, когда на нем что-то поменялось
 
-    let ants = new Array(50);
+    let ants = new Array(antsNumber);
     let anthill = {
         isBuilt: false,
-        radius: 25,
+        radius: 20,
         x: -1,
         y: -1,
-        color: "#ff5f6f",
+        color: "#ff4f3f",
         borderColor: "black"
     }
 
 
+    //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~СТЕНЫ и ЕДА~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     for (let i = 0; i < mainObjects.length; i++) {
@@ -48,13 +53,7 @@ window.addEventListener("load", function onWindowLoad() {
                         //СТЕНА
                         extraCtx1.fillStyle = "gray";
                         extraCtx1.fillRect(this.x, this.y, mapPixelScale, mapPixelScale);
-                        /*ctx.strokeStyle = WallsColor;
-                        ctx.fillStyle = WallsColor;
-                        ctx.beginPath();
-                        ctx.arc(this.x+mapPixelScale/2, this.y+mapPixelScale/2, mapPixelScale/2, 0, Math.PI * 2, false);
-                        ctx.closePath();
-                        ctx.fill();
-                        ctx.stroke();*/
+
                     } else if (this.food > 0) {
 
                         //ЕДА
@@ -120,61 +119,106 @@ window.addEventListener("load", function onWindowLoad() {
 
 
     //-------------------------------------------------------------
+    //-------------------------------------------------------------
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~МУРАВЬИ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     function initAnts() {
         for (let i = 0; i < ants.length; i++) {
             let r1 = Math.random() * 2 - 1;
             let r2 = Math.random() * 2 - 1;
             ants[i] = {
+                it: 0,
+                distanceFromHome: 0,
+                distanceFromFood: 0,
                 Vx: r1,
                 Vy: r2,
                 Food: 0,
-                x: anthill.x + (r1 * anthill.radius) / (Math.sqrt(r1 ** 2 + r2 ** 2)),
-                y: anthill.y + (r2 * anthill.radius) / (Math.sqrt(r1 ** 2 + r2 ** 2)),
+                x: anthill.x + (r1 * (anthill.radius + 1)) / (Math.sqrt(r1 ** 2 + r2 ** 2)),
+                y: anthill.y + (r2 * (anthill.radius + 1)) / (Math.sqrt(r1 ** 2 + r2 ** 2)),
                 next: function () {
-                    this.x += (this.Vx * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
-                    this.y += (this.Vy * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
 
-                    let x = this.x, y = this.y;
-                    let i = Math.floor(x / mapPixelScale);
-                    let j = Math.floor(y / mapPixelScale);
-                    if (mainObjects[i][j].notEmpty) {
-                        if(mainObjects[i][j].food){
+                    //СТОЛКНОВЕНИЕ С МУРАВЕЙНИКОМ
+                    if (Math.sqrt((this.x - anthill.x) ** 2 + (this.y - anthill.y) ** 2) - anthill.radius <= minDistanceToAnthill) {
+                        this.Vx *= -1;
+                        this.Vy *= -1;
+                        this.x += (this.Vx * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                        this.y += (this.Vy * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                        this.Food = 0;
+                        this.distanceFromFood = 0;
+                    } else {
 
-                        }
-                        x += (this.Vx * (-1) * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
-                        y += (this.Vy * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
-                        i = Math.floor(x / mapPixelScale);
-                        j = Math.floor(y / mapPixelScale);
-                        if (!mainObjects[i][j].notEmpty)
-                            this.Vx *= -1;
-                        else {
-                            x = this.x;
-                            y = this.y;
-                            x += (this.Vx * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
-                            y += (this.Vy * (-1) * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                        //КОРРЕКТИРОВКА НАПРАВЛЕНИЯ ДВИЖЕНИЯ
+                        this.x += (this.Vx * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                        this.y += (this.Vy * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+
+                        let x = this.x, y = this.y;
+                        let i = Math.floor(x / mapPixelScale);
+                        let j = Math.floor(y / mapPixelScale);
+                        if (mainObjects[i][j].notEmpty) {
+
+                            //ЕСЛИ ВРЕЗАЛСЯ В ЕДУ
+                            if (mainObjects[i][j].food && this.Food === 0) {
+                                this.Food = mainObjects[i][j].food;
+                                this.distanceFromHome = 0;
+                                mainObjects[i][j].food = Math.max(0, mainObjects[i][j].food - 50);
+                                if (mainObjects[i][j].food === 0)
+                                    mainObjects[i][j].notEmpty = false;
+                                somethingChanged = true;
+                            }
+
+                            //КОГДА ВО ЧТО-ТО ВРЕЗАЛСЯ, ТО ОТКЛОНИТЬСЯ В ПРАВИЛЬНУЮ СТОРОНУ
+                            x += (this.Vx * (-1) * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                            y += (this.Vy * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
                             i = Math.floor(x / mapPixelScale);
                             j = Math.floor(y / mapPixelScale);
                             if (!mainObjects[i][j].notEmpty)
-                                this.Vy *= -1;
-                            else {
                                 this.Vx *= -1;
-                                this.Vy *= -1;
+                            else {
+                                x = this.x;
+                                y = this.y;
+                                x += (this.Vx * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                                y += (this.Vy * (-1) * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                                i = Math.floor(x / mapPixelScale);
+                                j = Math.floor(y / mapPixelScale);
+                                if (!mainObjects[i][j].notEmpty)
+                                    this.Vy *= -1;
+                                else {
+                                    this.Vx *= -1;
+                                    this.Vy *= -1;
+                                }
                             }
                         }
-                    }
 
 
-                    //ОСТАВЛЕНИЕ ФЕРОМОНОВ
-                    x = this.x; y = this.y;
-                    i = Math.floor(x / mapPheromoneScale);
-                    j = Math.floor(y / mapPheromoneScale);
-                    if(this.Food){
-                        pheromones[i][j].toFoodPheromones = Math.min(255, pheromones[i][j].toFoodPheromones+1);
+                        //ОСТАВЛЕНИЕ ФЕРОМОНОВ
+                        x = this.x;
+                        y = this.y;
+                        i = Math.floor(x / mapPheromoneScale);
+                        j = Math.floor(y / mapPheromoneScale);
+                        if (this.Food)
+                            pheromones[i][j].toFoodPheromones = Math.min(255, pheromones[i][j].toFoodPheromones + (this.Food**4)/this.distanceFromFood);
+                        else
+                            pheromones[i][j].toHomePheromones = Math.min(255, pheromones[i][j].toHomePheromones + constForDistanceFromHome/this.distanceFromHome);
+                        pheromones[i][j].notEmpty = true;
+
+
+                        //РЕГУЛИРОВАТЬ ИСПАРЕНИЕ ФЕРОМОНОВ
+                        //if(this.it%1 === 0) {
+                            if (this.Food) {
+                                this.distanceFromFood = Math.min(1000000, this.distanceFromFood + 1);
+                            } else {
+                                this.distanceFromHome = Math.min(1000000, this.distanceFromHome + 1);
+                            }
+                        //}
+                        this.it = (this.it+1)%1000000;
+
+
+                        //СИНУСОИДАЛЬНОЕ ДВИЖЕНИЕ
+                        /*if (this.it % 50 === 0) {
+                            this.Vx += Math.sin(this.it)*0.5;
+                            this.Vy += Math.sin(this.it)*0.5;
+                        }
+                        this.it = (this.it + 1) % 1000000;*/
                     }
-                    else
-                        pheromones[i][j].toHomePheromones = Math.min(255, pheromones[i][j].toHomePheromones+1);
-                    pheromones[i][j].notEmpty = true;
                 }
             }
         }
@@ -259,8 +303,10 @@ window.addEventListener("load", function onWindowLoad() {
 
                 for (let i = Math.max(0, x - Math.floor(width / mapPixelScale)); i < Math.min(MyCanvas.width / mapPixelScale, x + Math.floor(width / mapPixelScale)); i++) {
                     for (let j = Math.max(0, y - Math.floor(width / mapPixelScale)); j < Math.min(MyCanvas.height / mapPixelScale, y + Math.floor(width / mapPixelScale)); j++) {
-                        mainObjects[i][j].food = Math.min(255, mainObjects[i][j].food + 6);
-                        mainObjects[i][j].notEmpty = true;
+                        if (!mainObjects[i][j].wall) {
+                            mainObjects[i][j].food = Math.min(255, mainObjects[i][j].food + 6);
+                            mainObjects[i][j].notEmpty = true;
+                        }
                     }
                 }
                 somethingChanged = true;
@@ -323,88 +369,21 @@ window.addEventListener("load", function onWindowLoad() {
     }
 
 
-    //---------------------------------------------------------------
-    //---------------------------------------------------------------
-    //~~~~~~~~~~~~~~~~~~~~~~~ФУНКЦИИ ОТРИСОВКИ~~~~~~~~~~~~~~~~~~~~~~~
-    function updateCtx() {
-        ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
-        ctx.drawImage(ExtraCanvas2, 0, 0);
-        ctx.drawImage(ExtraCanvas1, 0, 0);
-
-        if (anthill.isBuilt) {
-            for (let i = 0; i < ants.length; i++)
-                ants[i].next();
-            for (let i = 0; i < ants.length; i++) {
-                ctx.beginPath();
-                ctx.fillStyle = "red";
-                ctx.strokeStyle = "black";
-                ctx.arc(ants[i].x, ants[i].y, 3, 0, Math.PI * 2, false);
-                ctx.closePath();
-                ctx.fill();
-                ctx.stroke();
-            }
-        }
-    }
-
-    function updateExtraCtx1() {
-        extraCtx1.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
-        for (let i = 0; i < mainObjects.length; i++)
-            for (let j = 0; j < mainObjects[i].length; j++)
-                if (mainObjects[i][j].notEmpty)
-                    mainObjects[i][j].next();
-
-        if (anthill.isBuilt) {
-            extraCtx1.beginPath();
-            extraCtx1.fillStyle = anthill.color;
-            extraCtx1.strokeStyle = anthill.borderColor;
-            extraCtx1.arc(anthill.x, anthill.y, anthill.radius, 0, Math.PI * 2, false);
-            extraCtx1.closePath();
-            extraCtx1.fill();
-            extraCtx1.stroke();
-        }
-    }
-
-    function updateExtraCtx2(){
-        extraCtx2.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
-        for (let i = 0; i < pheromones.length; i++) {
-            for (let j = 0; j < pheromones[i].length; j++) {
-                pheromones[i][j].next();
-                if (pheromones[i][j].notEmpty) {
-
-                    if (pheromones[i][j].toHomePheromones && pheromones[i][j].toFoodPheromones)
-                        extraCtx2.fillStyle = "yellow";
-                    else if (pheromones[i][j].toHomePheromones)
-                        extraCtx2.fillStyle = "orange";
-                    else
-                        extraCtx2.fillStyle = "green";
-
-                    extraCtx2.beginPath();
-                    extraCtx2.strokeStyle = "black";
-                    extraCtx2.arc(pheromones[i][j].x, pheromones[i][j].y, 2, 0, Math.PI * 2, false);
-                    extraCtx2.closePath();
-                    extraCtx2.fill();
-                    extraCtx2.stroke();
-                }
-            }
-        }
-    }
-
-
     //----------------------------------------------------
     //----------------------------------------------------
     //~~~~~~~~~~~~~~~ОТРИСОВКА И ПЕРЕРАСЧЕТ~~~~~~~~~~~~~~~
     let it = 0;
     setInterval(function () {
 
-        it = (it+1)%5;
+        it = (it + 1) % 5;
 
         if (somethingChanged)
-            updateExtraCtx1();
+            updateExtraCtx1(MyCanvas, extraCtx1, mainObjects, anthill);
         somethingChanged = false;
 
-        if(it===0)
-            updateExtraCtx2();
+        if (it === 0)
+            updateExtraCtx2(MyCanvas, extraCtx2, pheromones);
 
-        updateCtx();
+        updateCtx(MyCanvas, ctx, anthill, ants, ExtraCanvas1, ExtraCanvas2);
     }, 0);
 });
