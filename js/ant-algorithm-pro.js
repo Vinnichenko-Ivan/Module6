@@ -23,15 +23,15 @@ window.addEventListener("load", function onWindowLoad() {
     //PHEROMONES
     let minPheromoneValue = 0.000001;
     let minDistanceToAnthill = 1;
-    let pheromonesDrawingMode = 1;//1 - качественная отрисовка, 2 - количественная
+    let pheromonesDrawingMode = 2;//1 - качественная отрисовка, 2 - количественная
     let pheromonesDecreasingCoefficient = 0.97;
 
 
     //HOW OFTEN
     let howOftenToRedrawPheromones = 5;
-    let howOftenToUpdateAntsDirectionByPheromones = 20;
+    let howOftenToUpdateAntsDirectionByPheromones = 10;
     let howOftenToLeavePheromones = 5;
-    let howOftenToChooseGoodPath = 0.9;
+    let howOftenToChooseGoodPath = 0.95;
 
     //MAIN
     let mainObjects = new Array(MyCanvas.width / mapPixelScale);
@@ -246,15 +246,17 @@ window.addEventListener("load", function onWindowLoad() {
                                 for (let ii = i - radiusOfAntsEyes; ii < i + radiusOfAntsEyes; ii++) {
                                     for (let jj = j - radiusOfAntsEyes; jj < j + radiusOfAntsEyes; jj++) {
                                         if (ii >= 0 && jj >= 0 && ii < pheromones.length && jj < pheromones[0].length && pheromones[ii][jj].notEmpty && ((this.Food && pheromones[i][j].toHomePheromones) || (!this.Food && pheromones[i][j].toFoodPheromones))) {
-                                            if (this.Food) {
-                                                if (iBestPheromone === -1 || (pheromones[ii][jj].toHomePheromones > pheromones[iBestPheromone][jBestPheromone].toHomePheromones)) {
-                                                    iBestPheromone = ii;
-                                                    jBestPheromone = jj;
-                                                }
-                                            } else {
-                                                if (iBestPheromone === -1 || (pheromones[ii][jj].toFoodPheromones > pheromones[iBestPheromone][jBestPheromone].toFoodPheromones)) {
-                                                    iBestPheromone = ii;
-                                                    jBestPheromone = jj;
+                                            if((Math.abs(this.Vx/this.Vy) > 1 && i*ii > 0)||(Math.abs(this.Vy/this.Vx) > 1 && j*jj > 0)) {//это проверка, чтобы не оборачивался муравей
+                                                if (this.Food) {
+                                                    if (iBestPheromone === -1 || (pheromones[ii][jj].toHomePheromones > pheromones[iBestPheromone][jBestPheromone].toHomePheromones)) {
+                                                        iBestPheromone = ii;
+                                                        jBestPheromone = jj;
+                                                    }
+                                                } else {
+                                                    if (iBestPheromone === -1 || (pheromones[ii][jj].toFoodPheromones > pheromones[iBestPheromone][jBestPheromone].toFoodPheromones)) {
+                                                        iBestPheromone = ii;
+                                                        jBestPheromone = jj;
+                                                    }
                                                 }
                                             }
                                         }
