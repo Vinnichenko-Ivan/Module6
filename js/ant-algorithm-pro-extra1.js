@@ -39,33 +39,37 @@ export function updateExtraCtx1(MyCanvas, extraCtx1, mainObjects, anthill) {
     }
 }
 
-export function updateExtraCtx2(MyCanvas, extraCtx2, pheromones) {
+export function updateExtraCtx2(MyCanvas, extraCtx2, pheromones, pheromonesDrawingMode) {
     extraCtx2.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
     for (let i = 0; i < pheromones.length; i++) {
         for (let j = 0; j < pheromones[i].length; j++) {
             pheromones[i][j].next();
             if (pheromones[i][j].notEmpty) {
-/*
-                let toHomeColor, toFoodColor;
 
-                if (pheromones[i][j].toHomePheromones < 16)
-                    toHomeColor = `0${Math.floor(pheromones[i][j].toHomePheromones).toString(16)}`;
-                else
-                    toHomeColor = `${Math.floor(pheromones[i][j].toHomePheromones).toString(16)}`;
+                if(pheromonesDrawingMode === 1){
+                    if (pheromones[i][j].toHomePheromones && pheromones[i][j].toFoodPheromones)
+                        extraCtx2.fillStyle = "#ccee00";
+                    else if (pheromones[i][j].toHomePheromones)
+                        extraCtx2.fillStyle = "orange";
+                    else
+                        extraCtx2.fillStyle = "green";
 
-                if (pheromones[i][j].toFoodPheromones < 16)
-                    toFoodColor = `0${Math.floor(pheromones[i][j].toFoodPheromones).toString(16)}`;
-                else
-                    toFoodColor = `${Math.floor(pheromones[i][j].toFoodPheromones).toString(16)}`;
+                }
+                else {
+                    let toHomeColor, toFoodColor;
 
-                extraCtx2.fillStyle = `#${toHomeColor}${toFoodColor}00`;*/
+                    if (pheromones[i][j].toHomePheromones < 16)
+                        toHomeColor = `0${Math.floor(pheromones[i][j].toHomePheromones).toString(16)}`;
+                    else
+                        toHomeColor = `${Math.min(Math.floor(pheromones[i][j].toHomePheromones), 255).toString(16)}`;
 
-                if (pheromones[i][j].toHomePheromones && pheromones[i][j].toFoodPheromones)
-                    extraCtx2.fillStyle = "yellow";
-                else if (pheromones[i][j].toHomePheromones)
-                    extraCtx2.fillStyle = "orange";
-                else
-                    extraCtx2.fillStyle = "green";
+                    if (pheromones[i][j].toFoodPheromones < 16)
+                        toFoodColor = `0${Math.floor(pheromones[i][j].toFoodPheromones).toString(16)}`;
+                    else
+                        toFoodColor = `${Math.min(Math.floor(pheromones[i][j].toFoodPheromones), 255).toString(16)}`;
+
+                    extraCtx2.fillStyle = `#${toHomeColor}${toFoodColor}00`;
+                }
 
                 extraCtx2.beginPath();
                 extraCtx2.strokeStyle = "black";

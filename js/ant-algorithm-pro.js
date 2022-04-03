@@ -13,13 +13,27 @@ window.addEventListener("load", function onWindowLoad() {
     let mapPixelScale = 10;//каждый i-ый пиксель хранит объект, остальные - лишь картинка
     let mapPheromoneScale = 10;//то же самое, но уже для феромонов
 
+    //ANTS
+    let antsNumber = 200;
     let antStepLength = 1.5;
-    let pheromonesDecreasingCoefficient = 0.9;
-    let minPheromoneValue = 0.5;
-    let minDistanceToAnthill = 0.5;
-    let antsNumber = 50;
-    let constForDistanceFromHome = 10000;
+    let firstStepLength = 2;
+    let radiusOfAntsEyes = 5;
+    let constForDistanceFromHome = 1000;
 
+    //PHEROMONES
+    let minPheromoneValue = 0.000001;
+    let minDistanceToAnthill = 1;
+    let pheromonesDrawingMode = 1;//1 - качественная отрисовка, 2 - количественная
+    let pheromonesDecreasingCoefficient = 0.97;
+
+
+    //HOW OFTEN
+    let howOftenToRedrawPheromones = 5;
+    let howOftenToUpdateAntsDirectionByPheromones = 20;
+    let howOftenToLeavePheromones = 5;
+    let howOftenToChooseGoodPath = 0.9;
+
+    //MAIN
     let mainObjects = new Array(MyCanvas.width / mapPixelScale);
     let pheromones = new Array(MyCanvas.width / mapPheromoneScale);
     let somethingChanged = true;//делаем перерисовку фона только тогда, когда на нем что-то поменялось
@@ -127,29 +141,58 @@ window.addEventListener("load", function onWindowLoad() {
             let r2 = Math.random() * 2 - 1;
             ants[i] = {
                 it: 0,
-                distanceFromHome: 0,
-                distanceFromFood: 0,
+                distanceFromHome: 1,
+                distanceFromFood: 1,
+                chosenPheromoneI: -1,
+                chosenPheromoneJ: -1,
                 Vx: r1,
                 Vy: r2,
                 Food: 0,
-                x: anthill.x + (r1 * (anthill.radius + 1)) / (Math.sqrt(r1 ** 2 + r2 ** 2)),
-                y: anthill.y + (r2 * (anthill.radius + 1)) / (Math.sqrt(r1 ** 2 + r2 ** 2)),
+                x: anthill.x + (r1 * (anthill.radius + firstStepLength)) / (Math.sqrt(r1 ** 2 + r2 ** 2)),
+                y: anthill.y + (r2 * (anthill.radius + firstStepLength)) / (Math.sqrt(r1 ** 2 + r2 ** 2)),
                 next: function () {
+
+                    this.it = (this.it + 1) % 1000000;
+
+                    //СИНУСОИДАЛЬНОЕ ДВИЖЕНИЕ
+                    /*if(this.it%1 === 0) {
+                        this.x += 0.5 * Math.sin(0.03*this.it) * Math.cos(90-Math.PI*(this.Vy/this.Vx));
+                        this.y += 0.5 * Math.sin(0.03*this.it) * Math.sin(90-Math.PI*(this.Vy/this.Vx));
+                    }*/
+
+
+                    //УБИТЬ МУРАВЬЯ, ЕСЛИ ЗАЛЕЗ, КУДА НЕ НАДО
+                    if (this.x < 0 || this.y < 0 || this.x > MyCanvas.offsetWidth || this.y > MyCanvas.offsetHeight || (Math.sqrt((this.x - anthill.x) ** 2 + (this.y - anthill.y) ** 2) - anthill.radius < 0)) {
+                        let r1 = Math.random() * 2 - 1;
+                        let r2 = Math.random() * 2 - 1;
+                        this.it = 0;
+                        this.distanceFromHome = 1;
+                        this.distanceFromFood = 1;
+                        this.chosenPheromoneI = -1;
+                        this.chosenPheromoneJ = -1;
+                        this.Vx = r1;
+                        this.Vy = r2;
+                        this.Food = 0;
+                        this.x = anthill.x + (r1 * (anthill.radius + firstStepLength)) / (Math.sqrt(r1 ** 2 + r2 ** 2));
+                        this.y = anthill.y + (r2 * (anthill.radius + firstStepLength)) / (Math.sqrt(r1 ** 2 + r2 ** 2));
+                    }
 
                     //СТОЛКНОВЕНИЕ С МУРАВЕЙНИКОМ
                     if (Math.sqrt((this.x - anthill.x) ** 2 + (this.y - anthill.y) ** 2) - anthill.radius <= minDistanceToAnthill) {
                         this.Vx *= -1;
                         this.Vy *= -1;
-                        this.x += (this.Vx * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
-                        this.y += (this.Vy * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                        if (this.Food) {
+                            this.distanceFromHome = 1;
+                            this.distanceFromFood = 1;
+                            this.chosenPheromoneI = -1;
+                            this.chosenPheromoneJ = -1;
+                        }
+                        this.x += (Math.random() - 0.5)/4 + (this.Vx * antStepLength * 2) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                        this.y += (Math.random() - 0.5)/4 + (this.Vy * antStepLength * 2) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
                         this.Food = 0;
-                        this.distanceFromFood = 0;
                     } else {
 
                         //КОРРЕКТИРОВКА НАПРАВЛЕНИЯ ДВИЖЕНИЯ
-                        this.x += (this.Vx * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
-                        this.y += (this.Vy * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
-
                         let x = this.x, y = this.y;
                         let i = Math.floor(x / mapPixelScale);
                         let j = Math.floor(y / mapPixelScale);
@@ -157,9 +200,12 @@ window.addEventListener("load", function onWindowLoad() {
 
                             //ЕСЛИ ВРЕЗАЛСЯ В ЕДУ
                             if (mainObjects[i][j].food && this.Food === 0) {
+                                this.distanceFromHome = 1;
+                                this.distanceFromFood = 1;
+                                this.chosenPheromoneI = -1;
+                                this.chosenPheromoneJ = -1;
                                 this.Food = mainObjects[i][j].food;
-                                this.distanceFromHome = 0;
-                                mainObjects[i][j].food = Math.max(0, mainObjects[i][j].food - 50);
+                                mainObjects[i][j].food = Math.max(0, mainObjects[i][j].food - 10);
                                 if (mainObjects[i][j].food === 0)
                                     mainObjects[i][j].notEmpty = false;
                                 somethingChanged = true;
@@ -170,7 +216,7 @@ window.addEventListener("load", function onWindowLoad() {
                             y += (this.Vy * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
                             i = Math.floor(x / mapPixelScale);
                             j = Math.floor(y / mapPixelScale);
-                            if (!mainObjects[i][j].notEmpty)
+                            if (i >= 0 && j >= 0 && !mainObjects[i][j].notEmpty)
                                 this.Vx *= -1;
                             else {
                                 x = this.x;
@@ -179,46 +225,112 @@ window.addEventListener("load", function onWindowLoad() {
                                 y += (this.Vy * (-1) * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
                                 i = Math.floor(x / mapPixelScale);
                                 j = Math.floor(y / mapPixelScale);
-                                if (!mainObjects[i][j].notEmpty)
+                                if (i >= 0 && j >= 0 && !mainObjects[i][j].notEmpty)
                                     this.Vy *= -1;
                                 else {
                                     this.Vx *= -1;
                                     this.Vy *= -1;
                                 }
                             }
-                        }
+                        } else {
 
+                            //ПРОАНАЛИЗИРОВАТЬ БЛИЗЛЕЖАЩИЕ ФЕРОМОНЫ
+                            //ВЫБРАТЬ ЛУЧШИЙ И С БОЛЬШОЙ ВЕРОЯТНОСТЬЮ ПОВЕРНУТЬСЯ К НЕМУ
+                            if (this.it % howOftenToUpdateAntsDirectionByPheromones === 0) {
+                                x = this.x;
+                                y = this.y;
+                                i = Math.floor(x / mapPheromoneScale);
+                                j = Math.floor(y / mapPheromoneScale);
 
-                        //ОСТАВЛЕНИЕ ФЕРОМОНОВ
-                        x = this.x;
-                        y = this.y;
-                        i = Math.floor(x / mapPheromoneScale);
-                        j = Math.floor(y / mapPheromoneScale);
-                        if (this.Food)
-                            pheromones[i][j].toFoodPheromones = Math.min(255, pheromones[i][j].toFoodPheromones + (this.Food**4)/this.distanceFromFood);
-                        else
-                            pheromones[i][j].toHomePheromones = Math.min(255, pheromones[i][j].toHomePheromones + constForDistanceFromHome/this.distanceFromHome);
-                        pheromones[i][j].notEmpty = true;
+                                let iBestPheromone = -1, jBestPheromone = -1;
+                                for (let ii = i - radiusOfAntsEyes; ii < i + radiusOfAntsEyes; ii++) {
+                                    for (let jj = j - radiusOfAntsEyes; jj < j + radiusOfAntsEyes; jj++) {
+                                        if (ii >= 0 && jj >= 0 && ii < pheromones.length && jj < pheromones[0].length && pheromones[ii][jj].notEmpty && ((this.Food && pheromones[i][j].toHomePheromones) || (!this.Food && pheromones[i][j].toFoodPheromones))) {
+                                            if (this.Food) {
+                                                if (iBestPheromone === -1 || (pheromones[ii][jj].toHomePheromones > pheromones[iBestPheromone][jBestPheromone].toHomePheromones)) {
+                                                    iBestPheromone = ii;
+                                                    jBestPheromone = jj;
+                                                }
+                                            } else {
+                                                if (iBestPheromone === -1 || (pheromones[ii][jj].toFoodPheromones > pheromones[iBestPheromone][jBestPheromone].toFoodPheromones)) {
+                                                    iBestPheromone = ii;
+                                                    jBestPheromone = jj;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if (iBestPheromone !== -1 && !(Math.abs(iBestPheromone - this.chosenPheromoneI)<5 && Math.abs(jBestPheromone - this.chosenPheromoneJ)<5)) {
+                                    if (Math.random() < howOftenToChooseGoodPath) {
+                                        this.Vx = (iBestPheromone + 1) * mapPheromoneScale - this.x;
+                                        this.Vy = (jBestPheromone + 1) * mapPheromoneScale - this.y;
+                                        this.chosenPheromoneI = iBestPheromone;
+                                        this.chosenPheromoneJ = jBestPheromone;
+                                    }
+                                }
 
+                                //ПРОВЕРКА, ВИДИТ ЛИ ОН УЖЕ МУРАВЕЙНИК
+                                if (this.Food && (Math.sqrt((this.x - anthill.x) ** 2 + (this.y - anthill.y) ** 2) - anthill.radius < radiusOfAntsEyes * mapPixelScale)) {
+                                    if (Math.random() < howOftenToChooseGoodPath) {
+                                        this.Vx = anthill.x - this.x;
+                                        this.Vy = anthill.y - this.y;
+                                    }
+                                }
 
-                        //РЕГУЛИРОВАТЬ ИСПАРЕНИЕ ФЕРОМОНОВ
-                        //if(this.it%1 === 0) {
-                            if (this.Food) {
-                                this.distanceFromFood = Math.min(1000000, this.distanceFromFood + 1);
-                            } else {
-                                this.distanceFromHome = Math.min(1000000, this.distanceFromHome + 1);
+                                //ПРОВЕРКА, ВИДИТ ЛИ ОН УЖЕ ЕДУ
+                                if (!this.Food) {
+                                    x = this.x;
+                                    y = this.y;
+                                    i = Math.floor(x / mapPixelScale);
+                                    j = Math.floor(y / mapPixelScale);
+                                    let iBestFood = -1, jBestFood = -1;
+                                    for (let ii = i - radiusOfAntsEyes; ii < i + radiusOfAntsEyes; ii++) {
+                                        for (let jj = j - radiusOfAntsEyes; jj < j + radiusOfAntsEyes; jj++) {
+                                            if (ii >= 0 && jj >= 0 && ii < mainObjects.length && jj < mainObjects[0].length && mainObjects[ii][jj].Food) {
+                                                if (iBestPheromone === -1 || (mainObjects[ii][jj].Food > mainObjects[iBestFood][jBestFood].Food)) {
+                                                    iBestFood = ii;
+                                                    jBestFood = jj;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (iBestFood !== -1) {
+                                        if (Math.random() < howOftenToChooseGoodPath) {
+                                            this.Vx = (iBestFood + 1) * mapPixelScale - this.x;
+                                            this.Vy = (jBestFood + 1) * mapPixelScale - this.y;
+                                        }
+                                    }
+                                }
                             }
-                        //}
-                        this.it = (this.it+1)%1000000;
 
+                            if (this.it % howOftenToLeavePheromones === 0) {
 
-                        //СИНУСОИДАЛЬНОЕ ДВИЖЕНИЕ
-                        /*if (this.it % 50 === 0) {
-                            this.Vx += Math.sin(this.it)*0.5;
-                            this.Vy += Math.sin(this.it)*0.5;
+                                //ОСТАВЛЕНИЕ ФЕРОМОНОВ
+                                x = this.x;
+                                y = this.y;
+                                i = Math.floor(x / mapPheromoneScale);
+                                j = Math.floor(y / mapPheromoneScale);
+
+                                if (i >= 0 && j >= 0 && (!mainObjects[Math.floor(x / mapPixelScale) - 1][Math.floor(y / mapPixelScale) - 1].notEmpty) && ((this.Food && this.distanceFromFood > 0.000001) || (!this.Food && this.distanceFromHome > 0.000001))) {
+                                    if (this.Food)
+                                        pheromones[i][j].toFoodPheromones = Math.min(100000, pheromones[i][j].toFoodPheromones + 1.5 * (this.Food ** 2) * this.distanceFromFood);
+                                    else
+                                        pheromones[i][j].toHomePheromones = Math.min(100000, pheromones[i][j].toHomePheromones + 1.5 * constForDistanceFromHome * this.distanceFromHome);
+                                    pheromones[i][j].notEmpty = true;
+
+                                    //РЕГУЛИРОВАТЬ ИСПАРЕНИЕ ФЕРОМОНОВ
+                                    if (this.Food) {
+                                        this.distanceFromFood *= 0.95;
+                                    } else {
+                                        this.distanceFromHome *= 0.95;
+                                    }
+                                }
+                            }
                         }
-                        this.it = (this.it + 1) % 1000000;*/
                     }
+
+                    this.x += (Math.random() - 0.5)/4 + (this.Vx * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                    this.y += (Math.random() - 0.5)/4+ (this.Vy * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
                 }
             }
         }
@@ -375,14 +487,14 @@ window.addEventListener("load", function onWindowLoad() {
     let it = 0;
     setInterval(function () {
 
-        it = (it + 1) % 5;
+        it = (it + 1) % howOftenToRedrawPheromones;
 
         if (somethingChanged)
             updateExtraCtx1(MyCanvas, extraCtx1, mainObjects, anthill);
         somethingChanged = false;
 
         if (it === 0)
-            updateExtraCtx2(MyCanvas, extraCtx2, pheromones);
+            updateExtraCtx2(MyCanvas, extraCtx2, pheromones, pheromonesDrawingMode);
 
         updateCtx(MyCanvas, ctx, anthill, ants, ExtraCanvas1, ExtraCanvas2);
     }, 0);
