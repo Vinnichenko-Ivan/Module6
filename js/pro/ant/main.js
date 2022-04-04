@@ -4,54 +4,6 @@ import {vars} from "./vars.js";
 
 window.addEventListener("load", function onWindowLoad() {
 
-    let MyCanvas = document.getElementById("myCanvas");
-    let ctx = MyCanvas.getContext('2d');
-    let ExtraCanvas1 = document.getElementById("extraCanvas1");
-    let extraCtx1 = ExtraCanvas1.getContext('2d');
-    let ExtraCanvas2 = document.getElementById("extraCanvas2");
-    let extraCtx2 = ExtraCanvas2.getContext('2d');
-
-    //САМАЯ ВАЖНАЯ ВЕЩЬ!!! ПОЗВОЛЯЕТ УВЕЛИЧИТЬ ФПС!!!
-    let mapPixelScale = 10;//каждый i-ый пиксель хранит объект, остальные - лишь картинка
-    let mapPheromoneScale = 10;//то же самое, но уже для феромонов
-
-    //ANTS
-    let antsNumber = 200;
-    let antStepLength = 1.5;
-    let firstStepLength = 2;
-    let radiusOfAntsEyes = 5;
-    let constForDistanceFromHome = 1000;
-
-    //PHEROMONES
-    let minPheromoneValue = 0.000001;
-    let minDistanceToAnthill = 1;
-    let pheromonesDrawingMode = 2;//1 - качественная отрисовка, 2 - количественная
-    let pheromonesDecreasingCoefficient = 0.97;
-
-
-    //HOW OFTEN
-    let howOftenToRedrawPheromones = 5;
-    let howOftenToUpdateAntsDirectionByPheromones = 10;
-    let howOftenToLeavePheromones = 5;
-    let howOftenToChooseGoodPath = 0.95;
-
-    //MAIN
-    let mainObjects = new Array(MyCanvas.width / mapPixelScale);
-    let pheromones = new Array(MyCanvas.width / mapPheromoneScale);
-    let somethingChanged = true;//делаем перерисовку фона только тогда, когда на нем что-то поменялось
-
-    let ants = new Array(antsNumber);
-    let anthill = {
-        isBuilt: false,
-        radius: 20,
-        x: -1,
-        y: -1,
-        color: "#ff4f3f",
-        borderColor: "black"
-    }
-
-
-    //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     //~~~~~~~~~~~~~~~~СТЕНЫ и ЕДА~~~~~~~~~~~~~~~~
     initMainObjects();
@@ -79,18 +31,18 @@ window.addEventListener("load", function onWindowLoad() {
     let drawingMode = new Array(4);//0 - еда, 1 - стены, 2 - муравьи, 3 - ластик
 
     clearButton.onclick = function () {
-        for (let i = 1; i < mainObjects.length - 1; i++) {
-            for (let j = 1; j < mainObjects[i].length - 1; j++) {
-                mainObjects[i][j].notEmpty = false;
-                mainObjects[i][j].wall = false;
-                mainObjects[i][j].food = 0;
+        for (let i = 1; i < vars.mainObjects.length - 1; i++) {
+            for (let j = 1; j < vars.mainObjects[i].length - 1; j++) {
+                vars.mainObjects[i][j].notEmpty = false;
+                vars.mainObjects[i][j].wall = false;
+                vars.mainObjects[i][j].food = 0;
             }
         }
-        for (let i = 0; i < pheromones.length; i++) {
-            for (let j = 0; j < pheromones[i].length; j++) {
-                pheromones[i][j].notEmpty = false;
-                pheromones[i][j].toHomePheromones = 0;
-                pheromones[i][j].toFoodPheromones = 0;
+        for (let i = 0; i < vars.pheromones.length; i++) {
+            for (let j = 0; j < vars.pheromones[i].length; j++) {
+                vars.pheromones[i][j].notEmpty = false;
+                vars.pheromones[i][j].toHomePheromones = 0;
+                vars.pheromones[i][j].toFoodPheromones = 0;
             }
         }
 
@@ -99,9 +51,9 @@ window.addEventListener("load", function onWindowLoad() {
         drawingMode[2] = false;
         drawingMode[3] = false;
 
-        anthill.isBuilt = false;
+        vars.anthill.isBuilt = false;
 
-        somethingChanged = true;
+        vars.somethingChanged = true;
     }
 
     foodButton.onclick = function () {
@@ -129,79 +81,79 @@ window.addEventListener("load", function onWindowLoad() {
         drawingMode[3] = true;
     }
 
-    MyCanvas.onmousemove = function (e) {
-        if (e.buttons > 0 && e.offsetX >= 0 && e.offsetY >= 0 && e.offsetX <= MyCanvas.width && e.offsetY <= MyCanvas.height) {
+    vars.MyCanvas.onmousemove = function (e) {
+        if (e.buttons > 0 && e.offsetX >= 0 && e.offsetY >= 0 && e.offsetX <= vars.MyCanvas.width && e.offsetY <= vars.MyCanvas.height) {
             if (drawingMode[0]) {
 
                 //ЕДА!!!
-                let x = Math.floor(e.offsetX / mapPixelScale);
-                let y = Math.floor(e.offsetY / mapPixelScale);
+                let x = Math.floor(e.offsetX / vars.mapPixelScale);
+                let y = Math.floor(e.offsetY / vars.mapPixelScale);
 
                 let width = brushWidth.value;
 
-                for (let i = Math.max(0, x - Math.floor(width / mapPixelScale)); i < Math.min(MyCanvas.width / mapPixelScale, x + Math.floor(width / mapPixelScale)); i++) {
-                    for (let j = Math.max(0, y - Math.floor(width / mapPixelScale)); j < Math.min(MyCanvas.height / mapPixelScale, y + Math.floor(width / mapPixelScale)); j++) {
-                        if (!mainObjects[i][j].wall) {
-                            mainObjects[i][j].food = Math.min(255, mainObjects[i][j].food + 6);
-                            mainObjects[i][j].notEmpty = true;
+                for (let i = Math.max(0, x - Math.floor(width / vars.mapPixelScale)); i < Math.min(vars.MyCanvas.width / vars.mapPixelScale, x + Math.floor(width / vars.mapPixelScale)); i++) {
+                    for (let j = Math.max(0, y - Math.floor(width / vars.mapPixelScale)); j < Math.min(vars.MyCanvas.height / vars.mapPixelScale, y + Math.floor(width / vars.mapPixelScale)); j++) {
+                        if (!vars.mainObjects[i][j].wall) {
+                            vars.mainObjects[i][j].food = Math.min(255, vars.mainObjects[i][j].food + 6);
+                            vars.mainObjects[i][j].notEmpty = true;
                         }
                     }
                 }
-                somethingChanged = true;
+                vars.somethingChanged = true;
 
             } else if (drawingMode[1]) {
 
                 //СТЕНА!!!
-                let x = Math.floor(e.offsetX / mapPixelScale);
-                let y = Math.floor(e.offsetY / mapPixelScale);
+                let x = Math.floor(e.offsetX / vars.mapPixelScale);
+                let y = Math.floor(e.offsetY / vars.mapPixelScale);
 
                 let width = brushWidth.value;
 
-                for (let i = Math.max(0, x - Math.floor(width / mapPixelScale)); i < Math.min(MyCanvas.width / mapPixelScale, x + Math.floor(width / mapPixelScale)); i++) {
-                    for (let j = Math.max(0, y - Math.floor(width / mapPixelScale)); j < Math.min(MyCanvas.height / mapPixelScale, y + Math.floor(width / mapPixelScale)); j++) {
-                        mainObjects[i][j].wall = true;
-                        mainObjects[i][j].food = 0;
-                        mainObjects[i][j].toFoodPheromones = 0;
-                        mainObjects[i][j].toHomePheromones = 0;
-                        mainObjects[i][j].notEmpty = true;
+                for (let i = Math.max(0, x - Math.floor(width / vars.mapPixelScale)); i < Math.min(vars.MyCanvas.width / vars.mapPixelScale, x + Math.floor(width / vars.mapPixelScale)); i++) {
+                    for (let j = Math.max(0, y - Math.floor(width / vars.mapPixelScale)); j < Math.min(vars.MyCanvas.height / vars.mapPixelScale, y + Math.floor(width / vars.mapPixelScale)); j++) {
+                        vars.mainObjects[i][j].wall = true;
+                        vars.mainObjects[i][j].food = 0;
+                        vars.mainObjects[i][j].toFoodPheromones = 0;
+                        vars.mainObjects[i][j].toHomePheromones = 0;
+                        vars.mainObjects[i][j].notEmpty = true;
                     }
                 }
-                somethingChanged = true;
+                vars.somethingChanged = true;
 
             } else if (drawingMode[3]) {
 
                 //ЛАСТИК!!!
-                let x = Math.floor(e.offsetX / mapPixelScale);
-                let y = Math.floor(e.offsetY / mapPixelScale);
+                let x = Math.floor(e.offsetX / vars.mapPixelScale);
+                let y = Math.floor(e.offsetY / vars.mapPixelScale);
 
                 let width = brushWidth.value;
 
-                for (let i = Math.max(0, x - Math.floor(width / mapPixelScale)); i < Math.min(MyCanvas.width / mapPixelScale, x + Math.floor(width / mapPixelScale)); i++) {
-                    for (let j = Math.max(0, y - Math.floor(width / mapPixelScale)); j < Math.min(MyCanvas.height / mapPixelScale, y + Math.floor(width / mapPixelScale)); j++) {
-                        if (i !== 0 && j !== 0 && i !== mainObjects.length - 1 && j !== mainObjects[0].length - 1) {
-                            mainObjects[i][j].notEmpty = false;
-                            mainObjects[i][j].wall = false;
-                            mainObjects[i][j].food = 0;
+                for (let i = Math.max(0, x - Math.floor(width / vars.mapPixelScale)); i < Math.min(vars.MyCanvas.width / vars.mapPixelScale, x + Math.floor(width / vars.mapPixelScale)); i++) {
+                    for (let j = Math.max(0, y - Math.floor(width / vars.mapPixelScale)); j < Math.min(vars.MyCanvas.height / vars.mapPixelScale, y + Math.floor(width / vars.mapPixelScale)); j++) {
+                        if (i !== 0 && j !== 0 && i !== vars.mainObjects.length - 1 && j !== vars.mainObjects[0].length - 1) {
+                            vars.mainObjects[i][j].notEmpty = false;
+                            vars.mainObjects[i][j].wall = false;
+                            vars.mainObjects[i][j].food = 0;
                         }
                     }
                 }
-                somethingChanged = true;
+                vars.somethingChanged = true;
             }
         }
     };
 
 
-    MyCanvas.onmousedown = function (e) {
+    vars.MyCanvas.onmousedown = function (e) {
         if (drawingMode[2]) {
 
             //СПАВН КОЛОНИИ!!!
-            if (!anthill.isBuilt && e.offsetX > anthill.radius * 2 && e.offsetY > anthill.radius * 2 && e.offsetX < MyCanvas.width - anthill.radius * 2 && e.offsetY < MyCanvas.height - anthill.radius * 2) {
-                anthill.isBuilt = true;
-                anthill.x = e.offsetX;
-                anthill.y = e.offsetY;
+            if (!vars.anthill.isBuilt && e.offsetX > vars.anthill.radius * 2 && e.offsetY > vars.anthill.radius * 2 && e.offsetX < vars.MyCanvas.width - vars.anthill.radius * 2 && e.offsetY < vars.MyCanvas.height - vars.anthill.radius * 2) {
+                vars.anthill.isBuilt = true;
+                vars.anthill.x = e.offsetX;
+                vars.anthill.y = e.offsetY;
 
                 initAnts();
-                somethingChanged = true;
+                vars.somethingChanged = true;
             }
         }
     }
@@ -213,15 +165,15 @@ window.addEventListener("load", function onWindowLoad() {
     let it = 0;
     setInterval(function () {
 
-        it = (it + 1) % howOftenToRedrawPheromones;
+        it = (it + 1) % vars.howOftenToRedrawPheromones;
 
-        if (somethingChanged)
-            updateExtraCtx1(MyCanvas, extraCtx1, mainObjects, anthill);
-        somethingChanged = false;
+        if (vars.somethingChanged)
+            updateExtraCtx1();
+        vars.somethingChanged = false;
 
         if (it === 0)
-            updateExtraCtx2(MyCanvas, extraCtx2, pheromones, pheromonesDrawingMode);
+            updateExtraCtx2();
 
-        updateCtx(MyCanvas, ctx, anthill, ants, ExtraCanvas1, ExtraCanvas2);
+        updateCtx();
     }, 0);
 });

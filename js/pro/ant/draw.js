@@ -3,22 +3,22 @@ import {vars} from "./vars.js";
 //---------------------------------------------------------------
 //---------------------------------------------------------------
 //~~~~~~~~~~~~~~~~~~~~~~~ФУНКЦИИ ОТРИСОВКИ~~~~~~~~~~~~~~~~~~~~~~~
-export function updateCtx(MyCanvas, ctx, anthill, ants, ExtraCanvas1, ExtraCanvas2) {
-    ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
-    ctx.drawImage(ExtraCanvas2, 0, 0);
-    ctx.drawImage(ExtraCanvas1, 0, 0);
+export function updateCtx() {
+    vars.ctx.clearRect(0, 0, vars.MyCanvas.width, vars.MyCanvas.height);
+    vars.ctx.drawImage(vars.ExtraCanvas2, 0, 0);
+    vars.ctx.drawImage(vars.ExtraCanvas1, 0, 0);
 
-    if (anthill.isBuilt) {
-        for (let i = 0; i < ants.length; i++)
-            ants[i].next();
-        for (let i = 0; i < ants.length; i++) {
-            ctx.beginPath();
-            ctx.fillStyle = "red";
-            ctx.strokeStyle = "black";
-            ctx.arc(ants[i].x, ants[i].y, 3, 0, Math.PI * 2, false);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
+    if (vars.anthill.isBuilt) {
+        for (let i = 0; i < vars.ants.length; i++)
+            vars.ants[i].next();
+        for (let i = 0; i < vars.ants.length; i++) {
+            vars.ctx.beginPath();
+            vars.ctx.fillStyle = "red";
+            vars.ctx.strokeStyle = "black";
+            vars.ctx.arc(vars.ants[i].x, vars.ants[i].y, 3, 0, Math.PI * 2, false);
+            vars.ctx.closePath();
+            vars.ctx.fill();
+            vars.ctx.stroke();
         }
     }
 }
@@ -30,14 +30,14 @@ export function updateExtraCtx1() {
             if (vars.mainObjects[i][j].notEmpty)
                 vars.mainObjects[i][j].next();
 
-    if (anthill.isBuilt) {
-        extraCtx1.beginPath();
-        extraCtx1.fillStyle = anthill.color;
-        extraCtx1.strokeStyle = anthill.borderColor;
-        extraCtx1.arc(anthill.x, anthill.y, anthill.radius, 0, Math.PI * 2, false);
-        extraCtx1.closePath();
-        extraCtx1.fill();
-        extraCtx1.stroke();
+    if (vars.anthill.isBuilt) {
+        vars.extraCtx1.beginPath();
+        vars.extraCtx1.fillStyle = vars.anthill.color;
+        vars.extraCtx1.strokeStyle = vars.anthill.borderColor;
+        vars.extraCtx1.arc(vars.anthill.x, vars.anthill.y, vars.anthill.radius, 0, Math.PI * 2, false);
+        vars.extraCtx1.closePath();
+        vars.extraCtx1.fill();
+        vars.extraCtx1.stroke();
     }
 }
 
@@ -48,37 +48,37 @@ export function updateExtraCtx2() {
             vars.pheromones[i][j].next();
             if (vars.pheromones[i][j].notEmpty) {
 
-                if(pheromonesDrawingMode === 1){
-                    if (pheromones[i][j].toHomePheromones && pheromones[i][j].toFoodPheromones)
-                        extraCtx2.fillStyle = "#ccee00";
-                    else if (pheromones[i][j].toHomePheromones)
-                        extraCtx2.fillStyle = "orange";
+                if(vars.pheromonesDrawingMode === 1){
+                    if (vars.pheromones[i][j].toHomePheromones && vars.pheromones[i][j].toFoodPheromones)
+                        vars.extraCtx2.fillStyle = "#ccee00";
+                    else if (vars.pheromones[i][j].toHomePheromones)
+                        vars.extraCtx2.fillStyle = "orange";
                     else
-                        extraCtx2.fillStyle = "green";
+                        vars.extraCtx2.fillStyle = "green";
 
                 }
                 else {
                     let toHomeColor, toFoodColor;
 
-                    if (pheromones[i][j].toHomePheromones < 16)
-                        toHomeColor = `0${Math.floor(pheromones[i][j].toHomePheromones).toString(16)}`;
+                    if (vars.pheromones[i][j].toHomePheromones < 16)
+                        toHomeColor = `0${Math.floor(vars.pheromones[i][j].toHomePheromones).toString(16)}`;
                     else
-                        toHomeColor = `${Math.min(Math.floor(pheromones[i][j].toHomePheromones), 255).toString(16)}`;
+                        toHomeColor = `${Math.min(Math.floor(vars.pheromones[i][j].toHomePheromones), 255).toString(16)}`;
 
-                    if (pheromones[i][j].toFoodPheromones < 16)
-                        toFoodColor = `0${Math.floor(pheromones[i][j].toFoodPheromones).toString(16)}`;
+                    if (vars.pheromones[i][j].toFoodPheromones < 16)
+                        toFoodColor = `0${Math.floor(vars.pheromones[i][j].toFoodPheromones).toString(16)}`;
                     else
-                        toFoodColor = `${Math.min(Math.floor(pheromones[i][j].toFoodPheromones), 255).toString(16)}`;
+                        toFoodColor = `${Math.min(Math.floor(vars.pheromones[i][j].toFoodPheromones), 255).toString(16)}`;
 
-                    extraCtx2.fillStyle = `#${toHomeColor}${toFoodColor}00`;
+                    vars.extraCtx2.fillStyle = `#${toHomeColor}${toFoodColor}00`;
                 }
 
-                extraCtx2.beginPath();
-                extraCtx2.strokeStyle = "black";
-                extraCtx2.arc(pheromones[i][j].x, pheromones[i][j].y, 2, 0, Math.PI * 2, false);
-                extraCtx2.closePath();
-                extraCtx2.fill();
-                extraCtx2.stroke();
+                vars.extraCtx2.beginPath();
+                vars.extraCtx2.strokeStyle = "black";
+                vars.extraCtx2.arc(vars.pheromones[i][j].x, vars.pheromones[i][j].y, 2, 0, Math.PI * 2, false);
+                vars.extraCtx2.closePath();
+                vars.extraCtx2.fill();
+                vars.extraCtx2.stroke();
             }
         }
     }
