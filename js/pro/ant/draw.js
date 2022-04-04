@@ -1,3 +1,5 @@
+import {vars} from "./vars.js";
+
 //---------------------------------------------------------------
 //---------------------------------------------------------------
 //~~~~~~~~~~~~~~~~~~~~~~~ФУНКЦИИ ОТРИСОВКИ~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,12 +23,12 @@ export function updateCtx(MyCanvas, ctx, anthill, ants, ExtraCanvas1, ExtraCanva
     }
 }
 
-export function updateExtraCtx1(MyCanvas, extraCtx1, mainObjects, anthill) {
-    extraCtx1.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
-    for (let i = 0; i < mainObjects.length; i++)
-        for (let j = 0; j < mainObjects[i].length; j++)
-            if (mainObjects[i][j].notEmpty)
-                mainObjects[i][j].next();
+export function updateExtraCtx1() {
+    vars.extraCtx1.clearRect(0, 0, vars.MyCanvas.width, vars.MyCanvas.height);
+    for (let i = 0; i < vars.mainObjects.length; i++)
+        for (let j = 0; j < vars.mainObjects[i].length; j++)
+            if (vars.mainObjects[i][j].notEmpty)
+                vars.mainObjects[i][j].next();
 
     if (anthill.isBuilt) {
         extraCtx1.beginPath();
@@ -39,12 +41,12 @@ export function updateExtraCtx1(MyCanvas, extraCtx1, mainObjects, anthill) {
     }
 }
 
-export function updateExtraCtx2(MyCanvas, extraCtx2, pheromones, pheromonesDrawingMode) {
-    extraCtx2.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
-    for (let i = 0; i < pheromones.length; i++) {
-        for (let j = 0; j < pheromones[i].length; j++) {
-            pheromones[i][j].next();
-            if (pheromones[i][j].notEmpty) {
+export function updateExtraCtx2() {
+    vars.extraCtx2.clearRect(0, 0, vars.MyCanvas.width, vars.MyCanvas.height);
+    for (let i = 0; i < vars.pheromones.length; i++) {
+        for (let j = 0; j < vars.pheromones[i].length; j++) {
+            vars.pheromones[i][j].next();
+            if (vars.pheromones[i][j].notEmpty) {
 
                 if(pheromonesDrawingMode === 1){
                     if (pheromones[i][j].toHomePheromones && pheromones[i][j].toFoodPheromones)
