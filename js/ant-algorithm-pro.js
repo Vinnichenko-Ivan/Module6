@@ -187,8 +187,8 @@ window.addEventListener("load", function onWindowLoad() {
                             this.chosenPheromoneI = -1;
                             this.chosenPheromoneJ = -1;
                         }
-                        this.x += (Math.random() - 0.5)/4 + (this.Vx * antStepLength * 2) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
-                        this.y += (Math.random() - 0.5)/4 + (this.Vy * antStepLength * 2) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                        this.x += (Math.random() - 0.5)/6 + (this.Vx * antStepLength * 2) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                        this.y += (Math.random() - 0.5)/6 + (this.Vy * antStepLength * 2) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
                         this.Food = 0;
                     } else {
 
@@ -315,9 +315,9 @@ window.addEventListener("load", function onWindowLoad() {
 
                                 if (i >= 0 && j >= 0 && (!mainObjects[Math.floor(x / mapPixelScale) - 1][Math.floor(y / mapPixelScale) - 1].notEmpty) && ((this.Food && this.distanceFromFood > 0.000001) || (!this.Food && this.distanceFromHome > 0.000001))) {
                                     if (this.Food)
-                                        pheromones[i][j].toFoodPheromones = Math.min(100000, pheromones[i][j].toFoodPheromones + 1.5 * (this.Food ** 2) * this.distanceFromFood);
+                                        pheromones[i][j].toFoodPheromones = Math.min(100000, pheromones[i][j].toFoodPheromones*0.5 + 1.5 * (this.Food ** 2) * this.distanceFromFood);
                                     else
-                                        pheromones[i][j].toHomePheromones = Math.min(100000, pheromones[i][j].toHomePheromones + 1.5 * constForDistanceFromHome * this.distanceFromHome);
+                                        pheromones[i][j].toHomePheromones = Math.min(100000, pheromones[i][j].toHomePheromones*0.5 + 1.5 * constForDistanceFromHome * this.distanceFromHome);
                                     pheromones[i][j].notEmpty = true;
 
                                     //РЕГУЛИРОВАТЬ ИСПАРЕНИЕ ФЕРОМОНОВ
@@ -331,8 +331,8 @@ window.addEventListener("load", function onWindowLoad() {
                         }
                     }
 
-                    this.x += (Math.random() - 0.5)/4 + (this.Vx * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
-                    this.y += (Math.random() - 0.5)/4+ (this.Vy * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                    this.x += (Math.random() - 0.5)/6 + (this.Vx * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                    this.y += (Math.random() - 0.5)/6+ (this.Vy * antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
                 }
             }
         }
