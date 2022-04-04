@@ -39,7 +39,7 @@ export function initPheromones() {
 export function initMainObjects() {
     for (let i = 0; i < vars.mainObjects.length; i++) {
         vars.mainObjects[i] = new Array(vars.MyCanvas.height / vars.mapPixelScale);
-        for (let j = 0; j < vars.mainObjects[i].length; j++)
+        for (let j = 0; j < vars.mainObjects[i].length; j++) {
             vars.mainObjects[i][j] = {
                 notEmpty: false,
                 x: i * vars.mapPixelScale,
@@ -71,6 +71,19 @@ export function initMainObjects() {
                     }
                 }
             }
+        }
+    }
+    for (let i = 0; i < vars.mainObjects.length; i++) {
+        vars.mainObjects[i][0].notEmpty = true;
+        vars.mainObjects[i][0].wall = true;
+        vars.mainObjects[i][vars.mainObjects[i].length - 1].notEmpty = true;
+        vars.mainObjects[i][vars.mainObjects[i].length - 1].wall = true;
+    }
+    for (let i = 0; i < vars.mainObjects[0].length; i++) {
+        vars.mainObjects[0][i].notEmpty = true;
+        vars.mainObjects[0][i].wall = true;
+        vars.mainObjects[vars.mainObjects.length - 1][i].notEmpty = true;
+        vars.mainObjects[vars.mainObjects.length - 1][i].wall = true;
     }
 }
 
@@ -124,8 +137,8 @@ export function initAnts() {
                         this.chosenPheromoneI = -1;
                         this.chosenPheromoneJ = -1;
                     }
-                    this.x += (Math.random() - 0.5) / 6 + (this.Vx * vars.antStepLength * 2) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
-                    this.y += (Math.random() - 0.5) / 6 + (this.Vy * vars.antStepLength * 2) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                    this.x += (Math.random() - 0.5) + (this.Vx * vars.antStepLength * 2) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                    this.y += (Math.random() - 0.5) + (this.Vy * vars.antStepLength * 2) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
                     this.Food = 0;
                 } else {
 
@@ -268,8 +281,8 @@ export function initAnts() {
                     }
                 }
 
-                this.x += (Math.random() - 0.5) / 6 + (this.Vx * vars.antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
-                this.y += (Math.random() - 0.5) / 6 + (this.Vy * vars.antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                this.x += (this.Vx * vars.antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                this.y += (this.Vy * vars.antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
             }
         }
     }
