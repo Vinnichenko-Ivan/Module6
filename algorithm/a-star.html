@@ -3,21 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title>Алгоритм A*</title>
+
+    <!-- Подключаем шрифты -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+
+    <!-- Подключаем стили -->
     <link href="../css/a-star.css" rel="stylesheet">
+
+    <!-- Подключаем библиотеку jquery -->
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+    <!-- Подключаем библиотеку requirejs, где входная точка - наш скрипт -->
+    <script data-main="../ts/pro/a-star/main" src="https://requirejs.org/docs/release/2.3.6/comments/require.js"></script>
 </head>
 <body>
     <div id="top">
         <div class="margin-middle flex-column center">
             <span>Размер поля:</span>
-            <input class="field-size val" type="range" value="24", min="8", max="64">
+            <label>
+                <input class="field-size val" type="range" value="24" min="8" max="64">
+            </label>
             <span class="field-size display"></span>
         </div>
         <div class="margin-middle flex-column center">
             <span>Задержка между итерациями:</span>
-            <input class="iter-delay val" type="range" value="25", min="10", max="100">
+            <label>
+                <input class="iter-delay val" type="range" value="25" min="10" max="100">
+            </label>
             <span class="iter-delay display"></span>
         </div>
         <div class="margin-big flex-column center">
@@ -27,6 +40,6 @@
         </div>
     </div>
     <div id="field"></div>
-    <script src="../js/a-star.js"></script>
+    <script type="module" src="../ts/pro/a-star/main.ts"></script>
 </body>
 </html>
