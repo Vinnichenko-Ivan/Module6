@@ -133,12 +133,8 @@ button {
     transition: background-color .1s linear;
 }
 
-button:hover, button[active="true"] {
+button:hover {
     background-color: #f6d1d1;
-}
-
-button[active="true"] {
-    transition: 0s;
 }
 
 input[type="number"] {

@@ -1,12 +1,13 @@
 import {AStarAlgorithm} from "./algoritm/a-star";
 import {AlgorithmHolder} from "./algoritm/algorithm";
-import {CellMark, Field} from "./field";
+import {Cell, CellMark, Field} from "./field";
 import {Position} from "./utils";
 import {PrimeAlgorithm} from "./algoritm/prime";
 
-let selected: JQuery;
 const field: Field = new Field(document.getElementById("field"));
 const algorithmHolder: AlgorithmHolder = new AlgorithmHolder();
+
+let selected: Cell;
 
 /*
  * Определяем события кнопок
@@ -23,18 +24,23 @@ const fieldSizeElement = $('.field-size.val').on('input', e => setFieldSize(e.ta
 $('#field')
     .on('mousedown', event => {
         if (!algorithmHolder.running && $(event.target).hasClass('cell')) {
-            selected = $(event.target);
+            let x = +event.target.getAttribute('x');
+            let y = +event.target.getAttribute('y');
+            selected = field.getCell(new Position(x, y));
         }
         return false;
     })
     .on('mouseup', event => {
         if (!algorithmHolder.running && $(event.target).hasClass('cell')) {
-            let element = $(event.target);
+            let x = +event.target.getAttribute('x');
+            let y = +event.target.getAttribute('y');
+            let element = field.getCell(new Position(x, y));
 
-            if (selected.attr('type') === 'start' || selected.attr('type') === 'end') {
-                let old = selected.attr('type');
-                selected.attr('type', 'empty')
-                element.attr('type', old);
+            if (selected.mark != CellMark.NONE) {
+                let oldMark = selected.mark;
+                selected.reset();
+                element.reset();
+                element.mark = oldMark;
                 selected = null;
             }
         }
@@ -54,6 +60,7 @@ async function resizeField() {
 
     // Обновляем поле
     field.rebuild();
+    selected = null;
 
     // Добавляем точки начала и конца
     field.setMark(new Position(2, (field.height/2)|0), CellMark.START);
