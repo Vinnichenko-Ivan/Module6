@@ -7,8 +7,9 @@ body {
 body {
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 
-    background: wheat;
+    background: white;
 
     font-family: 'Inter', serif;
     font-size: 16px;
@@ -16,22 +17,51 @@ body {
 
 /* Стиль верхней менюшки */
 .top {
-    background: white;
+    background: #9fb4ce;
 
     display: flex;
     flex-direction: row;
 
     justify-content: center;
     align-items: center;
+
+    box-shadow: 0 0 2px black;
+
+    height: 5%;
 }
 
 /* Стиль контента */
 .content {
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 
     align-items: center;
     height: 100%;
+}
+
+.window {
+    background: wheat;
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+
+    box-shadow: 0 0 2px black;
+
+    height: 90%;
+    width: 90%;
+    max-height: 90%;
+}
+
+.area {
+    position: absolute;
+    z-index: 1;
+
+    height: 100%;
+    width: 100%;
 }
 
 /* Дерево */
@@ -61,7 +91,7 @@ body {
 
 .tree li {
     display: table-cell;
-    padding: .5em 0;
+    padding: 2em 0;
     vertical-align: top;
 }
 
@@ -71,7 +101,7 @@ body {
     left: 0;
     position: absolute;
     right: 0;
-    top: 0;
+    top: .7em;
 }
 
 .tree li:first-child:before {
@@ -87,13 +117,14 @@ body {
     margin: 0 .2em .5em;
     padding: .2em .5em;
     position: relative;
+    user-select: none;
 }
 
 .tree ul:before,
 .tree span:before {
     outline: solid 1px #666;
     content: "";
-    height: .5em;
+    height: 1.2em;
     left: 50%;
     position: absolute;
 }
@@ -103,7 +134,7 @@ body {
 }
 
 .tree span:before {
-    top: -.55em;
+    top: -1.3em;
 }
 
 .tree>li {

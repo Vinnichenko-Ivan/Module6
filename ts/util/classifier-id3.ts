@@ -500,17 +500,4 @@ export class Id3Tree implements ClassifierTree {
             }
         }
     }
-
-    private prune(): void {
-        if (this._leaf) {
-
-        }
-        else {
-            for (const child of this._children) {
-                child.prune();
-            }
-
-
-        }
-    }
 }

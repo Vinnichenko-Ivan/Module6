@@ -39,20 +39,23 @@
                 <th>Процент ошибок</th>
             </tr>
             <tr>
-                <td id="result-total"></td>
-                <td id="result-classified"></td>
-                <td id="result-successful"></td>
-                <td id="result-errors"></td>
-                <td id="result-error-percent"></td>
+                <td id="result-total">0</td>
+                <td id="result-classified">0</td>
+                <td id="result-successful">0</td>
+                <td id="result-errors">0</td>
+                <td id="result-error-percent">0%</td>
             </tr>
         </table>
-        <table id="current-test"></table>
-        <ul class="tree">
-            <li>
-                <span class="root">Корень</span>
-                <ul id="decision-tree"></ul>
-            </li>
-        </ul>
+        <!--<table id="current-test"></table>-->
+        <div class="window">
+            <div class="area"></div>
+            <ul class="tree movable">
+                <li>
+                    <span class="root">Корень</span>
+                    <ul id="decision-tree"></ul>
+                </li>
+            </ul>
+        </div>
     </div>
 </body>
 </html>

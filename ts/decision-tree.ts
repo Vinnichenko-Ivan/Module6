@@ -1,11 +1,5 @@
 import {Id3Tree} from "./util/classifier-id3";
 import {Dataset, Template} from "./util/csv";
-
-import {monks1} from "./data/monks1";
-import {iris} from "./data/iris";
-import {soybean} from "./data/soybean";
-import {diabetes} from "./data/diabetes";
-import {glass} from "./data/glass";
 import {loadDatasetFromString} from "./util/loader";
 
 class Statistic {
@@ -51,8 +45,51 @@ document.getElementById('load-tests').onclick = () => {
     reader.readAsText(files[0], "UTF-8");
 };
 
-drawResult();
-test(iris, 100);
+let elementX = 0;
+let elementY = 0;
+let elementWheel = 0;
+let elementScale = 1;
+let lastX: number;
+let lastY: number;
+
+$('.area')
+    .on('mousedown', event => {
+        lastX = event.clientX;
+        lastY = event.clientY;
+        return false;
+    })
+    .on('mousemove', event => {
+        if (lastX && lastY) {
+            elementX += event.clientX - lastX;
+            elementY += event.clientY - lastY;
+            lastX = event.clientX;
+            lastY = event.clientY;
+            $('.movable').css({
+                'transform': `translate(${elementX}px, ${elementY}px) scale(${elementScale})`
+            });
+        }
+    })
+    .on('mousewheel', event => {
+        let oldWheel = elementWheel;
+        elementWheel += (<WheelEvent> event.originalEvent).deltaY / 1000;
+        elementWheel = Math.max(-1, Math.min(1, elementWheel))
+        elementScale = Math.pow(Math.E, elementWheel);
+        elementX += elementX * (elementWheel - oldWheel);
+        elementY += elementY * (elementWheel - oldWheel);
+        $('.movable').css({
+            'transform': `translate(${elementX}px, ${elementY}px) scale(${elementScale})`
+        });
+    })
+    .on('mouseout', () => {
+        if (lastX && lastY) {
+            lastX = null;
+            lastY = null;
+        }
+    })
+    .on('mouseup', () => {
+        lastX = null;
+        lastY = null;
+    });
 
 function test(dataset: Dataset, iterations: number) {
     drawTree(dataset);
@@ -111,12 +148,22 @@ function drawTree(dataset: Dataset) {
     let htmlElement = $('#decision-tree')[0];
     htmlElement.innerHTML = ''
     tree.appendHTMLChildren(htmlElement);
+
+    elementX = 0;
+    elementY = 0;
+    $('.movable').css({
+        'transform': `translate(${elementX}px, ${elementY}px) scale(${elementScale})`
+    });
 }
 
 function drawTemplate(dataset: Dataset, index: number) {
     let template = dataset.templates[index];
 
     let htmlElement = $('#current-test')[0];
+    if (!htmlElement) {
+        return;
+    }
+
     htmlElement.innerHTML = '';
 
     let headElement = htmlElement.appendChild(document.createElement('tr'));
