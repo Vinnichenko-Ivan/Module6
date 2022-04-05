@@ -1,6 +1,6 @@
-import {Id3Tree} from "./util/classifier-id3";
-import {Dataset, Template} from "./util/csv";
-import {loadDatasetFromString} from "./util/loader";
+import {Id3Tree} from "./classifier/classifier-id3";
+import {Dataset, Template} from "./csv/csv";
+import {loadDatasetFromString} from "./csv/csv-loader";
 
 class Statistic {
 
@@ -40,7 +40,7 @@ document.getElementById('load-tests').onclick = () => {
     let reader = new FileReader();
     reader.onload = e => {
         testDataset = loadDatasetFromString(<string>e.target.result, undefined, named);
-        runTests().then(r => runningAnimation = false);
+        runTests().then(() => runningAnimation = false);
     }
     reader.readAsText(files[0], "UTF-8");
 };

@@ -1,8 +1,9 @@
-import {Dataset, Template} from "./csv";
-import {numberArray, numberMatrix} from "./util";
+import {entropy} from "./math";
+import {Dataset} from "../csv/csv";
+import {numberArray, numberMatrix} from "./array";
 
 /**
- * Распределения
+ * Класс распределения
  */
 export class Distribution {
 
@@ -91,25 +92,39 @@ export class Distribution {
 }
 
 /**
- * Интерфейс дерева классификации
+ * Вычисление энтропии до разбиения:
+ * @param distribution распределение
+ * @return энтропия
+ * @see <a href="https://habr.com/ru/company/ods/blog/322534/">Дерево решений
  */
-export interface ClassifierTree {
+function oldEntropy(distribution: Distribution): number {
+    return entropy(distribution.perClass, distribution.totalCount);
+}
 
-    /**
-     * Построить дерево решений по выборке данных
-     * @param dataset обучающая выборка
-     */
-    build(dataset: Dataset): void;
+/**
+ * Вычисление энтропии после разбиения:
+ * @param distribution распределение
+ * @return энтропия
+ * @see <a href="https://habr.com/ru/company/ods/blog/322534/">Дерево решений
+ */
+function newEntropy(distribution: Distribution): number {
+    let value = 0;
 
-    /**
-     * Классифицировать образец по построенному дереву
-     * @param template образец
-     * @return number индекс класса
-     */
-    classify(template: Template): number;
+    for (let i = 0; i < distribution.bagCount; i++) {
+        value += distribution.perBag[i]
+            / distribution.totalCount
+            * entropy(distribution.perClassPerBag[i], distribution.perBag[i]);
+    }
+    return value;
+}
 
-    appendHTMLChildren(parentElement: HTMLElement): void;
-
-    toString(): string;
-
+/**
+ * Вычисление прироста информации:
+ * @param bags распределение
+ * @return прирост информации
+ * @see <img src="https://media.cheggcdn.com/media/22c/22c4ec5f-8e44-4f9e-b741-300c8b5bf426/phpo4tnyU.png" width=295 height=85>
+ * @see <br><a href="https://habr.com/ru/company/ods/blog/322534/">Дерево решений
+ */
+export function infoGain(bags: Distribution): number {
+    return oldEntropy(bags) - newEntropy(bags);
 }

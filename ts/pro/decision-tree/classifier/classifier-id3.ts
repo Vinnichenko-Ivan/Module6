@@ -1,6 +1,6 @@
-import {ClassifierTree, Distribution} from "./classifier";
-import {Attribute, Dataset, Template} from "./csv";
-import {entropy} from "./util";
+import {ClassifierTree} from "./classifier";
+import {Attribute, Dataset, Template} from "../csv/csv";
+import {Distribution, infoGain} from "../utils/id3";
 
 /**
  * Минимальное количество элементов в подмножествах, на которые можно разделить множество
@@ -28,44 +28,6 @@ const maxThresholdClassPercent = 1;
  * чтобы ветка превратилась в лист
  */
 const minThresholdClassPercent = 0.5;
-
-/**
- * Вычисление энтропии до разбиения:
- * @param distribution распределение
- * @return энтропия
- * @see <a href="https://habr.com/ru/company/ods/blog/322534/">Дерево решений
- */
-function oldEntropy(distribution: Distribution): number {
-    return entropy(distribution.perClass, distribution.totalCount);
-}
-
-/**
- * Вычисление энтропии после разбиения:
- * @param distribution распределение
- * @return энтропия
- * @see <a href="https://habr.com/ru/company/ods/blog/322534/">Дерево решений
- */
-function newEntropy(distribution: Distribution): number {
-    let value = 0;
-
-    for (let i = 0; i < distribution.bagCount; i++) {
-        value += distribution.perBag[i]
-            / distribution.totalCount
-            * entropy(distribution.perClassPerBag[i], distribution.perBag[i]);
-    }
-    return value;
-}
-
-/**
- * Вычисление прироста информации:
- * @param bags распределение
- * @return прирост информации
- * @see <img src="https://media.cheggcdn.com/media/22c/22c4ec5f-8e44-4f9e-b741-300c8b5bf426/phpo4tnyU.png" width=295 height=85>
- * @see <br><a href="https://habr.com/ru/company/ods/blog/322534/">Дерево решений
- */
-function infoGain(bags: Distribution): number {
-    return oldEntropy(bags) - newEntropy(bags);
-}
 
 /**
  * Разделение
