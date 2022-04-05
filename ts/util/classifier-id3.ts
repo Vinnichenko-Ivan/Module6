@@ -18,6 +18,18 @@ const minInfoGain = 0;
 const maxTreeDepth = 10;
 
 /**
+ * Максимальная порог процентного соотношение наибольшего класса,
+ * чтобы ветка превратилась в лист
+ */
+const maxThresholdClassPercent = 1;
+
+/**
+ * Минимальный порог процентного соотношение наибольшего класса,
+ * чтобы ветка превратилась в лист
+ */
+const minThresholdClassPercent = 0.5;
+
+/**
  * Вычисление энтропии до разбиения:
  * @param distribution распределение
  * @return энтропия
@@ -447,6 +459,11 @@ export class Id3Tree implements ClassifierTree {
         return true;
     }
 
+    private testFunction(deep: number): number {
+        return (-Math.sqrt(Math.min(deep, maxTreeDepth) / maxTreeDepth) + 1)
+            * (maxThresholdClassPercent - minThresholdClassPercent) + minThresholdClassPercent;
+    }
+
     private buildRecursive(dataset: Dataset, deep: number): void {
         let bags = Distribution.of(dataset);
 
@@ -454,7 +471,9 @@ export class Id3Tree implements ClassifierTree {
         this._leaf = true;
         this._children = [];
 
-        if (deep < maxTreeDepth) {
+        let classPercent = bags.perClass[bags.maxClass] / bags.totalCount;
+
+        if (deep < maxTreeDepth && classPercent <= this.testFunction(deep)) {
             let split = findBestSplit(dataset);
 
             if (split != undefined) {

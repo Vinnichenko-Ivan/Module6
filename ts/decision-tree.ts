@@ -25,13 +25,13 @@ let tree: Id3Tree;
 let learnDataset: Dataset;
 let testDataset: Dataset
 
-let iterationDelay = 1000;
+let iterationDelay = 50;
 let runningAnimation = false;
 let result = new Statistic(0);
 
 document.getElementById('load-dataset').onclick = () => {
     let files = (<HTMLInputElement>document.getElementById('file-dataset')).files;
-    let named = (<HTMLInputElement>document.getElementById('named-dataset')).value == 'on';
+    let named = (<HTMLInputElement>document.getElementById('named-dataset')).checked;
     let reader = new FileReader();
     reader.onload = e => {
         learnDataset = loadDatasetFromString(<string>e.target.result, undefined, named);
