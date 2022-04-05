@@ -46,7 +46,9 @@ body {
     position: relative;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
+
     overflow: hidden;
 
     box-shadow: 0 0 2px black;

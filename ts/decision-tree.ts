@@ -45,6 +45,8 @@ document.getElementById('load-tests').onclick = () => {
     reader.readAsText(files[0], "UTF-8");
 };
 
+let elementClientX = 0;
+let elementClientY = 0;
 let elementX = 0;
 let elementY = 0;
 let elementWheel = 0;
@@ -60,24 +62,25 @@ $('.area')
     })
     .on('mousemove', event => {
         if (lastX && lastY) {
-            elementX += event.clientX - lastX;
-            elementY += event.clientY - lastY;
+            elementX += (event.clientX - lastX) / elementScale;
+            elementY += (event.clientY - lastY) / elementScale;
             lastX = event.clientX;
             lastY = event.clientY;
+            elementClientX = elementX * elementScale;
+            elementClientY = elementY * elementScale;
             $('.movable').css({
-                'transform': `translate(${elementX}px, ${elementY}px) scale(${elementScale})`
+                'transform': `translate(${elementClientX}px, ${elementClientY}px) scale(${elementScale})`
             });
         }
     })
     .on('mousewheel', event => {
-        let oldWheel = elementWheel;
         elementWheel += (<WheelEvent> event.originalEvent).deltaY / 1000;
         elementWheel = Math.max(-1, Math.min(1, elementWheel))
         elementScale = Math.pow(Math.E, elementWheel);
-        elementX += elementX * (elementWheel - oldWheel);
-        elementY += elementY * (elementWheel - oldWheel);
+        elementClientX = elementX * elementScale;
+        elementClientY = elementY * elementScale;
         $('.movable').css({
-            'transform': `translate(${elementX}px, ${elementY}px) scale(${elementScale})`
+            'transform': `translate(${elementClientX}px, ${elementClientY}px) scale(${elementScale})`
         });
     })
     .on('mouseout', () => {
