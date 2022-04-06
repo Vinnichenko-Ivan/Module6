@@ -6,6 +6,7 @@ let height;
 let globalClusterCount = 4;
 let colorIndex = [];
 let defColor = 'white'
+let repeatForKMeans = 5;
 
 genRandColor(colorIndex)
 
@@ -175,18 +176,10 @@ buttonIter.addEventListener('click', function() {
 
     graphGenClusterCenters(fieldAlgo2)
     newClusterCenters(fieldAlgo2)
-    dataDist(fieldAlgo2)
-    newClusterCenters(fieldAlgo2)
-    dataDist(fieldAlgo2)
-    newClusterCenters(fieldAlgo2)
-    dataDist(fieldAlgo2)
-    newClusterCenters(fieldAlgo2)
-    dataDist(fieldAlgo2)
-    newClusterCenters(fieldAlgo2)
-    dataDist(fieldAlgo2)
-    newClusterCenters(fieldAlgo2)
-    dataDist(fieldAlgo2)
-    newClusterCenters(fieldAlgo2)
+    for(let i = 0; i < repeatForKMeans; i++) {
+        dataDist(fieldAlgo2)
+        newClusterCenters(fieldAlgo2)
+    }
 });
 
 requestAnimationFrame(loop);
