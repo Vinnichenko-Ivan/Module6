@@ -149,7 +149,7 @@ async function drawTree() {
     algorithmHolder.algorithm = new BuildTreeID3Algorithm(
         learnDataset,
         2,
-        1,
+        0,
         10,
         0,
         0.5);
