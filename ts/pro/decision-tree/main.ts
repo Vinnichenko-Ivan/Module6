@@ -151,7 +151,7 @@ async function drawTree() {
         2,
         0,
         10,
-        0,
+        1,
         0.5);
     let newTree = await algorithmHolder.start<TreeNode>();
 
