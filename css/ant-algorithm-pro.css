@@ -138,3 +138,53 @@ nav ul {
     opacity: 1;
     transform: scaleY(1);
 }
+
+
+
+
+
+
+
+
+
+/*Модальное окно: */
+
+#modalWindow {
+    width: 60%;
+    height: 400px;
+    padding: 15px;
+    border: 3px solid #4e9dce;
+    border-radius: 10px;
+    color: #aaa;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    background: #ffe;
+}
+#shadow {
+    background: rgba(102, 102, 102, 0.5);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+}
+#modalWindow:target {display: block;}
+#closeModalWindow {
+    width: 10%;
+    height: 10%;
+    border-radius: 8px;
+    border: 2px solid #4e9dce;
+    color: #333;
+    position: absolute;
+    left: 88%;
+    bottom: 85%;
+    background: #eeffff;
+}
+#shadow:target {display: block;}
+#closeModalWindow:hover {background: #bbeded;}
+

@@ -4,13 +4,28 @@ import {vars} from "./vars.js";
 
 window.addEventListener("load", function onWindowLoad() {
 
-    //-------------------------------------------------------------------------
+    //-------------------------------------------
     //~~~~~~~~~~~~~~~~СТЕНЫ и ЕДА~~~~~~~~~~~~~~~~
     initMainObjects();
 
     //------------------------------------
     //~~~~~~~~~~~~~~ФЕРОМОНЫ~~~~~~~~~~~~~~
     initPheromones();
+
+    //--------------------------------------------------------------
+    //--------------------------------------------------------------
+    //~~~~~~~~~~~~~~~~~~~~КНОПКИ МОДАЛЬНОГО ОКНА~~~~~~~~~~~~~~~~~~~~
+    let showModalWindowButton = document.getElementById("showModalWindow");
+    let closeModalWindowButton = document.getElementById("closeModalWindow");
+
+    showModalWindowButton.onclick = function (){
+        window.location.href = '#shadow'
+        vars.modalWindowMode = true;
+    }
+    closeModalWindowButton.onclick = function (){
+        window.location.href = '#';
+        vars.modalWindowMode = false;
+    }
 
     //---------------------------------------------------------
     //---------------------------------------------------------
@@ -161,16 +176,17 @@ window.addEventListener("load", function onWindowLoad() {
     //~~~~~~~~~~~~~~~ОТРИСОВКА И ПЕРЕРАСЧЕТ~~~~~~~~~~~~~~~
     let it = 0;
     setInterval(function () {
+        //if(!vars.modalWindowMode) {
+            it = (it + 1) % vars.howOftenToRedrawPheromones;
 
-        it = (it + 1) % vars.howOftenToRedrawPheromones;
+            if (vars.somethingChanged)
+                updateExtraCtx1();
+            vars.somethingChanged = false;
 
-        if (vars.somethingChanged)
-            updateExtraCtx1();
-        vars.somethingChanged = false;
+            if (it === 0)
+                updateExtraCtx2();
 
-        if (it === 0)
-            updateExtraCtx2();
-
-        updateCtx();
+            updateCtx();
+        //}
     }, 0);
 });

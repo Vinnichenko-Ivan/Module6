@@ -12,6 +12,9 @@ export class Variables {
     mapPixelScale = 10;//каждый i-ый пиксель хранит объект, остальные - лишь картинка
     mapPheromoneScale = 10;//то же самое, но уже для феромонов
 
+    //MODAL WINDOW
+    modalWindowMode = false;//false - не открыто, true - открыто
+
     //ANTS
     antsNumber = 200;
     antStepLength = 1.5;
