@@ -1,116 +1,13 @@
 let drawCenters = true;
-
 let drawLines = true
-
 let autoRun = true
-
-let weight = 400;
-let height = 400;
-
+let weight;
+let height;
 let globalClusterCount = 4;
-
 let colorIndex = [];
-colorIndex.push('red')
-colorIndex.push('yellow')
-colorIndex.push('green')
-colorIndex.push('blue')
-colorIndex.push('brown')
-
 let defColor = 'white'
 
-//https://habr.com/ru/post/585034/
-class Point{
-    x = 0.0;
-    y = 0.0;
-    id = -1;
-    color = defColor;
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-}
-
-function lenBetweenPoints(a, b){
-    return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y))
-}
-
-class Field{
-    points = [];
-    clusterCount = 0;
-    clusterCenters = []
-    addPoint(point){
-        this.points.push(point)
-    }
-
-    rerun(){
-        this.clusterCenters = []
-        this.clusterCount = 0
-        this.points.forEach(function (point){
-            point.color = defColor
-            point.id = -1;
-        });
-    }
-
-    clear(){
-        this.points = []
-    }
-}
-
-function randDouble(min, max){
-    return Math.random() * (max - min)
-}
-
-function dataDist(area){
-    area.points.forEach(function (point, j){
-        let minD = 1000000;
-        let index = 0
-        area.clusterCenters.forEach(function (cl, i){
-            if(lenBetweenPoints(cl, point) < minD){
-                index = i;
-                minD = lenBetweenPoints(cl, point)
-            }
-        })
-        area.points[j].color = colorIndex[index]
-        area.points[j].id = index
-    })
-}
-
-function newClusterCenters(area){
-    let clusterCentersCopy = []
-    let newClusterCentersCounts = []
-    for (let i = 0; i < area.clusterCount; i++)
-    {
-        clusterCentersCopy.push(new Point(area.clusterCenters[i].x,  area.clusterCenters[i].y))
-        area.clusterCenters[i].x = 0
-        area.clusterCenters[i].y = 0
-        newClusterCentersCounts.push(0);
-
-    }
-    area.points.forEach(function (point){
-        area.clusterCenters[point.id].x += point.x;
-        area.clusterCenters[point.id].y += point.y;
-        newClusterCentersCounts[point.id]++;
-    })
-    for (let i = 0; i < area.clusterCount; i++)
-    {
-        if(newClusterCentersCounts[i] === 0) {
-            area.clusterCenters[i].x = clusterCentersCopy[i].x;
-            area.clusterCenters[i].y = clusterCentersCopy[i].y;
-        }
-        else {
-            area.clusterCenters[i].x /= newClusterCentersCounts[i];
-            area.clusterCenters[i].y /= newClusterCentersCounts[i];
-        }
-    }
-
-}
-
-function clusterInit(clusterCount, area){
-    area.clusterCount = clusterCount
-    for (let i = 0; i < clusterCount; i++) {
-        area.clusterCenters.push(new Point(randDouble(0, weight), randDouble(0, height)));
-    }
-}
+genRandColor(colorIndex)
 
 const checkBoxLineToCenter = document.getElementById('linesToCentres')
 const checkBoxAutoRun = document.getElementById('autoRun')
