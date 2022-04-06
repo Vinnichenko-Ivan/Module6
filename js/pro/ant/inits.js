@@ -3,6 +3,30 @@
 //~~~~~~~~~~~~~~ФЕРОМОНЫ~~~~~~~~~~~~~~
 import {vars} from "./vars.js";
 
+export function reset(){
+    for (let i = 1; i < vars.mainObjects.length - 1; i++) {
+        for (let j = 1; j < vars.mainObjects[i].length - 1; j++) {
+            vars.mainObjects[i][j].notEmpty = false;
+            vars.mainObjects[i][j].wall = false;
+            vars.mainObjects[i][j].food = 0;
+        }
+    }
+    for (let i = 0; i < vars.pheromones.length; i++) {
+        for (let j = 0; j < vars.pheromones[i].length; j++) {
+            vars.pheromones[i][j].notEmpty = false;
+            vars.pheromones[i][j].toHomePheromones = 0;
+            vars.pheromones[i][j].toFoodPheromones = 0;
+        }
+    }
+
+    vars.anthill.isBuilt = false;
+
+    vars.somethingChanged = true;
+}
+
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ФЕРОМОНЫ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export function initPheromones() {
     for (let i = 0; i < vars.pheromones.length; i++) {
         vars.pheromones[i] = new Array(vars.MyCanvas.height / vars.mapPheromoneScale);
@@ -92,6 +116,7 @@ export function initMainObjects() {
 //-------------------------------------------------------------
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~МУРАВЬИ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export function initAnts() {
+    vars.ants = new Array(vars.antsNumber);
     for (let i = 0; i < vars.ants.length; i++) {
         let r1 = Math.random() * 2 - 1;
         let r2 = Math.random() * 2 - 1;

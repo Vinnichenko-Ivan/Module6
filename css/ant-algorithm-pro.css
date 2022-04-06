@@ -5,6 +5,9 @@
 
 * {
     box-sizing: border-box;
+    font-family: Century, fantasy;
+    font-weight: normal;
+    font-size: large;
 }
 body{
     margin: 0;
@@ -163,6 +166,18 @@ input:hover{opacity: 1;}
     background: rgb(202, 212, 202);
 }
 .shadow:target {display: block;}
-.close:hover {background: rgb(191, 203, 191)
+.close:hover, .save:hover{background: rgb(191, 203, 191)
+}
+.save{
+    width: 10%;
+    height: 50px;
+    text-align: center;
+    align-items: center;
+    position: absolute;
+    bottom: 5%;
+    left: 45%;
+    border-radius: 8px;
+    border: 2px solid rgb(183, 209, 218);
+    background: rgb(202, 212, 202);
 }
 

@@ -1,5 +1,5 @@
 import {updateCtx, updateExtraCtx1, updateExtraCtx2} from "./draw.js";
-import {initAnts, initMainObjects, initPheromones} from "./inits.js";
+import {initAnts, initMainObjects, initPheromones, reset} from "./inits.js";
 import {vars} from "./vars.js";
 
 window.addEventListener("load", function onWindowLoad() {
@@ -17,29 +17,36 @@ window.addEventListener("load", function onWindowLoad() {
     //~~~~~~~~~~~~~~~~~~~~КНОПКИ МОДАЛЬНЫХ ОКОН~~~~~~~~~~~~~~~~~~~~
 
     //~~~~~~~~~~~~~~SETTINGS~~~~~~~~~~~~~~
-    let showSettingsModalWindowButton = document.getElementById("showSettingsModalWindow");
-    let closeSettingsModalWindowButton = document.getElementById("closeSettingsModalWindow");
-    showSettingsModalWindowButton.onclick = function (){
+    document.getElementById("showSettingsModalWindow").onclick = function (){
         window.location.href = '#shadowSettings'
         vars.modalWindowMode = true;
-    }
-    closeSettingsModalWindowButton.onclick = function (){
+        document.getElementById("colonyInputId").value = vars.antsNumber;
+        document.getElementById("colonyOutputId").value = vars.antsNumber;
+    };
+    document.getElementById("closeSettingsModalWindow").onclick = function (){
         window.location.href = '#';
         vars.modalWindowMode = false;
+    };
+    document.getElementById("saveSettings").onclick = function (){
+        window.location.href = '#';
+        vars.modalWindowMode = false;
+        vars.antsNumber = Number(document.getElementById("colonyInputId").value);
+        reset();
     }
-
 
 
 
 
     //~~~~~~~~~~~~~~GRAPHICS~~~~~~~~~~~~~~
-    let showGraphicsModalWindowButton = document.getElementById("showGraphicsModalWindow");
-    let closeGraphicsModalWindowButton = document.getElementById("closeGraphicsModalWindow");
-    showGraphicsModalWindowButton.onclick = function (){
+    document.getElementById("showGraphicsModalWindow").onclick = function (){
         window.location.href = '#shadowGraphics'
         vars.modalWindowMode = true;
-    }
-    closeGraphicsModalWindowButton.onclick = function (){
+    };
+    document.getElementById("closeGraphicsModalWindow").onclick = function (){
+        window.location.href = '#';
+        vars.modalWindowMode = false;
+    };
+    document.getElementById("saveGraphics").onclick = function (){
         window.location.href = '#';
         vars.modalWindowMode = false;
     }
@@ -57,31 +64,8 @@ window.addEventListener("load", function onWindowLoad() {
 
     let drawingMode = new Array(4);//0 - еда, 1 - стены, 2 - муравьи, 3 - ластик
 
-    clearButton.onclick = function () {
-        for (let i = 1; i < vars.mainObjects.length - 1; i++) {
-            for (let j = 1; j < vars.mainObjects[i].length - 1; j++) {
-                vars.mainObjects[i][j].notEmpty = false;
-                vars.mainObjects[i][j].wall = false;
-                vars.mainObjects[i][j].food = 0;
-            }
-        }
-        for (let i = 0; i < vars.pheromones.length; i++) {
-            for (let j = 0; j < vars.pheromones[i].length; j++) {
-                vars.pheromones[i][j].notEmpty = false;
-                vars.pheromones[i][j].toHomePheromones = 0;
-                vars.pheromones[i][j].toFoodPheromones = 0;
-            }
-        }
 
-        drawingMode[0] = false;
-        drawingMode[1] = false;
-        drawingMode[2] = false;
-        drawingMode[3] = false;
-
-        vars.anthill.isBuilt = false;
-
-        vars.somethingChanged = true;
-    }
+    clearButton.onclick = reset;
 
     foodButton.onclick = function () {
         drawingMode[0] = true;

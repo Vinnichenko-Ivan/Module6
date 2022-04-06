@@ -22,7 +22,7 @@ export class Variables {
     firstStepLength = 2;
     radiusOfAntsEyes = 10;
     constForDistanceFromHome = 1000;
-    ants = new Array(this.antsNumber);
+    ants = [];
     anthill = {
         isBuilt: false,
         radius: 20,
