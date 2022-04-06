@@ -30,8 +30,9 @@ export class Variables {
 
     //PHEROMONES
     minPheromoneValue = 0.000001;
+    minPheromoneValueForDrawing = 300;
     minDistanceToAnthill = 1;
-    pheromonesDrawingMode = 2;//1 - качественная отрисовка, 2 - количественная
+    pheromonesDrawingMode = 1;//1 - качественная отрисовка, 2 - количественная
     pheromonesDecreasingCoefficient = 0.97;
 
     //HOW OFTEN

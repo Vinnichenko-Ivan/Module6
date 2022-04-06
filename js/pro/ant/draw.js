@@ -48,16 +48,16 @@ export function updateExtraCtx2() {
             vars.pheromones[i][j].next();
             if (vars.pheromones[i][j].notEmpty) {
 
-                if(vars.pheromonesDrawingMode === 1){
-                    if (vars.pheromones[i][j].toHomePheromones && vars.pheromones[i][j].toFoodPheromones)
+                if (vars.pheromonesDrawingMode === 1) {
+                    if (vars.pheromones[i][j].toHomePheromones && vars.pheromones[i][j].toFoodPheromones && (vars.pheromones[i][j].toHomePheromones + vars.pheromones[i][j].toFoodPheromones > vars.minPheromoneValueForDrawing))
                         vars.extraCtx2.fillStyle = "#ccee00";
-                    else if (vars.pheromones[i][j].toHomePheromones)
+                    else if (vars.pheromones[i][j].toHomePheromones > vars.minPheromoneValueForDrawing)
                         vars.extraCtx2.fillStyle = "orange";
-                    else
+                    else if (vars.pheromones[i][j].toFoodPheromones > vars.minPheromoneValueForDrawing)
                         vars.extraCtx2.fillStyle = "green";
-
-                }
-                else {
+                    else
+                        continue;
+                } else {
                     let toHomeColor, toFoodColor;
 
                     if (vars.pheromones[i][j].toHomePheromones < 16)
