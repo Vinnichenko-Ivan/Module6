@@ -15,7 +15,7 @@ export function updateCtx() {
             vars.ctx.beginPath();
             vars.ctx.fillStyle = "red";
             vars.ctx.strokeStyle = "black";
-            vars.ctx.arc(vars.ants[i].x, vars.ants[i].y, 3, 0, Math.PI * 2, false);
+            vars.ctx.arc(vars.ants[i].x, vars.ants[i].y, vars.antsRadius, 0, Math.PI * 2, false);
             vars.ctx.closePath();
             vars.ctx.fill();
             vars.ctx.stroke();
@@ -48,16 +48,17 @@ export function updateExtraCtx2() {
             vars.pheromones[i][j].next();
             if (vars.pheromones[i][j].notEmpty) {
 
+                if(vars.pheromones[i][j].toHomePheromones + vars.pheromones[i][j].toFoodPheromones < vars.minPheromoneValueForDrawing)
+                    continue;
+
                 if (vars.pheromonesDrawingMode === 1) {
-                    if (vars.pheromones[i][j].toHomePheromones && vars.pheromones[i][j].toFoodPheromones && (vars.pheromones[i][j].toHomePheromones + vars.pheromones[i][j].toFoodPheromones > vars.minPheromoneValueForDrawing))
+                    if (vars.pheromones[i][j].toHomePheromones && vars.pheromones[i][j].toFoodPheromones)
                         vars.extraCtx2.fillStyle = "#ccee00";
-                    else if (vars.pheromones[i][j].toHomePheromones > vars.minPheromoneValueForDrawing)
+                    else if (vars.pheromones[i][j].toHomePheromones)
                         vars.extraCtx2.fillStyle = "orange";
-                    else if (vars.pheromones[i][j].toFoodPheromones > vars.minPheromoneValueForDrawing)
-                        vars.extraCtx2.fillStyle = "green";
                     else
-                        continue;
-                } else {
+                        vars.extraCtx2.fillStyle = "green";
+                } else if(vars.pheromonesDrawingMode === 2){
                     let toHomeColor, toFoodColor;
 
                     if (vars.pheromones[i][j].toHomePheromones < 16)
@@ -72,10 +73,12 @@ export function updateExtraCtx2() {
 
                     vars.extraCtx2.fillStyle = `#${toHomeColor}${toFoodColor}00`;
                 }
+                else
+                    continue;
 
                 vars.extraCtx2.beginPath();
                 vars.extraCtx2.strokeStyle = "black";
-                vars.extraCtx2.arc(vars.pheromones[i][j].x, vars.pheromones[i][j].y, 2, 0, Math.PI * 2, false);
+                vars.extraCtx2.arc(vars.pheromones[i][j].x, vars.pheromones[i][j].y, vars.pheromonesRadius, 0, Math.PI * 2, false);
                 vars.extraCtx2.closePath();
                 vars.extraCtx2.fill();
                 vars.extraCtx2.stroke();

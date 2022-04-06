@@ -6,21 +6,18 @@
     <link rel="stylesheet" type="text/css" href="../css/ant-algorithm-pro.css">
 </head>
 <body>
+
+
 <header>
-    <nav>
-        <ul class="top-menu">
-            <li><a href="../index.html">На базу</a></li>
-            <li><a class="submenu-link">Настройки</a>
-                <ul class="submenu">
-                    <li><a href="">Коэффициенты</a></li>
-                    <li><a href="">Цвета</a></li>
-                </ul>
-            </li>
-            <li><a href="">Так что-нибудь</a></li>
-            <li><a href="">Тоже что-то</a></li>
-            <li><button id="showModalWindow">Настройки</button></li>
-        </ul>
-    </nav>
+    <div id="headerButtonsContainer">
+
+        <button id="lobbyButton" onclick="window.location.href = '../index.html'">На базу</button>
+
+        <button id="showGraphicsModalWindow">Графика</button>
+
+        <button id="showSettingsModalWindow">Настройки</button>
+
+    </div>
 </header>
 
 
@@ -29,37 +26,62 @@
 <div id="buttonsContainer">
 
     <button id="food">
-        //FOOD//
+        Еда
     </button>
     <button id="walls">
-        //WALLS//
+        Стена
     </button>
     <button id="ants">
-        //ANTS//
+        Колония
     </button>
     <button id="erase">
-        //ERASE//
+        Стереть
     </button>
     <button id="clear">
-        //CLEAR//
+        Очистить
     </button>
 
 </div>
+
 
 <div id="brushWidthDiv">
     <label for="brushWidth"></label><input type="range" min="5" max="50" value="20" id="brushWidth">
 </div>
 
+
+
 <canvas width="800px" height="600px" id="myCanvas">Update your browser!</canvas>
 <canvas width="800px" height="600px" id="extraCanvas1"></canvas>
 <canvas width="800px" height="600px" id="extraCanvas2"></canvas>
 
-<div id="shadow">
-    <div id="modalWindow">
-        <button id="closeModalWindow">Закрыть</button>
+
+
+
+<div id="shadowSettings" class="shadow">
+    <div id="settingsModalWindow" class="modalWindow">
+        <button id="closeSettingsModalWindow" class="close">Закрыть</button>
+
+        <form>
+            <label for="colonyInputId">Количество муравьев</label>
+            <input type="range" id="colonyInputId" min="10" max="500" value="200" step="10" oninput="colonyOutputId.value = colonyInputId.value"/>
+            <output id="colonyOutputId">200</output>
+        </form>
+
     </div>
 </div>
 
-<script type="module"  src="../js/pro/ant/main.js"></script>
+<div id="shadowGraphics" class="shadow">
+    <div id="graphicsModalWindow" class="modalWindow">
+        <button id="closeGraphicsModalWindow" class="close">Закрыть</button>
+
+        <h3>Колония: </h3>
+
+        <h3>Муравьи: </h3>
+
+    </div>
+</div>
+
+
+<script type="module" src="../js/pro/ant/main.js"></script>
 </body>
 </html>

@@ -14,15 +14,32 @@ window.addEventListener("load", function onWindowLoad() {
 
     //--------------------------------------------------------------
     //--------------------------------------------------------------
-    //~~~~~~~~~~~~~~~~~~~~КНОПКИ МОДАЛЬНОГО ОКНА~~~~~~~~~~~~~~~~~~~~
-    let showModalWindowButton = document.getElementById("showModalWindow");
-    let closeModalWindowButton = document.getElementById("closeModalWindow");
+    //~~~~~~~~~~~~~~~~~~~~КНОПКИ МОДАЛЬНЫХ ОКОН~~~~~~~~~~~~~~~~~~~~
 
-    showModalWindowButton.onclick = function (){
-        window.location.href = '#shadow'
+    //~~~~~~~~~~~~~~SETTINGS~~~~~~~~~~~~~~
+    let showSettingsModalWindowButton = document.getElementById("showSettingsModalWindow");
+    let closeSettingsModalWindowButton = document.getElementById("closeSettingsModalWindow");
+    showSettingsModalWindowButton.onclick = function (){
+        window.location.href = '#shadowSettings'
         vars.modalWindowMode = true;
     }
-    closeModalWindowButton.onclick = function (){
+    closeSettingsModalWindowButton.onclick = function (){
+        window.location.href = '#';
+        vars.modalWindowMode = false;
+    }
+
+
+
+
+
+    //~~~~~~~~~~~~~~GRAPHICS~~~~~~~~~~~~~~
+    let showGraphicsModalWindowButton = document.getElementById("showGraphicsModalWindow");
+    let closeGraphicsModalWindowButton = document.getElementById("closeGraphicsModalWindow");
+    showGraphicsModalWindowButton.onclick = function (){
+        window.location.href = '#shadowGraphics'
+        vars.modalWindowMode = true;
+    }
+    closeGraphicsModalWindowButton.onclick = function (){
         window.location.href = '#';
         vars.modalWindowMode = false;
     }
@@ -176,7 +193,7 @@ window.addEventListener("load", function onWindowLoad() {
     //~~~~~~~~~~~~~~~ОТРИСОВКА И ПЕРЕРАСЧЕТ~~~~~~~~~~~~~~~
     let it = 0;
     setInterval(function () {
-        //if(!vars.modalWindowMode) {
+        if(!vars.modalWindowMode) {
             it = (it + 1) % vars.howOftenToRedrawPheromones;
 
             if (vars.somethingChanged)
@@ -187,6 +204,6 @@ window.addEventListener("load", function onWindowLoad() {
                 updateExtraCtx2();
 
             updateCtx();
-        //}
+        }
     }, 0);
 });

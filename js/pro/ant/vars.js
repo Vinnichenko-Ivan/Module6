@@ -16,10 +16,11 @@ export class Variables {
     modalWindowMode = false;//false - не открыто, true - открыто
 
     //ANTS
-    antsNumber = 200;
+    antsNumber = 500;
+    antsRadius = 4;
     antStepLength = 1.5;
     firstStepLength = 2;
-    radiusOfAntsEyes = 5;
+    radiusOfAntsEyes = 10;
     constForDistanceFromHome = 1000;
     ants = new Array(this.antsNumber);
     anthill = {
@@ -27,15 +28,16 @@ export class Variables {
         radius: 20,
         x: -1,
         y: -1,
-        color: "#ff4f3f",
-        borderColor: "black"
+        color: '#4E5340',
+        borderColor: '#161712'
     }
 
     //PHEROMONES
+    pheromonesRadius = 3;
     minPheromoneValue = 0.000001;
     minPheromoneValueForDrawing = 300;
     minDistanceToAnthill = 1;
-    pheromonesDrawingMode = 1;//1 - качественная отрисовка, 2 - количественная
+    pheromonesDrawingMode = 0;//1 - качественная отрисовка, 2 - количественная
     pheromonesDecreasingCoefficient = 0.97;
 
     //HOW OFTEN

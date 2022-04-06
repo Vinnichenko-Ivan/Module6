@@ -50,7 +50,7 @@ export function initMainObjects() {
                     if (this.wall) {
 
                         //СТЕНА
-                        vars.extraCtx1.fillStyle = "gray";
+                        vars.extraCtx1.fillStyle = "#95A3A4";
                         vars.extraCtx1.fillRect(this.x, this.y, vars.mapPixelScale, vars.mapPixelScale);
 
                     } else if (this.food > 0) {
@@ -97,6 +97,7 @@ export function initAnts() {
         let r2 = Math.random() * 2 - 1;
         vars.ants[i] = {
             it: 0,
+            itStayedInObject: 0,
             distanceFromHome: 1,
             distanceFromFood: 1,
             chosenPheromoneI: -1,
@@ -112,10 +113,11 @@ export function initAnts() {
 
 
                 //УБИТЬ МУРАВЬЯ, ЕСЛИ ЗАЛЕЗ, КУДА НЕ НАДО
-                if (this.x < 0 || this.y < 0 || this.x > vars.MyCanvas.offsetWidth || this.y > vars.MyCanvas.offsetHeight || (Math.sqrt((this.x - vars.anthill.x) ** 2 + (this.y - vars.anthill.y) ** 2) - vars.anthill.radius < 0)) {
+                if (this.itStayedInObject > 10 || this.x < 0 || this.y < 0 || this.x > vars.MyCanvas.offsetWidth || this.y > vars.MyCanvas.offsetHeight || (Math.sqrt((this.x - vars.anthill.x) ** 2 + (this.y - vars.anthill.y) ** 2) - vars.anthill.radius < 0)) {
                     let r1 = Math.random() * 2 - 1;
                     let r2 = Math.random() * 2 - 1;
                     this.it = 0;
+                    this.itStayedInObject = 0;
                     this.distanceFromHome = 1;
                     this.distanceFromFood = 1;
                     this.chosenPheromoneI = -1;
@@ -147,6 +149,8 @@ export function initAnts() {
                     let i = Math.floor(x / vars.mapPixelScale);
                     let j = Math.floor(y / vars.mapPixelScale);
                     if (vars.mainObjects[i][j].notEmpty) {
+
+                        this.itStayedInObject++;
 
                         //ЕСЛИ ВРЕЗАЛСЯ В ЕДУ
                         if (vars.mainObjects[i][j].food && this.Food === 0) {
@@ -183,6 +187,8 @@ export function initAnts() {
                             }
                         }
                     } else {
+
+                        this.itStayedInObject = 0;
 
                         //ПРОАНАЛИЗИРОВАТЬ БЛИЗЛЕЖАЩИЕ ФЕРОМОНЫ
                         //ВЫБРАТЬ ЛУЧШИЙ И С БОЛЬШОЙ ВЕРОЯТНОСТЬЮ ПОВЕРНУТЬСЯ К НЕМУ
@@ -281,8 +287,8 @@ export function initAnts() {
                     }
                 }
 
-                this.x += (this.Vx * vars.antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
-                this.y += (this.Vy * vars.antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                this.x += (Math.random() - 0.5) + (this.Vx * vars.antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
+                this.y += (Math.random() - 0.5) + (this.Vy * vars.antStepLength) / (Math.sqrt(this.Vx ** 2 + this.Vy ** 2));
             }
         }
     }

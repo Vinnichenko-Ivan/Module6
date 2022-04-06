@@ -1,15 +1,26 @@
+
+/*
+Основное:
+*/
+
 * {
     box-sizing: border-box;
 }
 body{
     margin: 0;
-    background: azure;
+    background: rgb(226, 232, 221);
+}
+button:hover{
+    cursor: pointer;
 }
 #myCanvas{
     position: relative;
     left: 50%;
     transform: translate(-50%, 0);
-    border-style: solid;
+    border-style: solid ;
+    border-radius: 5px;
+    border-width: 5px;
+    border-color: #697268;
     background: url('https://kartinkin.net/uploads/posts/2021-07/1627408186_14-kartinkin-com-p-pikselnie-teksturi-zemli-krasivo-17.png');
 }
 #extraCanvas1, #extraCanvas2{
@@ -19,7 +30,42 @@ body{
 
 
 
+/*
+Шапка:
+ */
 
+header {
+    background: rgb(78, 83, 64);
+    text-align: center;
+    padding: 20px;
+    box-shadow: 0 0 10px black;
+}
+#lobbyButton, #showSettingsModalWindow, #showGraphicsModalWindow{
+    background: rgb(149, 163, 164);
+    border: 2px solid rgb(105, 114, 104);
+    border-radius: 8px;
+    margin-inline: 1%;
+    width: 15%;
+    height: 60px;
+    position: relative;
+    display: inline-grid;
+    text-align: center;
+    align-items: center;
+}
+#lobbyButton:hover, #showSettingsModalWindow:hover, #showGraphicsModalWindow:hover{
+    background: rgb(140, 158, 158);
+}
+#headerButtonsContainer{
+    display: flex;
+    justify-content: center;
+}
+
+
+
+
+/*
+Панель меню:
+*/
 
 #buttonsContainer{
     display: flex;
@@ -29,6 +75,9 @@ body{
     margin-bottom: 0;
 }
 #clear, #food, #walls, #ants, #erase{
+    box-shadow: 4px 4px 4px darkgrey;
+    border-radius: 10px;
+    background: rgb(183, 209, 218);
     margin: 1%;
     width: 10%;
     height: 40px;
@@ -39,38 +88,34 @@ body{
     align-content: center;
     margin: 20px;
 }
-#brushWidth{
+input{
     -webkit-appearance: none;
     width: 20%;
     height: 20px;
     border-radius: 10px;
-    background: #d3d3d3;
+    background: rgb(183, 209, 218);
     outline: none;
     opacity: 0.7;
     -webkit-transition: .2s;
     transition: opacity .2s;
 }
-#brushWidth::-webkit-slider-thumb {
+input::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 25px;
     height: 25px;
     border-radius: 50%;
-    background: #4CAF50;
+    background: rgb(78, 83, 64);
     cursor: pointer;
 }
-#brushWidth::-moz-range-thumb {
+input::-moz-range-thumb {
     width: 25px;
     height: 25px;
     border-radius: 50%;
-    background: #4CAF50;
+    background: rgb(78, 83, 64);
     cursor: pointer;
 }
-#brushWidth:hover{opacity: 1;}
-
-
-
-
+input:hover{opacity: 1;}
 
 
 
@@ -78,93 +123,25 @@ body{
 
 
 /*
-Дальше главное меню:
- */
+Модальное окно:
+*/
 
-header {
-    background: black;
-    text-align: center;
-}
-header a {
-    display: block;
-    text-decoration: none;
-    outline: none;
-    transition: .3s ease-in-out;
-}
-nav {
-    display: table;
-    margin: 0 auto;
-}
-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-.top-menu > li {
-    width: 25%;
-    float: left;
-    position: relative;
-    font-family: 'Open Sans', sans-serif;
-}
-.top-menu > li > a {
-    text-transform: uppercase;
-    font-size: 14px;
-    font-weight: bold;
-    color: azure;
-    padding: 15px 30px;
-}
-.top-menu li a:hover {color: #D5B45B;}
-.submenu {
-    background: #111111;
-    position: absolute;
-    left: 0;
-    top: 100%;
-    z-index: 5;
-    width: 180px;
-    opacity: 0;
-    transform: scaleY(0);
-    transform-origin :0 0;
-    transition: .5s ease-in-out;
-}
-.submenu a {
-    color: white;
-    text-align: left;
-    padding: 12px 15px;
-    font-size: 13px;
-    border-bottom: 1px solid rgba(255,255,255,.1);
-}
-.submenu li:last-child a {border-bottom: none;}
-.top-menu > li:hover .submenu {
-    opacity: 1;
-    transform: scaleY(1);
-}
-
-
-
-
-
-
-
-
-
-/*Модальное окно: */
-
-#modalWindow {
+.modalWindow {
     width: 60%;
     height: 400px;
     padding: 15px;
-    border: 3px solid #4e9dce;
+    border: 3px solid rgb(183, 209, 218);
     border-radius: 10px;
-    color: #aaa;
+    color: #777;
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     margin: auto;
-    background: #ffe;
+    background: rgb(226, 232, 221);
 }
-#shadow {
+.shadow {
     background: rgba(102, 102, 102, 0.5);
     width: 100%;
     height: 100%;
@@ -173,18 +150,19 @@ nav ul {
     left: 0;
     display: none;
 }
-#modalWindow:target {display: block;}
-#closeModalWindow {
+.modalWindow:target {display: block;}
+.close {
     width: 10%;
     height: 10%;
     border-radius: 8px;
-    border: 2px solid #4e9dce;
+    border: 2px solid rgb(183, 209, 218);
     color: #333;
     position: absolute;
     left: 88%;
     bottom: 85%;
-    background: #eeffff;
+    background: rgb(202, 212, 202);
 }
-#shadow:target {display: block;}
-#closeModalWindow:hover {background: #bbeded;}
+.shadow:target {display: block;}
+.close:hover {background: rgb(191, 203, 191)
+}
 
