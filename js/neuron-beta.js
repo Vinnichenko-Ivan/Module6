@@ -28,7 +28,7 @@ function derivSigmoid(x){
 }
 
 function randParam(){
-    return Math.random();
+    return Math.random() / 10;
 }
 
 function randParams(size){
@@ -330,38 +330,6 @@ function loop() {
     }
 }
 
-// canvas.addEventListener('mousedown', function (event) {
-//     let x = event.x - this.offsetLeft;
-//     let y = event.y - this.offsetTop;
-//     let dx = weightCanvas / weightCount;
-//     let dy = heightCanvas / heightCount;
-//     if (event.buttons === 1){
-//         for(let i = 0; i < heightCount; i++){
-//             for(let j = 0; j < weightCount; j++){
-//                 let sx = dx * i;
-//                 let ex = dx * i + dx;
-//                 let sy = dy * j;
-//                 let ey = dy * j + dy;
-//                 if(sx < x && ex > x && sy < y && ey > y) {
-//                     if(inputNoLine[j][i] === 1){
-//                         inputNoLine[j][i] = 0;
-//                     }
-//                     else{
-//                         inputNoLine[j][i] = 1;
-//                     }
-//                 }
-//             }
-//         }
-//     }
-//
-//     neuroNet.setInput(matrixToLineMatrix(inputNoLine))
-//     neuroNet.genOutput()
-//     let a = neuroNet.out();
-//     answer.innerHTML = a;
-//     console.log(a);
-//
-// });
-
 canvas.onmousemove = function drawIfPressed (event) {
     let x = event.x - this.offsetLeft;
     let y = event.y - this.offsetTop;
@@ -407,13 +375,6 @@ canvas.onmousemove = function drawIfPressed (event) {
             }
         }
     }
-    //
-    // neuroNet.setInput(matrixToLineMatrix(inputNoLine))
-    // neuroNet.genOutput()
-    // let a = neuroNet.out();
-    // answer.innerHTML = a;
-    // console.log(a);
-
 };
 
 addButton.addEventListener('click', function() {
