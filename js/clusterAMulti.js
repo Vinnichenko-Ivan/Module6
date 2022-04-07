@@ -95,7 +95,7 @@ function loop() {
     }
 }
 
-clusterInit(globalClusterCount, mainField);
+clusterInitRand(globalClusterCount, mainField);
 clusterInit(globalClusterCount, fieldAlgo1);
 clusterInit(globalClusterCount, fieldAlgo2);
 clusterInit(globalClusterCount, fieldAlgo3);
@@ -127,6 +127,14 @@ mainCanvas.addEventListener('mousedown', function (event) {
     fieldAlgo2.copyFromFieldWithoutClusters(mainField)
     fieldAlgo3.copyFromFieldWithoutClusters(mainField)
     fieldAlgo4.copyFromFieldWithoutClusters(mainField)
+    fieldAlgo1.rerun()
+    fieldAlgo2.rerun()
+    fieldAlgo3.rerun()
+    fieldAlgo4.rerun()
+    clusterInit(globalClusterCount, fieldAlgo1)
+    clusterInit(globalClusterCount, fieldAlgo2)
+    clusterInit(globalClusterCount, fieldAlgo3)
+    clusterInit(globalClusterCount, fieldAlgo4)
 });
 
 checkBoxLineToCenter.addEventListener('change', function() {
@@ -154,7 +162,7 @@ buttonRerun.addEventListener('click', function() {
     fieldAlgo2.rerun()
     fieldAlgo3.rerun()
     fieldAlgo4.rerun()
-    clusterInit(globalClusterCount, mainField)
+    clusterInitRand(globalClusterCount, mainField)
     clusterInit(globalClusterCount, fieldAlgo1)
     clusterInit(globalClusterCount, fieldAlgo2)
     clusterInit(globalClusterCount, fieldAlgo3)
@@ -168,7 +176,7 @@ clusterCount.addEventListener('input', function() {
     fieldAlgo2.rerun()
     fieldAlgo3.rerun()
     fieldAlgo4.rerun()
-    clusterInit(globalClusterCount, mainField)
+    clusterInitRand(globalClusterCount, mainField)
     clusterInit(globalClusterCount, fieldAlgo1)
     clusterInit(globalClusterCount, fieldAlgo2)
     clusterInit(globalClusterCount, fieldAlgo3)

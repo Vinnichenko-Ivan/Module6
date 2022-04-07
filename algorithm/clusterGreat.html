@@ -17,7 +17,7 @@
     <div>
         <label for="dbscanEps"></label><input type="number" step="0.1" min="0" max="600" value="10" id="dbscanEps" title = "Расстояние для вычисления ближайших точек. Параметр алгоритма dbscan." />
         <label for="dbscanMinPoint"></label><input type="number" step="1" min="1" max="100" value="4" id="dbscanMinPoint" title = "Минимальное количество точек для образования кластера. Параметр алгоритма dbscan." />
-        <label for="autoRunDbscan"></label><input type="checkbox" id="autoRunDbscan" title="Автоматическая работа основного алгоритма dbscan.">
+        <label for="autoRunDbscan"></label><input type="checkbox" id="autoRunDbscan" title="Автоматическая работа алгоритма dbscan.">
     </div>
 </div>
 <div id="content">
@@ -28,7 +28,7 @@
             <canvas width="200" height="200" id="algo2" title="Алгоритм основанный на минимальном оставном дереве с постобработкой k-means."></canvas>
         </div>
         <div>
-            <canvas width="200" height="200" id="algo3" title="DBSCAN"></canvas>
+            <canvas width="200" height="200" id="algo3" title="Алгоритм DBSCAN."></canvas>
             <canvas width="200" height="200" id="algo4"></canvas>
         </div>
     </div>

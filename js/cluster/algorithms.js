@@ -165,11 +165,19 @@ function graphGenClusterCenters(field){
 
 }
 
-function clusterInit(clusterCount, area){
+function clusterInitRand(clusterCount, area){
     area.clusterCenters = []
     area.clusterCount = clusterCount
     for (let i = 0; i < clusterCount; i++) {
         area.clusterCenters.push(new Point(randDouble(0, weight), randDouble(0, height)));
+    }
+}
+
+function clusterInit(clusterCount, area){
+    area.clusterCenters = []
+    area.clusterCount = clusterCount
+    for (let i = 0; i < clusterCount; i++) {
+        area.clusterCenters.push(new Point(-5, -5));
     }
 }
 

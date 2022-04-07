@@ -64,7 +64,7 @@ function loop() {
     }
 }
 
-clusterInit(globalClusterCount, mainField)
+clusterInitRand(globalClusterCount, mainField)
 
 canvas.addEventListener('mousedown', function (event) {
     const dx = this.offsetLeft;
@@ -109,13 +109,13 @@ checkBoxClusterCentres.addEventListener('change', function() {
 
 buttonRerun.addEventListener('click', function() {
     mainField.rerun()
-    clusterInit(globalClusterCount, mainField)
+    clusterInitRand(globalClusterCount, mainField)
 });
 
 clusterCount.addEventListener('input', function() {
     globalClusterCount = getReal(1,100, false, clusterCount.value);
     mainField.rerun()
-    clusterInit(globalClusterCount, mainField)
+    clusterInitRand(globalClusterCount, mainField)
 });
 
 buttonClear.addEventListener('click', function() {
