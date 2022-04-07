@@ -43,7 +43,8 @@ header {
     padding: 20px;
     box-shadow: 0 0 10px black;
 }
-#lobbyButton, #showSettingsModalWindow, #showGraphicsModalWindow{
+#lobbyButton, #showSettingsModalWindow, #showGraphicsModalWindow, #changeVersion{
+    box-shadow: inset -3px 3px 5px grey, inset 3px -3px 5px grey, -3px 3px 5px #383737, 3px -3px 5px #383737;
     background: rgb(149, 163, 164);
     border: 2px solid rgb(105, 114, 104);
     border-radius: 8px;
@@ -55,12 +56,18 @@ header {
     text-align: center;
     align-items: center;
 }
-#lobbyButton:hover, #showSettingsModalWindow:hover, #showGraphicsModalWindow:hover{
+#lobbyButton:hover, #showSettingsModalWindow:hover, #showGraphicsModalWindow:hover, #changeVersion:hover{
     background: rgb(140, 158, 158);
 }
 #headerButtonsContainer{
     display: flex;
     justify-content: center;
+}
+#changeVersion{
+    width: 10%;
+    position: absolute;
+    top: 20px;
+    right: 5%;
 }
 
 
@@ -78,12 +85,18 @@ header {
     margin-bottom: 0;
 }
 #clear, #food, #walls, #ants, #erase{
-    box-shadow: 4px 4px 4px darkgrey;
+    box-shadow: inset -1px 1px 5px darkgrey, inset 1px -1px 5px darkgrey, -1px 1px 5px darkgrey, 1px -1px 5px darkgrey;
     border-radius: 10px;
+    border-color: rgb(142, 161, 161);
+    border-style: solid;
+    border-width: 1px;
     background: rgb(183, 209, 218);
     margin: 1%;
     width: 10%;
     height: 40px;
+}
+#clear:hover, #food:hover, #walls:hover, #ants:hover, #erase:hover{
+    background: rgb(178, 202, 211);
 }
 #brushWidthDiv{
     display: flex;
@@ -158,12 +171,13 @@ input:hover{opacity: 1;}
     width: 10%;
     height: 10%;
     border-radius: 8px;
-    border: 2px solid rgb(183, 209, 218);
+    border: 1px solid rgb(150, 162, 148);
     color: #333;
     position: absolute;
     left: 88%;
     bottom: 85%;
     background: rgb(202, 212, 202);
+    box-shadow: inset -1px 1px 5px rgb(168, 182, 166), inset 1px -1px 5px rgb(168, 182, 166), -1px 1px 5px rgb(168, 182, 166), 1px -1px 5px rgb(168, 182, 166);
 }
 .shadow:target {display: block;}
 .close:hover, .save:hover{background: rgb(191, 203, 191)
@@ -177,7 +191,8 @@ input:hover{opacity: 1;}
     bottom: 5%;
     left: 45%;
     border-radius: 8px;
-    border: 2px solid rgb(183, 209, 218);
+    border: 1px solid rgb(150, 162, 148);
     background: rgb(202, 212, 202);
+    box-shadow: inset -1px 1px 5px rgb(168, 182, 166), inset 1px -1px 5px rgb(168, 182, 166), -1px 1px 5px rgb(168, 182, 166), 1px -1px 5px rgb(168, 182, 166);
 }
 

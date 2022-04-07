@@ -22,6 +22,8 @@ window.addEventListener("load", function onWindowLoad() {
         vars.modalWindowMode = true;
         document.getElementById("colonyInputId").value = vars.antsNumber;
         document.getElementById("colonyOutputId").value = vars.antsNumber;
+        document.getElementById("antsEyesRadiusInputId").value = vars.radiusOfAntsEyes;
+        document.getElementById("antsEyesRadiusOutputId").value = vars.radiusOfAntsEyes;
     };
     document.getElementById("closeSettingsModalWindow").onclick = function (){
         window.location.href = '#';
@@ -31,6 +33,7 @@ window.addEventListener("load", function onWindowLoad() {
         window.location.href = '#';
         vars.modalWindowMode = false;
         vars.antsNumber = Number(document.getElementById("colonyInputId").value);
+        vars.radiusOfAntsEyes = Number(document.getElementById("antsEyesRadiusInputId").value);
         reset();
     }
 

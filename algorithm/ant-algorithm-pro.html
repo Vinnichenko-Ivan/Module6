@@ -18,6 +18,8 @@
         <button id="showSettingsModalWindow">Настройки</button>
 
     </div>
+
+    <button id="changeVersion" onclick="window.location.href='./ant-algorithm.html'">BASE</button>
 </header>
 
 
@@ -67,6 +69,11 @@
             <output id="colonyOutputId">200</output>
         </form>
 
+        <form>
+            <label for="antsEyesRadiusInputId">Радиус глаз</label>
+            <input type="range" id="antsEyesRadiusInputId" min="5" max="100" value="10" step="5" oninput="antsEyesRadiusOutputId.value = antsEyesRadiusInputId.value"/>
+            <output id="antsEyesRadiusOutputId">10</output>
+        </form>
 
 
         <button class="save" id="saveSettings">Сохранить</button>
