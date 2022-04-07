@@ -295,6 +295,8 @@ window.addEventListener("load", function onWindowLoad() {
 
                             //отрисовка
                             redrawing(population, mainEdgesWidth, mainEdgesOpacity, mainEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
+                            bestPathOutput.textContent = Math.floor(minPathLength).toString();
+                            iterationOutput.textContent = it.toString();
                         }
                     }
                 }, 0);
