@@ -82,7 +82,7 @@ class SaveOBJ{
 }
 
 class NeuronFullNet{
-    learningRate = 0.0004
+    learningRate = 0.1
 
     inputLayersSize = 0
     inputLayers = []
@@ -196,17 +196,40 @@ class NeuronFullNet{
     }
 
     softMax(){
-        let total = 0
-        let maxim = - 100000000000000
-        this.outputLayer.forEach(function (i) {
-            maxim = Math.max(maxim,i.output)
+        let mass = []
+        this.outputLayer.forEach(function (n){
+            mass.push(n.output);
         })
-        this.outputLayer.forEach(function (i) {
-            total += Math.exp(i.output - maxim );
+        var maximum = mass.reduce(function(p,c) { return p>c ? p : c; });
+        var nominators = mass.map(function(e) { return Math.exp(e - maximum); });
+        var denominator = nominators.reduce(function (p, c) { return p + c; });
+        var softmax = nominators.map(function(e) { return e / denominator; });
+
+        var maxIndex = 0;
+        softmax.reduce(function(p,c,i){if(p<c) {maxIndex=i; return c;} else return p;});
+        var result = [];
+        for (var i=0; i<mass.length; i++)
+        {
+            if (i==maxIndex)
+                result.push(1);
+            else
+                result.push(0);
+        }
+        let a = result;
+        this.outputLayer.forEach(function (n, index){
+            n.output = softmax[index];
         })
-        this.outputLayer.forEach(function (i, index) {
-            i.output = Math.exp(i.output - maxim ) / total + 0.000000001;
-        })
+        // let total = 0
+        // let maxim = - 100000000000000
+        // this.outputLayer.forEach(function (i) {
+        //     maxim = Math.max(maxim,i.output)
+        // })
+        // this.outputLayer.forEach(function (i) {
+        //     total += Math.exp(i.output - maxim );
+        // })
+        // this.outputLayer.forEach(function (i, index) {
+        //     i.output = Math.exp(i.output - maxim ) / total + 0.000000001;
+        // })
     }
 
     // softMax(){
@@ -341,7 +364,7 @@ class NeuronFullNet{
 
 let inputLayersSize = 2500
 let invisibleLayersCount = 1
-let invisibleLayersSize = [1000]
+let invisibleLayersSize = [10]
 let outputLayerSize = 10
 
 function matrixToLineMatrix(matrix){
