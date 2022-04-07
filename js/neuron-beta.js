@@ -87,32 +87,19 @@ class NeuronFullNet{
     inputLayersSize = 0
     inputLayers = []
 
-    invisibleLayersCount = 0;
-    invisibleLayersSize = []
-    invisibleLayers = [[]]
-
     outputLayerSize = 0
     outputLayer = []
 
     setSizes(inputLayersSize, invisibleLayersCount, invisibleLayersSize, outputLayerSize){
         this.inputLayersSize = inputLayersSize;
-        this.invisibleLayersCount = invisibleLayersCount;
-        this.invisibleLayersSize = invisibleLayersSize;
         this.outputLayerSize = outputLayerSize;
     }
 
     genNeurons(){
         this.inputLayers = [];
-        this.invisibleLayers = []
         this.outputLayer = []
         for(let i = 0; i < this.inputLayersSize; i++){
             this.inputLayers.push(new Neuron());
-        }
-        for(let i = 0; i < this.invisibleLayersCount; i++){
-            this.invisibleLayers.push([]);
-            for(let j = 0; j < this.invisibleLayersSize[i]; j++){
-                this.invisibleLayers[i].push(new Neuron());
-            }
         }
         for(let i = 0; i < this.outputLayerSize; i++){
             this.outputLayer.push(new Neuron());
@@ -120,30 +107,13 @@ class NeuronFullNet{
     }
 
     genRandParam(){
-        for(let i = 0; i < this.invisibleLayersCount; i++){
-            for(let j = 0; j < this.invisibleLayersSize[i]; j++){
-                if(i === 0) {
-                    this.invisibleLayers[i][j].setWeights(this.inputLayersSize, randParams(this.inputLayersSize), randParam());
-                }
-                else{
-                    this.invisibleLayers[i][j].setWeights(this.invisibleLayersSize[i - 1], randParams(this.invisibleLayersSize[i - 1]), randParam());
-                }
-            }
-        }
         for(let i = 0; i < this.outputLayerSize; i++){
-            this.outputLayer[i].setWeights(this.invisibleLayersSize[this.invisibleLayersCount - 1], randParams(this.invisibleLayersSize[this.invisibleLayersCount - 1]), randParam());
+            this.outputLayer[i].setWeights(2500, randParams(2500), randParam());
         }
     }
 
     toSaveObj(){
         let saveObj = new SaveOBJ;
-        for(let i = 0; i < this.invisibleLayersCount; i++){
-            saveObj.invisibleLayers.push([])
-            for(let j = 0; j < this.invisibleLayersSize[i]; j++){
-
-                saveObj.invisibleLayers[i].push(JSON.parse(JSON.stringify(this.invisibleLayers[i][j].weights)))
-            }
-        }
         for(let i = 0; i < this.outputLayerSize; i++){
             saveObj.outputLayer.push(JSON.parse(JSON.stringify(this.outputLayer[i].weights)))
         }
@@ -151,16 +121,6 @@ class NeuronFullNet{
     }
 
     fromSaveObj(saveObj) {
-        for(let i = 0; i < this.invisibleLayersCount; i++){
-            for(let j = 0; j < this.invisibleLayersSize[i]; j++){
-                if(i === 0) {
-                    this.invisibleLayers[i][j].setWeights(this.inputLayersSize, (JSON.parse(JSON.stringify(saveObj.invisibleLayers[i][j]))), randParam());
-                }
-                else{
-                    this.invisibleLayers[i][j].setWeights(this.invisibleLayersSize[i - 1], (JSON.parse(JSON.stringify(saveObj.invisibleLayers[i][j]))), randParam());
-                }
-            }
-        }
         for(let i = 0; i < this.outputLayerSize; i++){
             this.outputLayer[i].setWeights(this.invisibleLayersSize[this.invisibleLayersCount - 1], (JSON.parse(JSON.stringify(saveObj.outputLayer[i]))), randParam());
         }
@@ -173,18 +133,8 @@ class NeuronFullNet{
     }
 
     genOutput(){
-        for(let i = 0; i < this.invisibleLayersCount; i++){
-            for(let j = 0; j < this.invisibleLayersSize[i]; j++){
-                if(i === 0) {
-                    this.invisibleLayers[i][j].result(this.inputLayers);
-                }
-                else{
-                    this.invisibleLayers[i][j].result(this.invisibleLayers[i - 1]);
-                }
-            }
-        }
         for(let i = 0; i < this.outputLayerSize; i++){
-            this.outputLayer[i].result(this.invisibleLayers[this.invisibleLayersCount - 1]);
+            this.outputLayer[i].result(this.inputLayers);
         }
     }
 
@@ -196,55 +146,18 @@ class NeuronFullNet{
     }
 
     softMax(){
-        let mass = []
-        this.outputLayer.forEach(function (n){
-            mass.push(n.output);
+        let total = 0
+        let maxim = - 100000000000000
+        this.outputLayer.forEach(function (i) {
+            maxim = Math.max(maxim,i.output)
         })
-        var maximum = mass.reduce(function(p,c) { return p>c ? p : c; });
-        var nominators = mass.map(function(e) { return Math.exp(e - maximum); });
-        var denominator = nominators.reduce(function (p, c) { return p + c; });
-        var softmax = nominators.map(function(e) { return e / denominator; });
-
-        var maxIndex = 0;
-        softmax.reduce(function(p,c,i){if(p<c) {maxIndex=i; return c;} else return p;});
-        var result = [];
-        for (var i=0; i<mass.length; i++)
-        {
-            if (i==maxIndex)
-                result.push(1);
-            else
-                result.push(0);
-        }
-        let a = result;
-        this.outputLayer.forEach(function (n, index){
-            n.output = softmax[index];
+        this.outputLayer.forEach(function (i) {
+            total += Math.exp(i.output - maxim );
         })
-        // let total = 0
-        // let maxim = - 100000000000000
-        // this.outputLayer.forEach(function (i) {
-        //     maxim = Math.max(maxim,i.output)
-        // })
-        // this.outputLayer.forEach(function (i) {
-        //     total += Math.exp(i.output - maxim );
-        // })
-        // this.outputLayer.forEach(function (i, index) {
-        //     i.output = Math.exp(i.output - maxim ) / total + 0.000000001;
-        // })
+        this.outputLayer.forEach(function (i, index) {
+            i.output = Math.exp(i.output - maxim ) / total + 0.000000001;
+        })
     }
-
-    // softMax(){
-    //     let total = 0
-    //     let maxim = - 100000000000000
-    //     this.outputLayer.forEach(function (i) {
-    //         maxim = Math.max(maxim,i.output)
-    //     })
-    //     this.outputLayer.forEach(function (i) {
-    //         total += Math.exp(i.output - maxim );
-    //     })
-    //     this.outputLayer.forEach(function (i, index) {
-    //         i.output = Math.exp(i.output - maxim )/total;
-    //     })
-    // }
 
     crossEntropyForTen(answer){
         let p = [0,0,0,0,0,0,0,0,0,0]
@@ -293,11 +206,6 @@ class NeuronFullNet{
     }
 
     setZeroErrors(){
-        for(let i = 0; i < this.invisibleLayersCount; i++){
-            for(let j = 0; j < this.invisibleLayersSize[i]; j++){
-                this.invisibleLayers[i][j].error = 0;
-            }
-        }
         for(let i = 0; i < this.outputLayerSize; i++){
             this.outputLayer[i].error = 0;
         }
@@ -327,36 +235,12 @@ class NeuronFullNet{
 
 
         for(let i = 0; i < 10; i++){
-            for(let j = 0; j < this.invisibleLayersSize[this.invisibleLayersCount - 1]; j++){
+            for(let j = 0; j < 2500; j++){
                 let newWeight = this.newWeight(this.outputLayer[i], j);
-                this.invisibleLayers[this.invisibleLayersCount - 1][j].error += this.outputLayer[i].weights[j] * this.t1(this.outputLayer[i], j);
                 this.outputLayer[i].weights[j] = newWeight;
             }
         }
 
-        for(let i = this.invisibleLayersCount - 1; i > 0; i--){
-            for(let j = 0; j < this.invisibleLayersSize[i]; j++){
-                for(let l = 0; l < this.invisibleLayersSize[i - 1]; l++){
-                    let newWeight = this.newWeight(this.invisibleLayers[i][j], l);
-                    this.invisibleLayers[i - 1][l].error += this.invisibleLayers[i][j].weights[l] * this.t1(this.invisibleLayers[i][j], l)
-                    this.invisibleLayers[i][j].weights[l] = newWeight;
-                    //console.log(this.t1(this.invisibleLayers[i][j], l))
-                }
-            }
-        }
-        let answ = 0;
-        let c = 0;
-        for(let j = 0; j < this.invisibleLayersSize[0]; j++){
-            for(let l = 0; l < this.inputLayersSize; l++){
-                let newWeight =  this.newWeight(this.invisibleLayers[0][j], l);
-                answ += newWeight - this.invisibleLayers[0][j].weights[l];
-                c++;
-                this.invisibleLayers[0][j].weights[l] = newWeight;
-
-            }
-        }
-        console.log("^^^^^")
-        console.log(answ / c);
         return loss;
     }
 }
