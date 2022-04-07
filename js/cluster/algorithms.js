@@ -1,10 +1,17 @@
-function genRandColor(colors) {
+//https://github.com/tayden/dbscanjs/blob/master/index.js
+//https://habr.com/ru/post/427761/
+//https://en.wikipedia.org/wiki/DBSCAN
+//https://en.wikipedia.org/wiki/Cluster_analysis#Fuzzy_c-means_clustering
+//https://ru.wikipedia.org/wiki/%D0%9C%D0%B5%D1%82%D0%BE%D0%B4_%D0%BD%D0%B5%D1%87%D1%91%D1%82%D0%BA%D0%BE%D0%B9_%D0%BA%D0%BB%D0%B0%D1%81%D1%82%D0%B5%D1%80%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_C-%D1%81%D1%80%D0%B5%D0%B4%D0%BD%D0%B8%D1%85
+
+
+function genRandColor(colors, count) {
     colors.push('red')
     colors.push('yellow')
     colors.push('green')
     colors.push('blue')
     colors.push('brown')
-    while (colors.length < 100) {
+    while (colors.length < count) {
         do {
             var color = Math.floor((Math.random() * 1000000) + 1);
         } while (colors.indexOf(color) >= 0);
@@ -47,6 +54,7 @@ function newClusterCenters(area){
 
     }
     area.points.forEach(function (point){
+        if(point.id < 0){return}
         area.clusterCenters[point.id].x += point.x;
         area.clusterCenters[point.id].y += point.y;
         newClusterCentersCounts[point.id]++;
@@ -163,4 +171,70 @@ function clusterInit(clusterCount, area){
     for (let i = 0; i < clusterCount; i++) {
         area.clusterCenters.push(new Point(randDouble(0, weight), randDouble(0, height)));
     }
+}
+
+function dbscan(field, eps, minPointCount){
+    let clusterCounter = -1;
+    field.rerun();
+    field.points.forEach(function (point, index){
+        if(point.id === -1){
+            let nearPointsIndex = []
+            field.points.forEach(function (pointTemp, indexTemp){
+                if(lenBetweenPoints(pointTemp, point) <= eps && index !== indexTemp){
+                    nearPointsIndex.push(indexTemp);
+                }
+            });
+            if(nearPointsIndex.length < minPointCount - 1){//-1 because nearPointsIndex dont contain start point
+                field.points[index].id = -2; // -2 => noise
+
+                return;
+            }
+            clusterCounter++;
+            if(clusterCounter > colorIndex.length)
+            {
+                genRandColor(colorIndex, clusterCounter + 100);
+            }
+            field.points[index].id = clusterCounter;
+            field.points[index].color = colorIndex[clusterCounter];
+            while(nearPointsIndex.length !== 0)
+            {
+                let tempPointIndex = nearPointsIndex.pop();
+                if(field.points[tempPointIndex].id === -1){
+                    field.points[tempPointIndex].id = clusterCounter;
+                    field.points[tempPointIndex].color = colorIndex[clusterCounter];
+                }
+                else if(field.points[tempPointIndex].id !== -2){
+                    continue;
+                }
+                field.points[tempPointIndex].id = clusterCounter;
+                field.points[tempPointIndex].color = colorIndex[clusterCounter];
+
+            }
+        }
+
+
+    });
+    clusterInit(clusterCounter + 1, field)
+    newClusterCenters(field);
+
+}
+
+function getReal(min, max, floating, value)
+{
+    value = Number(value)
+    if(value < min)
+    {
+        alert("НЕЛЬЗЯ! Вы ввели значение меньше минимального.")
+    }
+    if(value > max)
+    {
+        alert("НЕЛЬЗЯ! Вы ввели значение больше максимального.")
+    }
+    if(Number.isInteger(value) === false && floating === false){
+        alert("НЕЛЬЗЯ! Дроби нельзя. Поставь целое число. ПЖПЖП....");
+    }
+    if(floating === false){
+        value = Math.floor(value);
+    }
+    return Math.min(max, Math.max(value, min));
 }

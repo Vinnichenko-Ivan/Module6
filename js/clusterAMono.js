@@ -7,7 +7,7 @@ let globalClusterCount = 4;
 let colorIndex = [];
 let defColor = 'white'
 
-genRandColor(colorIndex)
+genRandColor(colorIndex, 100)
 
 const checkBoxLineToCenter = document.getElementById('linesToCentres')
 const checkBoxAutoRun = document.getElementById('autoRun')
@@ -15,7 +15,7 @@ const checkBoxClusterCentres = document.getElementById('clusterCenters')
 const buttonClear = document.getElementById('clear')
 const buttonRerun = document.getElementById('rerun')
 const buttonIter = document.getElementById('iter')
-const clusterCount = document.getElementById('CCount');
+const clusterCount = document.getElementById('clusterCount');
 const canvas = document.getElementById('mainField');
 const context =canvas.getContext('2d');
 
@@ -112,8 +112,8 @@ buttonRerun.addEventListener('click', function() {
     clusterInit(globalClusterCount, mainField)
 });
 
-clusterCount.addEventListener('click', function() {
-    globalClusterCount = clusterCount.value;
+clusterCount.addEventListener('input', function() {
+    globalClusterCount = getReal(1,100, false, clusterCount.value);
     mainField.rerun()
     clusterInit(globalClusterCount, mainField)
 });
