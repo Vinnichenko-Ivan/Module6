@@ -1,83 +1,217 @@
+
+/*
+Основное:
+*/
+
 * {
     box-sizing: border-box;
+    font-family: Century, fantasy;
+    font-weight: normal;
+    font-size: large;
 }
 body{
     margin: 0;
-    background: azure;
+    background: rgb(226, 232, 221);
 }
-#mainButton{
-    width: 20%;
-    height: 50px;
-    position: relative;
-    left: 50%;
-    transform: translate(-50%, 0);
-    margin: 10px;
+button:hover{
+    cursor: pointer;
 }
 #myCanvas{
     position: relative;
     left: 50%;
     transform: translate(-50%, 0);
-    border-style: dashed;
-    margin: 10px;
+    border-style: solid ;
+    border-radius: 5px;
+    border-width: 5px;
+    border-color: #697268;
 }
 
+
 /*
-Дальше главное меню:
+Шапка:
  */
+
 header {
-    background: black;
+    background: rgb(78, 83, 64);
     text-align: center;
+    padding: 20px;
+    box-shadow: 0 0 10px black;
 }
-header a {
-    display: block;
-    text-decoration: none;
-    outline: none;
-    transition: .3s ease-in-out;
-}
-nav {
-    display: table;
-    margin: 0 auto;
-}
-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-.top-menu > li {
-    width: 25%;
-    float: left;
+#lobbyButton, #showSettingsModalWindow, #showGraphicsModalWindow, #changeVersion{
+    box-shadow: inset -3px 3px 5px grey, inset 3px -3px 5px grey, -3px 3px 5px #383737, 3px -3px 5px #383737;
+    background: rgb(149, 163, 164);
+    border: 2px solid rgb(105, 114, 104);
+    border-radius: 8px;
+    margin-inline: 1%;
+    width: 15%;
+    height: 60px;
     position: relative;
-    font-family: 'Open Sans', sans-serif;
+    display: inline-grid;
+    text-align: center;
+    align-items: center;
 }
-.top-menu > li > a {
-    text-transform: uppercase;
-    font-size: 14px;
-    font-weight: bold;
-    color: azure;
-    padding: 15px 30px;
+#lobbyButton:hover, #showSettingsModalWindow:hover, #showGraphicsModalWindow:hover, #changeVersion:hover{
+    background: rgb(140, 158, 158);
 }
-.top-menu li a:hover {color: #D5B45B;}
-.submenu {
-    background: #111111;
+#headerButtonsContainer{
+    display: flex;
+    justify-content: center;
+}
+#changeVersion{
+    width: 10%;
     position: absolute;
+    top: 20px;
+    right: 5%;
+}
+
+
+
+
+/*
+Панель меню:
+*/
+
+#buttonsContainer{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin-top: 20px;
+    margin-bottom: 0;
+}
+#mainButton{
+    box-shadow: inset -1px 1px 5px darkgrey, inset 1px -1px 5px darkgrey, -1px 1px 5px darkgrey, 1px -1px 5px darkgrey;
+    border-radius: 10px;
+    border-color: rgb(142, 161, 161);
+    border-style: solid;
+    border-width: 1px;
+    background: rgb(183, 209, 218);
+    margin: 1%;
+    width: 10%;
+    height: 40px;
+}
+#mainButton:hover{
+    background: rgb(178, 202, 211);
+}
+
+
+#outputDiv{
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-inline: 30%;
+    height: 24px;
+}
+#outputDiv span{
+    background-color: rgb(183, 209, 218);
+    border-radius: 10px;
+    text-align: center;
+    width: 120px;
+}
+
+
+input{
+    -webkit-appearance: none;
+    width: 20%;
+    height: 20px;
+    border-radius: 10px;
+    background: rgb(183, 209, 218);
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: rgb(78, 83, 64);
+    cursor: pointer;
+}
+input::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: rgb(78, 83, 64);
+    cursor: pointer;
+}
+input:hover{opacity: 1;}
+
+
+
+
+
+/*
+Модальное окно:
+*/
+
+.modalWindow {
+    width: 60%;
+    height: 400px;
+    padding: 15px;
+    border: 3px solid rgb(183, 209, 218);
+    border-radius: 10px;
+    color: #777;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
     left: 0;
-    top: 100%;
-    z-index: 5;
-    width: 180px;
-    opacity: 0;
-    transform: scaleY(0);
-    transform-origin :0 0;
-    transition: .5s ease-in-out;
+    margin: auto;
+    background: rgb(226, 232, 221);
 }
-.submenu a {
-    color: white;
-    text-align: left;
-    padding: 12px 15px;
-    font-size: 13px;
-    border-bottom: 1px solid rgba(255,255,255,.1);
+.shadow {
+    background: rgba(102, 102, 102, 0.5);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
 }
-.submenu li:last-child a {border-bottom: none;}
-.top-menu > li:hover .submenu {
-    opacity: 1;
-    transform: scaleY(1);
+.modalWindow:target {display: block;}
+.close {
+    width: 10%;
+    height: 10%;
+    border-radius: 8px;
+    border: 1px solid rgb(150, 162, 148);
+    color: #333;
+    position: absolute;
+    left: 88%;
+    bottom: 85%;
+    background: rgb(202, 212, 202);
+    box-shadow: inset -1px 1px 5px rgb(168, 182, 166), inset 1px -1px 5px rgb(168, 182, 166), -1px 1px 5px rgb(168, 182, 166), 1px -1px 5px rgb(168, 182, 166);
+}
+.shadow:target {display: block;}
+.close:hover, .save:hover{background: rgb(191, 203, 191)
+}
+.save{
+    width: 10%;
+    height: 50px;
+    text-align: center;
+    align-items: center;
+    position: absolute;
+    bottom: 5%;
+    left: 45%;
+    border-radius: 8px;
+    border: 1px solid rgb(150, 162, 148);
+    background: rgb(202, 212, 202);
+    box-shadow: inset -1px 1px 5px rgb(168, 182, 166), inset 1px -1px 5px rgb(168, 182, 166), -1px 1px 5px rgb(168, 182, 166), 1px -1px 5px rgb(168, 182, 166);
+}
+
+
+#settingsModalWindow input{
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+#settingsModalWindow output{
+    position: absolute;
+    right: 30%;
+}
+#settingsModalWindow form{
+    margin: 20px;
 }
