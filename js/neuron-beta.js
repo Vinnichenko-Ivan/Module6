@@ -1,10 +1,24 @@
 //https://proglib.io/p/pishem-neyroset-na-python-s-nulya-2020-10-07
+let a = 1.6733
+let b = 1.0507
 function sigmoid(x){
     //return 1 / (1 + Math.exp(-x));
+    if(x > 0){
+        return b * x;
+    }
+    return a*b*(Math.exp(x) - 1);
+
     return Math.max(0, x);
 }
 
+
 function derivSigmoid(x){
+    if(x < 0){
+        return a * b * Math.exp(x);
+    }
+    return b;
+
+
     if(x < 0){
         return 0;
     }
@@ -68,7 +82,7 @@ class SaveOBJ{
 }
 
 class NeuronFullNet{
-    learningRate = 0.04
+    learningRate = 0.0004
 
     inputLayersSize = 0
     inputLayers = []
@@ -191,7 +205,7 @@ class NeuronFullNet{
             total += Math.exp(i.output - maxim );
         })
         this.outputLayer.forEach(function (i, index) {
-            i.output = Math.exp(i.output - maxim )/total;
+            i.output = Math.exp(i.output - maxim ) / total + 0.000000001;
         })
     }
 
@@ -220,6 +234,7 @@ class NeuronFullNet{
         for(let i = 0; i < 10; i++){
             error -= p[i] * Math.log(q[i]);
         }
+
         return error
     }
 
@@ -302,25 +317,31 @@ class NeuronFullNet{
                     let newWeight = this.newWeight(this.invisibleLayers[i][j], l);
                     this.invisibleLayers[i - 1][l].error += this.invisibleLayers[i][j].weights[l] * this.t1(this.invisibleLayers[i][j], l)
                     this.invisibleLayers[i][j].weights[l] = newWeight;
-                    console.log(this.t1(this.invisibleLayers[i][j], l))
+                    //console.log(this.t1(this.invisibleLayers[i][j], l))
                 }
             }
         }
+        let answ = 0;
+        let c = 0;
         for(let j = 0; j < this.invisibleLayersSize[0]; j++){
             for(let l = 0; l < this.inputLayersSize; l++){
                 let newWeight =  this.newWeight(this.invisibleLayers[0][j], l);
-
+                answ += newWeight - this.invisibleLayers[0][j].weights[l];
+                c++;
                 this.invisibleLayers[0][j].weights[l] = newWeight;
+
             }
         }
+        console.log("^^^^^")
+        console.log(answ / c);
         return loss;
     }
 }
 
 
 let inputLayersSize = 2500
-let invisibleLayersCount = 3
-let invisibleLayersSize = [1000, 100, 50]
+let invisibleLayersCount = 1
+let invisibleLayersSize = [1000]
 let outputLayerSize = 10
 
 function matrixToLineMatrix(matrix){
@@ -459,15 +480,22 @@ canvas.onmousemove = function drawIfPressed (event) {
             }
         }
     }
-    if (event.buttons === 1){
+    if (event.buttons === 4){
         for(let i = 0; i < heightCount; i++){
             for(let j = 0; j < weightCount; j++){
                 let sx = dx * i;
                 let ex = dx * i + dx;
                 let sy = dy * j;
                 let ey = dy * j + dy;
+
                 if(sx < x && ex > x && sy < y && ey > y) {
-                    inputNoLine[j][i] = Math.max(inputNoLine[j][i] - 0.1, 0);
+                    inputNoLine[j][i] = Math.max(inputNoLine[j][i] - 0.2, 0);
+                }
+                if(Math.abs((sx + ex) / 2 - x) < 15 && Math.abs((sy + ey) / 2 - y) < 15){
+                    inputNoLine[j][i] = Math.max(inputNoLine[j][i] - 0.2, 0);
+                }
+                if(Math.abs((sx + ex) / 2 - x) < 25 && Math.abs((sy + ey) / 2 - y) < 25){
+                    inputNoLine[j][i] = Math.max(inputNoLine[j][i] - 0.2, 0);
                 }
             }
         }
@@ -522,10 +550,12 @@ getButton.addEventListener('click', function() {
     tests = JSON.parse(data)
 });
 
-
+let all = 0;
+let good = 0;
 run.addEventListener('click', function() {
     for(let e = 0; e < 1000; e++)
     {
+        all ++;
         let i = Math.floor(Math.random() * tests.length);
         neuroNet.setInput(matrixToLineMatrix(tests[i].input))
         neuroNet.genOutput()
@@ -535,6 +565,11 @@ run.addEventListener('click', function() {
         a += " ";
         a += neuroNet.out();
         //console.log(a)
+        if(tests[i].answer === neuroNet.out()){
+            good ++;
+        }
+        console.log("--------")
+        console.log(good / all)
         console.log(neuroNet.teach(Number(tests[i].answer)))
 
     }
