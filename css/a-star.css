@@ -119,13 +119,21 @@ input[type='checkbox'] {
     -webkit-appearance: none;
 
     background: white;
-    border-radius: 20px;
+    border-radius: 8px;
     box-shadow: 0 0 2px black;
+    filter: brightness(125%);
 
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
 
-    transition: background-color 0.1s ease;
+    transition:
+            filter .1s linear,
+            transform .1s ease;
+}
+
+input[type='checkbox']:hover {
+    filter: brightness(150%);
+    transform: scale(1.2);
 }
 
 input[type='checkbox']:checked {
@@ -152,7 +160,7 @@ input[type='range']::-webkit-slider-thumb {
 
     background: var(--button-color);
     filter: brightness(125%);
-    border-radius: 15px;
+    border-radius: 8px;
     box-shadow: 0 0 2px black;
 
     width: 16px;
