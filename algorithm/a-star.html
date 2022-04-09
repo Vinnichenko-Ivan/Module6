@@ -4,12 +4,19 @@
     <meta charset="UTF-8">
     <title>Алгоритм A*</title>
 
-    <!-- Подключаем шрифты -->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+    <!-- Иконка -->
+    <link rel="icon" type="image/png" href="../assets/img/favicon/main.png">
+
+    <!-- Шрифт -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter&family=Kanit&family=Lobster&display=swap" rel="stylesheet">
 
     <!-- Подключаем стили -->
+    <link href="../css/main.css" rel="stylesheet">
     <link href="../css/a-star.css" rel="stylesheet">
+    <link href="../css/a-star-light.css" rel="stylesheet" id="light-theme" media="">
+    <link href="../css/a-star-dark.css" rel="stylesheet" id="dark-theme" media="none">
 
     <!-- Подключаем библиотеку jquery -->
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
@@ -18,28 +25,64 @@
     <script data-main="../ts/pro/a-star/main" src="https://requirejs.org/docs/release/2.3.6/comments/require.js"></script>
 </head>
 <body>
-    <div id="top">
-        <div class="margin-middle flex-column center">
-            <span>Размер поля:</span>
-            <label>
-                <input class="field-size val" type="range" value="24" min="8" max="64">
-            </label>
-            <span class="field-size display"></span>
+    <header>
+        <div class="element">
+            <img src="../assets/img/favicon/main.png" alt="">
         </div>
-        <div class="margin-middle flex-column center">
-            <span>Задержка между итерациями:</span>
-            <label>
-                <input class="iter-delay val" type="range" value="25" min="10" max="100">
-            </label>
-            <span class="iter-delay display"></span>
+        <div class="element">
+            <h2>Algorithm A*</h2>
         </div>
-        <div class="margin-big flex-column center">
-            <button class="margin-small state" id="field-resize">Создать Карту</button>
-            <button class="margin-small state" id="field-generate">Сгенерировать лабиринт</button>
-            <button class="margin-small state" id="field-find">Поиск пути</button>
+        <nav class="end">
+            <a class="element" href="https://vk.com/hits_tsu">
+                <img src="../assets/img/favicon/vk.png" alt="">
+            </a>
+            <a class="element" href="https://github.com/Vinnichenko-Ivan/Module6">
+                <img src="../assets/img/favicon/github/GitHub-Mark-Light-120px-plus.png" alt="">
+            </a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div id="menu">
+            <div class="margin-middle flex-column center">
+                <span class="text-neon margin-middle">Темная тема:</span>
+                <label>
+                    <input id="change-theme" type="checkbox">
+                </label>
+            </div>
+            <div class="margin-middle flex-column center">
+                <div class="text-neon">
+                    <span>Размер поля:</span>
+                    <span class="field-size display" style="position: fixed"></span>
+                </div>
+                <label class="margin-middle">
+                    <input class="field-size val" type="range" value="24" min="8" max="64">
+                </label>
+            </div>
+            <div class="margin-middle flex-column center">
+                <div class="text-neon">
+                    <span>Задержка между итерациями:</span>
+                    <span class="iter-delay display" style="position: fixed"></span>
+                </div>
+                <label class="margin-middle">
+                    <input class="iter-delay val" type="range" value="25" min="10" max="100">
+                </label>
+            </div>
+            <div class="margin-big flex-column center">
+                <button class="margin-small state" id="field-resize">Создать Карту</button>
+                <button class="margin-small state" id="field-generate">Сгенерировать лабиринт</button>
+                <button class="margin-small state" id="field-find">Поиск пути</button>
+            </div>
         </div>
+        <div id="field"></div>
     </div>
-    <div id="field"></div>
-    <script type="module" src="../ts/pro/a-star/main.ts"></script>
+
+    <footer>
+        <div>
+            <span>Автор алгоритма: </span>
+            <a href="https://vk.com/greenpix_dev">Аникушин Роман</a>
+        </div>
+        <a href="../index.html">На главную страницу</a>
+    </footer>
 </body>
 </html>

@@ -1,0 +1,43 @@
+/* Светлые цвета клеточек на игровом поле */
+.cell {
+    background: #fff2e6;
+    box-shadow: 0 0 3px #969696;
+}
+
+.cell.reachable {
+    background: lightgreen;
+}
+
+.cell.explored {
+    background: lightblue;
+}
+
+.cell.path {
+    background: yellow;
+    box-shadow: 0 0 3px #c79618;
+}
+
+.cell:hover {
+    background: wheat;
+}
+
+.cell[type='wall'] {
+    background: dimgray;
+    box-shadow: 0 0 3px #3f3f3f;
+}
+
+.cell[type='wall']:hover {
+    background: #8c8c8c;
+}
+
+.cell[type='start'] {
+    background: url('../assets/img/emerald_block.png') no-repeat;
+    background-size: 100% 100%;
+    box-shadow: 0 0 3px green;
+}
+
+.cell[type='end'] {
+    background: url('../assets/img/redstone_block.png') no-repeat;
+    background-size: 100% 100%;
+    box-shadow: 0 0 3px red;
+}

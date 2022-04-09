@@ -1,0 +1,43 @@
+/* Темные цвета клеточек на игровом поле */
+.cell {
+    background: rgba(105, 105, 105, 0.5);
+    box-shadow: 0 0 3px rgba(150, 150, 150, 0.5);
+}
+
+.cell.reachable {
+    background: rgba(117, 192, 117, 0.5);
+}
+
+.cell.explored {
+    background: rgba(103, 169, 169, 0.5);
+}
+
+.cell.path {
+    background: #ff7e00;
+    box-shadow: 0 0 3px #ab5600;
+}
+
+.cell:hover {
+    background: rgba(126, 126, 126, 0.8);
+}
+
+.cell[type='wall'] {
+    background: #313131;
+    box-shadow: 0 0 3px #4d4d4d;
+}
+
+.cell[type='wall']:hover {
+    background: #232323;
+}
+
+.cell[type='start'] {
+    background: url('../assets/img/emerald_block.png') no-repeat;
+    background-size: 100% 100%;
+    box-shadow: 0 0 3px green;
+}
+
+.cell[type='end'] {
+    background: url('../assets/img/redstone_block.png') no-repeat;
+    background-size: 100% 100%;
+    box-shadow: 0 0 3px red;
+}

@@ -12,6 +12,7 @@ let selected: Cell;
 /*
  * Определяем события кнопок
  */
+$('#change-theme').on('change', changeTheme);
 $('#field-resize').on('click', resizeField);
 $('#field-generate').on('click', generateLabyrinth);
 $('#field-find').on('click', findPath);
@@ -45,6 +46,20 @@ $('#field')
             }
         }
     });
+
+/**
+ * Изменение темы
+ */
+function changeTheme() {
+    if (this.checked) {
+        $('#dark-theme').attr('media', '')
+        $('#light-theme').attr('media', 'none')
+    }
+    else {
+        $('#dark-theme').attr('media', 'none')
+        $('#light-theme').attr('media', '')
+    }
+}
 
 /**
  * Функция изменения размера поля
