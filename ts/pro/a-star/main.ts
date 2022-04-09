@@ -37,7 +37,7 @@ $('#field')
             let y = +event.target.getAttribute('y');
             let element = field.getCell(new Position(x, y));
 
-            if (selected.mark != CellMark.NONE) {
+            if (selected.mark != CellMark.NONE && element.mark == CellMark.NONE) {
                 let oldMark = selected.mark;
                 selected.reset();
                 element.reset();
@@ -129,8 +129,8 @@ async function findPath() {
  * Вызывается, когда меняется значение в вводе
  */
 function setIterationDelay(target: HTMLElement) {
-    algorithmHolder.iterationDelay = +(<HTMLInputElement> target).value;
-    $('.iter-delay.display').text((<HTMLInputElement> target).value);
+    algorithmHolder.iterationDelay = +(<HTMLInputElement> target).value * 5;
+    $('.iter-delay.display').text(algorithmHolder.iterationDelay);
 }
 
 /**
