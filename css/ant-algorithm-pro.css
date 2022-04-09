@@ -196,3 +196,17 @@ input:hover{opacity: 1;}
     box-shadow: inset -1px 1px 5px rgb(168, 182, 166), inset 1px -1px 5px rgb(168, 182, 166), -1px 1px 5px rgb(168, 182, 166), 1px -1px 5px rgb(168, 182, 166);
 }
 
+
+#settingsModalWindow input{
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+#settingsModalWindow output{
+    position: absolute;
+    right: 30%;
+}
+#settingsModalWindow form{
+    margin: 20px;
+}
+
