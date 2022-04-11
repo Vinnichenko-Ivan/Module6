@@ -203,15 +203,15 @@ input:hover{opacity: 1;}
 }
 
 
-#settingsModalWindow input{
+.modalWindow input{
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);
 }
-#settingsModalWindow output{
+.modalWindow output{
     position: absolute;
     right: 30%;
 }
-#settingsModalWindow form{
+.modalWindow form{
     margin: 20px;
 }

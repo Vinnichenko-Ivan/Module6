@@ -35,7 +35,9 @@
 </div>
 
 
+
 <canvas width="800px" height="600px" id="myCanvas">Update your browser!</canvas>
+
 
 
 <div id="shadowSettings" class="shadow">
@@ -44,8 +46,7 @@
 
         <form>
             <label for="maxCitiesNumberInputId">Максимальное кол-во городов</label>
-            <input id="maxCitiesNumberInputId" type="range" min="10" max="100" value="50"
-                   oninput="maxCitiesNumberOutputId.value = maxCitiesNumberInputId.value"/>
+            <input id="maxCitiesNumberInputId" type="range" min="10" max="100" value="50" oninput="maxCitiesNumberOutputId.value = maxCitiesNumberInputId.value"/>
             <output id="maxCitiesNumberOutputId">50</output>
         </form>
 
@@ -58,6 +59,31 @@
     <div id="graphicsModalWindow" class="modalWindow">
         <button id="closeGraphicsModalWindow" class="close" onclick="window.location.href='#'">Закрыть</button>
 
+        <form>
+            <label for="citiesColorId">Вершины</label>
+            <input id="citiesColorId" type="color" value="#000000"/>
+        </form>
+
+        <form>
+            <label for="otherEdgesColorId">Ребра</label>
+            <input id="otherEdgesColorId" type="color" value="#999999"/>
+        </form>
+
+        <form>
+            <label for="mainEdgesColorId">Ребра+</label>
+            <input id="mainEdgesColorId" type="color" value="#ffff00"/>
+        </form>
+
+        <form>
+            <label for="resultEdgesColorId">Ребра++</label>
+            <input id="resultEdgesColorId" type="color" value="#00ff00"/>
+        </form>
+
+        <form>
+            <label for="otherEdgesOpacityInputId">Прозрачность ребер</label>
+            <input id="otherEdgesOpacityInputId" type="range" min="0" max="1" value="0.15" step="0.05" oninput="otherEdgesOpacityOutputId.value = otherEdgesOpacityInputId.value"/>
+            <output id="otherEdgesOpacityOutputId">0.15</output>
+        </form>
 
         <button class="save" id="saveGraphics">Сохранить</button>
 

@@ -64,6 +64,17 @@ window.addEventListener("load", function onWindowLoad() {
         }
     }
 
+    //функция перерисовки при изменении настроек графики
+    function redrawChanges(){
+        ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
+
+        drawTowns(townColor, townRadius);
+
+        for (let i = 0; i < List.x.length; i++)
+            for (let j = i + 1; j < List.x.length; j++)
+                drawEdges(otherEdgesWidth, otherEdgesOpacity, i, j, otherEdgesColor);
+    }
+
     //функция поиска приспособленности хромосомы
     function findPathLength(chromosome, mat) {
         for (let i = 0; i < chromosome.arr.length; i++) {
@@ -80,15 +91,15 @@ window.addEventListener("load", function onWindowLoad() {
 
     //ВАЖНЫЕ КОНСТАНТЫ
     let otherEdgesOpacity = 0.15;
-    let otherEdgesColor = "#999";
+    let otherEdgesColor = "#999999";
     let otherEdgesWidth = 2;
     let townRadius = 7;
-    let townColor = "black";
+    let townColor = "#000000";
     let resultEdgesOpacity = 1;
-    let resultEdgesColor = "green";
+    let resultEdgesColor = "#00ff00";
     let resultEdgesWidth = 4;
     let mainEdgesWidth = 4;
-    let mainEdgesColor = "yellow";
+    let mainEdgesColor = "#ffff00";
     let mainEdgesOpacity = 1;
     let maxNumberOfCities = 50;
 
@@ -331,6 +342,8 @@ window.addEventListener("load", function onWindowLoad() {
     let bestPathOutput = document.getElementById("bestPathId");
     let iterationOutput = document.getElementById("iterationId");
 
+    //---------------------------------------------------------------
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~НАСТРОЙКИ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     document.getElementById("showSettingsModalWindow").onclick = function (){
         document.getElementById("maxCitiesNumberInputId").value = maxNumberOfCities;
         document.getElementById("maxCitiesNumberOutputId").value = maxNumberOfCities;
@@ -340,6 +353,31 @@ window.addEventListener("load", function onWindowLoad() {
         maxNumberOfCities = document.getElementById("maxCitiesNumberInputId").value;
         window.location.href='#';
     }
+
+    //---------------------------------------------------------------
+    //~~~~~~~~~~~~~~~~~~~~~~~НАСТРОЙКИ ГРАФИКИ~~~~~~~~~~~~~~~~~~~~~~~
+    document.getElementById("showGraphicsModalWindow").onclick = function (){
+
+        document.getElementById("citiesColorId").value = townColor;
+        document.getElementById("otherEdgesColorId").value = otherEdgesColor;
+        document.getElementById("mainEdgesColorId").value = mainEdgesColor;
+        document.getElementById("resultEdgesColorId").value = resultEdgesColor;
+        document.getElementById("otherEdgesOpacityInputId").value = otherEdgesOpacity.toString();
+        document.getElementById("otherEdgesOpacityOutputId").value = otherEdgesOpacity.toString();
+
+        window.location.href='#shadowGraphics';
+    }
+    document.getElementById("saveGraphics").onclick = function (){
+        townColor = document.getElementById("citiesColorId").value;
+        otherEdgesColor = document.getElementById("otherEdgesColorId").value;
+        mainEdgesColor = document.getElementById("mainEdgesColorId").value;
+        resultEdgesColor = document.getElementById("resultEdgesColorId").value;
+        otherEdgesOpacity = Number(document.getElementById("otherEdgesOpacityInputId").value);
+        if(State.mapBuilding)
+            redrawChanges();
+        window.location.href='#';
+    }
+
 
     // На нажатие мыши по canvas будет выполняться эта функция
     MyCanvas.onmousedown = function newTown(e) {
