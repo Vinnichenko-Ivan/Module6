@@ -58,6 +58,8 @@ export interface Display {
 
     deleteDisplay(): void;
 
+    resetDisplay(): void;
+
 }
 
 export enum TreeNodeType {FLOW, LEAF}
@@ -81,10 +83,6 @@ export interface TreeFlow extends TreeNode {
 export interface TreeLeaf extends TreeNode {
 
     get classValue(): number;
-
-    incrementCount(): void
-
-    resetCount(): void;
 
 }
 

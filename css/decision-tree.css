@@ -60,7 +60,7 @@ body {
 
 .area {
     position: absolute;
-    z-index: 1;
+    z-index: 2;
 
     height: 100%;
     width: 100%;
@@ -201,4 +201,17 @@ body {
 
 .tree li:before[mark] {
     outline: solid 1px #795f00;
+}
+
+.tree .result:before {
+    display: none;
+}
+
+.tree .result {
+    position: absolute;
+    z-index: 1;
+
+    font-size: 12px;
+
+    margin: 2px 0 0 -28px;
 }

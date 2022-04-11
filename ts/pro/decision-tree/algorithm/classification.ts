@@ -44,6 +44,8 @@ export class ClassificationAlgorithm implements Algorithm {
     }
 
     async run(holder: AlgorithmHolder): Promise<any> {
+        this.tree.resetDisplay();
+
         for (const test of this.testDataset.templates) {
             let classValue = await this.classify(holder, this.tree, test);
 
@@ -65,13 +67,14 @@ export class ClassificationAlgorithm implements Algorithm {
         this.selected.push(node);
 
         if (node.type == TreeNodeType.LEAF) {
-            let classValue = (<TreeLeaf> node).classValue;
+            let leaf = <TreeLeaf> node;
+            let classValue = leaf.classValue;
 
             if (test.value(this.testDataset.class) == classValue) {
-                node.markDisplay(TreeMark.RIGHT);
+                leaf.markDisplay(TreeMark.RIGHT);
             }
             else {
-                node.markDisplay(TreeMark.WRONG);
+                leaf.markDisplay(TreeMark.WRONG);
             }
 
             return classValue;

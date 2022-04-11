@@ -5,17 +5,21 @@ abstract class TreeNodeImpl implements TreeNode {
 
     readonly condition: Condition;
 
-    readonly htmlElement: HTMLElement;
+    abstract readonly htmlElement: HTMLElement;
 
     protected constructor(condition: Condition) {
         this.condition = condition;
+    }
+
+    deleteDisplay() {
+        this.htmlElement.parentElement.removeChild(this.htmlElement);
     }
 
     abstract get type(): TreeNodeType;
 
     abstract createDisplay(): void
 
-    abstract deleteDisplay(): void
+    abstract resetDisplay(): void;
 
     abstract markDisplay(value: TreeMark): void;
 
@@ -53,7 +57,7 @@ export class TreeFlowImpl extends TreeNodeImpl implements TreeFlow {
         }
         else {
             this.htmlSpanElement.classList.add('root');
-            this.htmlSpanElement.innerText = 'Корень';
+            this.htmlSpanElement.textContent = 'Корень';
         }
 
         for (const child of this.children) {
@@ -62,8 +66,11 @@ export class TreeFlowImpl extends TreeNodeImpl implements TreeFlow {
         }
     }
 
-    deleteDisplay() {
-        this.htmlElement.parentElement.removeChild(this.htmlElement);
+    resetDisplay() {
+        for (const child of this.children) {
+            child.resetDisplay();
+        }
+        this.markDisplay(TreeMark.NONE);
     }
 
     markDisplay(value: TreeMark) {
@@ -80,7 +87,9 @@ export class TreeLeafImpl extends TreeNodeImpl implements TreeLeaf {
 
     private readonly dataset: Dataset;
 
-    private count: number = 0;
+    private rightCount: number = 0;
+
+    private wrongCount: number = 0;
 
     readonly type = TreeNodeType.LEAF;
 
@@ -96,6 +105,8 @@ export class TreeLeafImpl extends TreeNodeImpl implements TreeLeaf {
 
     readonly htmlClassSpanElement: HTMLElement;
 
+    readonly htmlClassCounterElement: HTMLElement;
+
     constructor(dataset: Dataset, condition: Condition, classValue: number) {
         super(condition);
         this.dataset = dataset;
@@ -105,6 +116,7 @@ export class TreeLeafImpl extends TreeNodeImpl implements TreeLeaf {
         this.htmlUlElement = this.htmlElement.appendChild(document.createElement('ul'));
         this.htmlClassElement = this.htmlUlElement.appendChild(document.createElement('li'));
         this.htmlClassSpanElement = this.htmlClassElement.appendChild(document.createElement('span'));
+        this.htmlClassCounterElement = document.createElement('span');
     }
 
     createDisplay() {
@@ -116,21 +128,22 @@ export class TreeLeafImpl extends TreeNodeImpl implements TreeLeaf {
         }
         else {
             this.htmlSpanElement.classList.add('root');
-            this.htmlSpanElement.innerText = 'Корень';
+            this.htmlSpanElement.textContent = 'Корень';
         }
 
-        this.htmlClassSpanElement.innerText = this.dataset.class.values[this.classValue];
+        this.htmlClassSpanElement.innerHTML = `${this.dataset.class.values[this.classValue]}<br>`;
         this.htmlClassSpanElement.classList.add('leaf');
-    }
 
-    deleteDisplay() {
-        this.htmlElement.parentElement.removeChild(this.htmlElement);
+        this.htmlClassCounterElement.classList.add("result");
+        this.htmlClassSpanElement.appendChild(this.htmlClassCounterElement);
+        this.updateCounter();
     }
 
     markDisplay(value: TreeMark) {
         if (value != TreeMark.NONE) {
             this.htmlSpanElement.setAttribute('mark', TreeMark.HIGHLIGHT);
             this.htmlClassSpanElement.setAttribute('mark', value);
+            this.incrementCount(value);
         }
         else {
             this.htmlSpanElement.removeAttribute('mark');
@@ -138,11 +151,23 @@ export class TreeLeafImpl extends TreeNodeImpl implements TreeLeaf {
         }
     }
 
-    incrementCount() {
-
+    resetDisplay() {
+        this.rightCount = this.wrongCount = 0;
+        this.updateCounter();
+        this.markDisplay(TreeMark.NONE);
     }
 
-    resetCount(){
+    private incrementCount(value: TreeMark) {
+        if (value == TreeMark.RIGHT) {
+            ++this.rightCount;
+        }
+        else {
+            ++this.wrongCount
+        }
+        this.updateCounter();
+    }
 
+    private updateCounter() {
+        this.htmlClassCounterElement.textContent = `✔️${this.rightCount} ❌${this.wrongCount}`;
     }
 }
