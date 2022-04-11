@@ -1,32 +1,25 @@
-html,
-body {
-    height: 100%;
-    margin: 0;
+:root {
+    --button-color: #d76700;
 }
 
-/* Задаём глобальные параметры */
-body {
+/* Задаём параметры контейнера */
+.container {
     display: flex;
     flex-direction: row-reverse;
+    justify-content: space-evenly;
+    align-items: center;
 
-    background: white;
-
-    font-family: 'Inter';
+    font-family: 'Inter', serif;
     font-size: 16px;
+
 }
 
 /* Стиль верхней менюшки */
-#top {
+#menu {
     display: flex;
     flex-direction: column;
-
     justify-content: center;
     align-items: center;
-
-    background: #e1e1e1;
-
-    width: 47%;
-    height: 100%;
 }
 
 /* Стиль игрового поля */
@@ -34,11 +27,11 @@ body {
     display: flex;
     flex-direction: column;
 
-    margin-right: auto;
+    border: solid 5px #111111;
+    box-shadow: 0 0 3px black;
 
-    width: 53%;
-    height: 100%;
-    padding-bottom: 1px;
+    height: 80vh;
+    width: 80vh;
 }
 
 /* Стиль клеточек на игровом поле */
@@ -53,38 +46,19 @@ body {
     width: 100%;
     height: 100%;
 
-    background: #fff2e6;
     transition: background-color .2s ease-out;
-    box-shadow: 0 0 3px #969696;
 }
 
-.cell:hover {
-    background: #ffcbba;
+.cell[type='start'], .cell[type='end'] {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
 }
 
-.cell.reachable {
-    background: lightgreen;
-}
-
-.cell.explored {
-    background: lightblue;
-}
-
-.cell.path {
-    background: yellow;
-}
-
-.cell[type='wall'] {
-    background: dimgray;
-    box-shadow: 0 0 3px #3f3f3f;
-}
-
-.cell[type='start'] {
-    background: linear-gradient(#0d5006, #1d6e16, #2a7922);
-}
-
-.cell[type='end'] {
-    background: linear-gradient(#880303, #a80909, #c00707);
+.cell[type='start']:hover,
+.cell[type='start']:active,
+.cell[type='end']:hover,
+.cell[type='end']:active {
+    transform: scale(1.25);
 }
 
 /* Стиль разных элементов */
@@ -116,34 +90,101 @@ body {
 }
 
 button {
-    font-family: 'Inter';
+    font-family: 'Inter', serif;
     font-size: 16px;
 
-    background-color: lightcoral;
+    background-color: var(--button-color);
+    color: white;
+
+    border: 0;
+    border-radius: 5px;
+    box-shadow: 0 0 1px black;
+    text-shadow: 0 0 3px black;
+
+    padding: 5px 10px;
+
+    transition:
+            filter .1s linear,
+            transform .1s ease;
+
+    cursor: pointer;
+}
+
+button:hover {
+    filter: brightness(125%);
+    transform: scale(1.05);
+}
+
+input[type='checkbox'] {
+    -webkit-appearance: none;
+
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 2px black;
+    filter: brightness(125%);
+
+    width: 16px;
+    height: 16px;
+
+    transition:
+            filter .1s linear,
+            transform .1s ease;
+}
+
+input[type='checkbox']:hover {
+    filter: brightness(150%);
+    transform: scale(1.2);
+}
+
+input[type='checkbox']:checked {
+    background: var(--button-color);
+}
+
+input[type='range'] {
+    -webkit-appearance: none;
+
+    background: var(--button-color);
+    border-radius: 10px;
+    box-shadow: 0 0 1px black;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+
+    height: 10px;
+}
+
+input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
     cursor: pointer;
 
-    border: 0;
-    box-shadow: 0 0 3px black;
-    border-radius: 10px;
+    background: var(--button-color);
+    filter: brightness(125%);
+    border-radius: 8px;
+    box-shadow: 0 0 2px black;
 
-    padding: 5px 10px;
+    width: 16px;
+    height: 16px;
+    margin: -3px 0 0 0;
 
-    transition: background-color .1s linear;
+    transition:
+            filter .1s linear,
+            transform .1s ease;
 }
 
-button:hover, button[active="true"] {
-    background-color: #f6d1d1;
+input[type='range']::-webkit-slider-thumb:hover {
+    filter: brightness(150%);
+    transform: scale(1.2);
 }
 
-button[active="true"] {
-    transition: 0s;
-}
-
-input[type="number"] {
-    padding: 5px 10px;
-    width: 50px;
-
-    border: 0;
-    box-shadow: 0 0 3px black;
-    border-radius: 10px;
+/* Вспомогательные классы */
+.text-neon {
+    --neon-color: #ffcd03;
+    text-shadow:
+            0 0 5px black,
+            0 0 10px black,
+            0 0 15px black,
+            0 0 20px var(--neon-color),
+            0 0 30px var(--neon-color),
+            0 0 40px var(--neon-color);
 }
