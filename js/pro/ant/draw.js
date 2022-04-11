@@ -13,7 +13,7 @@ export function updateCtx() {
             vars.ants[i].next();
         for (let i = 0; i < vars.ants.length; i++) {
             vars.ctx.beginPath();
-            vars.ctx.fillStyle = "red";
+            vars.ctx.fillStyle = vars.antsColor;
             vars.ctx.strokeStyle = "black";
             vars.ctx.arc(vars.ants[i].x, vars.ants[i].y, vars.antsRadius, 0, Math.PI * 2, false);
             vars.ctx.closePath();

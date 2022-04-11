@@ -16,19 +16,20 @@ export class Variables {
     modalWindowMode = false;//false - не открыто, true - открыто
 
     //ANTS
-    antsNumber = 500;
+    antsNumber = 300;
     antsRadius = 4;
     antStepLength = 1.5;
     firstStepLength = 2;
     radiusOfAntsEyes = 10;
     constForDistanceFromHome = 1000;
+    antsColor = '#ff0000';
     ants = [];
     anthill = {
         isBuilt: false,
         radius: 20,
         x: -1,
         y: -1,
-        color: '#4E5340',
+        color: '#ff4411',
         borderColor: '#161712'
     }
 

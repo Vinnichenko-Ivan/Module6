@@ -24,6 +24,8 @@ window.addEventListener("load", function onWindowLoad() {
         document.getElementById("colonyOutputId").value = vars.antsNumber;
         document.getElementById("antsEyesRadiusInputId").value = vars.radiusOfAntsEyes;
         document.getElementById("antsEyesRadiusOutputId").value = vars.radiusOfAntsEyes;
+        document.getElementById("mapPheromoneScaleInputId").value = vars.mapPheromoneScale;
+        document.getElementById("mapPixelScaleInputId").value = vars.mapPixelScale;
     };
     document.getElementById("closeSettingsModalWindow").onclick = function (){
         window.location.href = '#';
@@ -34,6 +36,12 @@ window.addEventListener("load", function onWindowLoad() {
         vars.modalWindowMode = false;
         vars.antsNumber = Number(document.getElementById("colonyInputId").value);
         vars.radiusOfAntsEyes = Number(document.getElementById("antsEyesRadiusInputId").value);
+        vars.mapPheromoneScale = Number(document.getElementById("mapPheromoneScaleInputId").value);
+        vars.mapPixelScale = Number(document.getElementById("mapPixelScaleInputId").value);
+        vars.mainObjects = new Array(vars.MyCanvas.width / vars.mapPixelScale);
+        vars.pheromones = new Array(vars.MyCanvas.width / vars.mapPheromoneScale);
+        initMainObjects();
+        initPheromones();
         reset();
     }
 
@@ -44,6 +52,10 @@ window.addEventListener("load", function onWindowLoad() {
     document.getElementById("showGraphicsModalWindow").onclick = function (){
         window.location.href = '#shadowGraphics'
         vars.modalWindowMode = true;
+        document.getElementById("antsColorId").value = vars.antsColor;
+        document.getElementById("anthillColorId").value = vars.anthill.color;
+        document.getElementById("antsRadiusInputId").value = vars.antsRadius;
+        document.getElementById("pheromonesDrawingModeInputId").value = vars.pheromonesDrawingMode;
     };
     document.getElementById("closeGraphicsModalWindow").onclick = function (){
         window.location.href = '#';
@@ -52,6 +64,11 @@ window.addEventListener("load", function onWindowLoad() {
     document.getElementById("saveGraphics").onclick = function (){
         window.location.href = '#';
         vars.modalWindowMode = false;
+        vars.antsColor = document.getElementById("antsColorId").value;
+        vars.anthill.color = document.getElementById("anthillColorId").value;
+        vars.antsRadius = Number(document.getElementById("antsRadiusInputId").value);
+        vars.pheromonesDrawingMode = Number(document.getElementById("pheromonesDrawingModeInputId").value);
+        vars.somethingChanged = true;
     }
 
     //---------------------------------------------------------
