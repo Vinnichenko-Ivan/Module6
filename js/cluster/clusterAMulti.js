@@ -8,6 +8,7 @@ let globalClusterCount = 4;
 let colorIndex = [];
 let defColor = 'white';
 let repeatForKMeans = 5;
+let maxPoints = 100;
 
 genRandColor(colorIndex, 100)
 
@@ -105,6 +106,11 @@ mainCanvas.addEventListener('mousedown', function (event) {
     const dx = this.offsetLeft;
     const dy = this.offsetTop;
     if (event.buttons === 1){
+        if(mainField.points.length >= maxPoints)
+        {
+            alert("Слишком много точек!");
+            return;
+        }
         mainField.addPoint(new Point(event.x - dx, event.y - dy));
 
     }
@@ -158,15 +164,7 @@ autoRunDbscan.addEventListener('change', function() {
 
 buttonRerun.addEventListener('click', function() {
     mainField.rerun()
-    fieldAlgo1.rerun()
-    fieldAlgo2.rerun()
-    fieldAlgo3.rerun()
-    fieldAlgo4.rerun()
     clusterInitRand(globalClusterCount, mainField)
-    clusterInit(globalClusterCount, fieldAlgo1)
-    clusterInit(globalClusterCount, fieldAlgo2)
-    clusterInit(globalClusterCount, fieldAlgo3)
-    clusterInit(globalClusterCount, fieldAlgo4)
 });
 
 clusterCount.addEventListener('input', function() {
