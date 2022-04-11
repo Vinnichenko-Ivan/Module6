@@ -7,8 +7,24 @@
 </head>
 <body>
 
+
+<header>
+    <div id="headerButtonsContainer">
+
+        <button id="lobbyButton" onclick="window.location.href = '../index.html'">На базу</button>
+
+        <button id="showGraphicsModalWindow" onclick="window.location.href='#shadowGraphics'">Графика</button>
+
+        <button id="showSettingsModalWindow" onclick="window.location.href='#shadowSettings'">Настройки</button>
+
+    </div>
+
+    <button id="changeVersion" onclick="window.location.href='./genetic-algorithm.html'">BASE</button>
+</header>
+
+
 <div id="buttonsContainer">
-    <button onclick="window.location.href = '#shadow'" id="showModalWindow">Добавить команды</button>
+    <button onclick="window.location.href = '#addCommandShadow'" id="showModalWindow">Добавить команды</button>
     <button id="changeMode">Смена режима</button>
     <button id="mainButton">ВАу!</button>
     <button id="whatCommandsUse">Пользовательские</button>
@@ -25,13 +41,33 @@ console.log(a);
     <label for="mainText"></label><textarea readonly id="mainText" class="mainCode"></textarea>
 </div>
 
-<div id="shadow">
-    <div id="modalWindow">
+<div id="addCommandShadow" class="shadow">
+    <div class="modalWindow">
         <label for="addCodeText"></label><textarea id="addCodeText"></textarea>
         <button onclick="window.location.href = '#'" class="close">Закрыть</button>
-        <button id="addCommand">Добавить</button>
+        <button class="save" id="addCommand">Добавить</button>
     </div>
 </div>
+
+
+
+<div id="shadowSettings" class="shadow">
+    <div id="settingsModalWindow" class="modalWindow">
+        <button id="closeSettingsModalWindow" class="close" onclick="window.location.href='#'">Закрыть</button>
+
+        <button class="save" id="saveSettings">Сохранить</button>
+    </div>
+</div>
+
+<div id="shadowGraphics" class="shadow">
+    <div id="graphicsModalWindow" class="modalWindow">
+        <button id="closeGraphicsModalWindow" class="close" onclick="window.location.href='#'">Закрыть</button>
+
+        <button class="save" id="saveGraphics">Сохранить</button>
+    </div>
+</div>
+
+
 
 <script src="../js/genetic-algorithm-pro.js"></script>
 </body>
