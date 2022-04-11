@@ -1,25 +1,94 @@
 import {Dataset, Template} from "../csv/csv";
 
 /**
- * Интерфейс дерева классификации
+ * Разделение
  */
-export interface ClassifierTree {
+export interface Split {
 
     /**
-     * Построить дерево решений по выборке данных
-     * @param dataset обучающая выборка
+     * Прирост информации
      */
-    build(dataset: Dataset): void;
+    get infoGain(): number;
 
     /**
-     * Классифицировать образец по построенному дереву
+     * Посчитать прирост информации
+     * @return true, если разбиение имеет смысл
+     */
+    calc(): boolean;
+
+    /**
+     * Разделить на подмножества
+     */
+    split(): Dataset[];
+
+    /**
+     * Получить условия подмножеств
+     */
+    conditions(): Condition[];
+
+}
+
+/**
+ * Условие
+ */
+export interface Condition {
+
+    /**
+     * Проверяет образец по условию.
+     * Если образец удовлетворяет условию, то он может спуститься ниже
+     * в соответствующий узел дерева.
      * @param template образец
-     * @return number индекс класса
+     * @return true, если образец удовлетворяет условию
      */
-    classify(template: Template): number;
+    check(template: Template): boolean;
 
-    appendHTMLChildren(parentElement: HTMLElement): void;
+    displayOperator(): string;
 
-    toString(): string;
+    displayValue(): string;
 
+    displayAttribute(): string;
+
+}
+
+export interface Display {
+
+    get htmlElement(): HTMLElement;
+
+    createDisplay(): void;
+
+    deleteDisplay(): void;
+
+    resetDisplay(): void;
+
+}
+
+export enum TreeNodeType {FLOW, LEAF}
+
+export interface TreeNode extends Display {
+
+    get condition(): Condition;
+
+    get type(): TreeNodeType;
+
+    markDisplay(value: TreeMark): void;
+
+}
+
+export interface TreeFlow extends TreeNode {
+
+    get children(): TreeNode[];
+
+}
+
+export interface TreeLeaf extends TreeNode {
+
+    get classValue(): number;
+
+}
+
+export enum TreeMark {
+    HIGHLIGHT = 'highlight',
+    RIGHT = 'right',
+    WRONG = 'wrong',
+    NONE = 'none'
 }

@@ -1,27 +1,15 @@
-import {Id3Tree} from "./classifier/classifier-id3";
-import {Dataset, Template} from "./csv/csv";
+import {Dataset} from "./csv/csv";
 import {loadDatasetFromString} from "./csv/csv-loader";
+import {TreeNode} from "./classifier/classifier";
+import {AlgorithmHolder} from "./algorithm/algorithm";
+import {BuildTreeID3Algorithm} from "./algorithm/build-tree-id3";
+import {ClassificationAlgorithm} from "./algorithm/classification";
 
-class Statistic {
+const algorithmHolder: AlgorithmHolder = new AlgorithmHolder();
 
-    total: number;
-    classifier: number = 0;
-    successful: number = 0;
-    errors: number = 0;
-    errorPercent: number = 0;
-
-    constructor(total: number) {
-        this.total = total;
-    }
-}
-
-let tree: Id3Tree;
+let tree: TreeNode;
 let learnDataset: Dataset;
 let testDataset: Dataset
-
-let iterationDelay = 50;
-let runningAnimation = false;
-let result = new Statistic(0);
 
 document.getElementById('load-dataset').onclick = () => {
     let files = (<HTMLInputElement>document.getElementById('file-dataset')).files;
@@ -29,7 +17,8 @@ document.getElementById('load-dataset').onclick = () => {
     let reader = new FileReader();
     reader.onload = e => {
         learnDataset = loadDatasetFromString(<string>e.target.result, undefined, named);
-        test(learnDataset, 1);
+        //test(learnDataset, 1);
+        drawTree();
     }
     reader.readAsText(files[0], "UTF-8");
 };
@@ -40,7 +29,7 @@ document.getElementById('load-tests').onclick = () => {
     let reader = new FileReader();
     reader.onload = e => {
         testDataset = loadDatasetFromString(<string>e.target.result, undefined, named);
-        runTests().then(() => runningAnimation = false);
+        runTests();
     }
     reader.readAsText(files[0], "UTF-8");
 };
@@ -74,7 +63,7 @@ $('.area')
         }
     })
     .on('mousewheel', event => {
-        elementWheel += (<WheelEvent> event.originalEvent).deltaY / 1000;
+        elementWheel -= (<WheelEvent> event.originalEvent).deltaY / 1000;
         elementWheel = Math.max(-1, Math.min(1, elementWheel))
         elementScale = Math.pow(Math.E, elementWheel);
         elementClientX = elementX * elementScale;
@@ -94,7 +83,7 @@ $('.area')
         lastY = null;
     });
 
-function test(dataset: Dataset, iterations: number) {
+/*function test(dataset: Dataset, iterations: number) {
     drawTree(dataset);
     average(dataset, 0.99, iterations);
     average(dataset, 0.9, iterations);
@@ -103,7 +92,7 @@ function test(dataset: Dataset, iterations: number) {
     average(dataset, 0.01, iterations);
 }
 
-function average(sourceDataset: Dataset, testPercent: number, iterations: number): void {
+async function average(sourceDataset: Dataset, testPercent: number, iterations: number): void {
     let learnPercent = 1 - testPercent;
     let totalErrors = 0;
     let ms = Date.now();
@@ -125,8 +114,15 @@ function average(sourceDataset: Dataset, testPercent: number, iterations: number
             dataset.templates.splice(0, 1);
         }
 
-        let tree = new Id3Tree();
-        tree.build(train);
+        algorithmHolder.algorithm = new BuildTreeID3Algorithm(
+            learnDataset,
+            2,
+            0,
+            10,
+            1,
+            0.5);
+
+        let tree = await algorithmHolder.start<TreeNode>();
         //console.log(tree.toString());
 
         let errors = 0;
@@ -142,15 +138,32 @@ function average(sourceDataset: Dataset, testPercent: number, iterations: number
 
     ms = Date.now() - ms;
     console.log(`[процент тестов = ${testPercent * 100}%] средний процент ошибок: ${(totalErrors / iterations).toFixed(2)}% за ${ms} мс`);
-}
+}*/
 
-function drawTree(dataset: Dataset) {
-    tree = new Id3Tree();
-    tree.build(dataset);
+async function drawTree() {
+    if (algorithmHolder.running) {
+        return;
+    }
+
+    algorithmHolder.iterationDelay = 0;
+    algorithmHolder.algorithm = new BuildTreeID3Algorithm(
+        learnDataset,
+        2,
+        0,
+        10,
+        1,
+        0.5);
+    let newTree = await algorithmHolder.start<TreeNode>();
+
+    if (tree) {
+        tree.deleteDisplay();
+    }
+    tree = newTree;
 
     let htmlElement = $('#decision-tree')[0];
     htmlElement.innerHTML = ''
-    tree.appendHTMLChildren(htmlElement);
+    htmlElement.appendChild(tree.htmlElement);
+    tree.createDisplay();
 
     elementX = 0;
     elementY = 0;
@@ -159,7 +172,7 @@ function drawTree(dataset: Dataset) {
     });
 }
 
-function drawTemplate(dataset: Dataset, index: number) {
+/*function drawTemplate(dataset: Dataset, index: number) {
     let template = dataset.templates[index];
 
     let htmlElement = $('#current-test')[0];
@@ -184,39 +197,17 @@ function drawTemplate(dataset: Dataset, index: number) {
         let attributeValueElement = valuesElement.appendChild(document.createElement('td'));
         attributeValueElement.innerText = template.value(attribute).toString();
     }
-}
-
-function drawResult() {
-    document.getElementById('result-total').innerText = result.total.toString();
-    document.getElementById('result-classified').innerText = result.classifier.toString();
-    document.getElementById('result-successful').innerText = result.successful.toString();
-    document.getElementById('result-errors').innerText = result.errors.toString();
-    document.getElementById('result-error-percent').innerText
-        = parseFloat((result.errorPercent * 100).toFixed(2)).toString() + '%';
-}
+}*/
 
 async function runTests() {
-    runningAnimation = true;
-    result = new Statistic(testDataset.templateCount);
-
-    for (let i = 0; i < testDataset.templateCount; i++) {
-        drawTemplate(testDataset, i);
-        await runTest(testDataset.templates[i]);
-        drawResult();
-        await new Promise(r => setTimeout(r, iterationDelay));
+    if (algorithmHolder.running) {
+        return;
     }
-}
 
-async function runTest(test: Template) {
-    let excepted = test.value(testDataset.class);
-    let actual = tree.classify(test);
-
-    if (excepted == actual) {
-        result.successful++;
-    }
-    else {
-        result.errors++;
-    }
-    result.classifier++;
-    result.errorPercent = result.errors / result.classifier;
+    algorithmHolder.iterationDelay = 250;
+    algorithmHolder.algorithm = new ClassificationAlgorithm(
+        testDataset,
+        tree
+    )
+    await algorithmHolder.start();
 }
