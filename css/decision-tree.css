@@ -152,7 +152,7 @@ body {
 /* Дерево решений */
 
 .tree .root {
-    border: solid .2em #620101;
+    border: solid .1em #620101;
     border-radius: 1em;
 
     background-color: #ea7373;
@@ -170,4 +170,35 @@ body {
     border-radius: 5em;
 
     background-color: #a8c0ef;
+}
+
+.tree span {
+    transition:
+            background-color .2s ease,
+            border .2s ease;
+}
+
+.tree [mark] {
+    transition:
+            background-color 0s,
+            border 0s;
+}
+
+.tree [mark='highlight'] {
+    border: solid .1em #ffcc00;
+    background-color: #ffe082;
+}
+
+.tree [mark='right'] {
+    border: solid .1em #005b1d;
+    background-color: #45982b;
+}
+
+.tree [mark='wrong'] {
+    border: solid .1em #600a0a;
+    background-color: #932a2a;
+}
+
+.tree li:before[mark] {
+    outline: solid 1px #795f00;
 }

@@ -68,6 +68,8 @@ export interface TreeNode extends Display {
 
     get type(): TreeNodeType;
 
+    markDisplay(value: TreeMark): void;
+
 }
 
 export interface TreeFlow extends TreeNode {
@@ -80,4 +82,15 @@ export interface TreeLeaf extends TreeNode {
 
     get classValue(): number;
 
+    incrementCount(): void
+
+    resetCount(): void;
+
+}
+
+export enum TreeMark {
+    HIGHLIGHT = 'highlight',
+    RIGHT = 'right',
+    WRONG = 'wrong',
+    NONE = 'none'
 }

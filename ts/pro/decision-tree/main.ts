@@ -204,7 +204,7 @@ async function runTests() {
         return;
     }
 
-    algorithmHolder.iterationDelay = 50;
+    algorithmHolder.iterationDelay = 250;
     algorithmHolder.algorithm = new ClassificationAlgorithm(
         testDataset,
         tree

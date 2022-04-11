@@ -1,5 +1,5 @@
 import {Dataset} from "../csv/csv";
-import {TreeNode, TreeFlow, TreeLeaf, TreeNodeType, Condition} from "./classifier";
+import {Condition, TreeFlow, TreeLeaf, TreeMark, TreeNode, TreeNodeType} from "./classifier";
 
 abstract class TreeNodeImpl implements TreeNode {
 
@@ -16,6 +16,9 @@ abstract class TreeNodeImpl implements TreeNode {
     abstract createDisplay(): void
 
     abstract deleteDisplay(): void
+
+    abstract markDisplay(value: TreeMark): void;
+
 }
 
 export class TreeFlowImpl extends TreeNodeImpl implements TreeFlow {
@@ -62,11 +65,22 @@ export class TreeFlowImpl extends TreeNodeImpl implements TreeFlow {
     deleteDisplay() {
         this.htmlElement.parentElement.removeChild(this.htmlElement);
     }
+
+    markDisplay(value: TreeMark) {
+        if (value != TreeMark.NONE) {
+            this.htmlSpanElement.setAttribute('mark', value);
+        }
+        else {
+            this.htmlSpanElement.removeAttribute('mark');
+        }
+    }
 }
 
 export class TreeLeafImpl extends TreeNodeImpl implements TreeLeaf {
 
     private readonly dataset: Dataset;
+
+    private count: number = 0;
 
     readonly type = TreeNodeType.LEAF;
 
@@ -111,5 +125,24 @@ export class TreeLeafImpl extends TreeNodeImpl implements TreeLeaf {
 
     deleteDisplay() {
         this.htmlElement.parentElement.removeChild(this.htmlElement);
+    }
+
+    markDisplay(value: TreeMark) {
+        if (value != TreeMark.NONE) {
+            this.htmlSpanElement.setAttribute('mark', TreeMark.HIGHLIGHT);
+            this.htmlClassSpanElement.setAttribute('mark', value);
+        }
+        else {
+            this.htmlSpanElement.removeAttribute('mark');
+            this.htmlClassSpanElement.removeAttribute('mark');
+        }
+    }
+
+    incrementCount() {
+
+    }
+
+    resetCount(){
+
     }
 }

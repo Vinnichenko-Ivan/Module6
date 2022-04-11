@@ -1,6 +1,6 @@
 import {Algorithm, AlgorithmHolder} from "./algorithm";
 import {Dataset, Template} from "../csv/csv";
-import {TreeFlow, TreeLeaf, TreeNode, TreeNodeType} from "../classifier/classifier";
+import {TreeFlow, TreeLeaf, TreeMark, TreeNode, TreeNodeType} from "../classifier/classifier";
 
 class Statistic {
 
@@ -32,6 +32,11 @@ export class ClassificationAlgorithm implements Algorithm {
      */
     private readonly tree: TreeNode;
 
+    /**
+     * Выбранные узлы в дереве (для анимации)
+     */
+    private selected: TreeNode[] = [];
+
     constructor(testDataset: Dataset, tree: TreeNode) {
         this.testDataset = testDataset;
         this.statistic = new Statistic(testDataset.templateCount);
@@ -41,17 +46,39 @@ export class ClassificationAlgorithm implements Algorithm {
     async run(holder: AlgorithmHolder): Promise<any> {
         for (const test of this.testDataset.templates) {
             let classValue = await this.classify(holder, this.tree, test);
+
+            await holder.delay();
+
             this.updateStatistic(test.value(this.testDataset.class), classValue);
             this.drawResult();
+
+            for (const selected of this.selected) {
+                selected.markDisplay(TreeMark.NONE);
+            }
+            this.selected = [];
         }
     }
 
     async classify(holder: AlgorithmHolder, node: TreeNode, test: Template): Promise<number> {
         await holder.delay();
 
+        this.selected.push(node);
+
         if (node.type == TreeNodeType.LEAF) {
-            return (<TreeLeaf> node).classValue;
+            let classValue = (<TreeLeaf> node).classValue;
+
+            if (test.value(this.testDataset.class) == classValue) {
+                node.markDisplay(TreeMark.RIGHT);
+            }
+            else {
+                node.markDisplay(TreeMark.WRONG);
+            }
+
+            return classValue;
         }
+
+        node.markDisplay(TreeMark.HIGHLIGHT);
+
         for (const child of (<TreeFlow> node).children) {
             if (child.condition.check(test)) {
                 return await this.classify(holder, child, test);

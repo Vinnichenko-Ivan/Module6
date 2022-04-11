@@ -1,6 +1,6 @@
 import {Algorithm, AlgorithmHolder} from "./algorithm";
 import {Dataset} from "../csv/csv";
-import {EnumSplit, NumberSplit} from "../classifier/classifier-id3-impl";
+import {EnumSplit, NumberSplit} from "../classifier/classifier-id3";
 import {Distribution} from "../utils/id3";
 import {Condition, Split, TreeLeaf, TreeNode, TreeNodeType} from "../classifier/classifier";
 import {TreeFlowImpl, TreeLeafImpl} from "../classifier/classifier-impl";
