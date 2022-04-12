@@ -140,14 +140,16 @@ export class TreeLeafImpl extends TreeNodeImpl implements TreeLeaf {
     }
 
     markDisplay(value: TreeMark) {
-        if (value != TreeMark.NONE) {
-            this.htmlSpanElement.setAttribute('mark', TreeMark.HIGHLIGHT);
-            this.htmlClassSpanElement.setAttribute('mark', value);
-            this.incrementCount(value);
-        }
-        else {
+        if (value == TreeMark.NONE) {
             this.htmlSpanElement.removeAttribute('mark');
             this.htmlClassSpanElement.removeAttribute('mark');
+        }
+        else if (value == TreeMark.HIGHLIGHT) {
+            this.htmlSpanElement.setAttribute('mark', TreeMark.HIGHLIGHT);
+        }
+        else {
+            this.htmlClassSpanElement.setAttribute('mark', value);
+            this.incrementCount(value);
         }
     }
 

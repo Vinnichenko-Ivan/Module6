@@ -24,16 +24,22 @@ export class DatasetImpl implements Dataset {
         return this.templates.length;
     }
 
-    add(template: Template): void {
-        this.templates.push(template);
-    }
-
     copyMeta(): Dataset {
         return new DatasetImpl(this.attributes, [], this.class.index);
     }
 
     copyFull(): Dataset {
         return new DatasetImpl(this.attributes, [...this.templates], this.class.index);
+    }
+
+    shuffle() {
+        let copy = [...this.templates];
+
+        for (let i = 0; i < this.templateCount; i++) {
+            let index = (Math.random() * copy.length) | 0;
+            this.templates[i] = copy[index];
+            copy.splice(index, 1);
+        }
     }
 }
 
@@ -72,6 +78,10 @@ export class AttributeEnum implements Attribute {
         return this.values.length;
     }
 
+    displayValue(value: number): string {
+        return this.values[value];
+    }
+
     parse(value: string): number {
         return this.names[value];
     }
@@ -106,6 +116,10 @@ export class AttributeNumber implements Attribute {
 
     get values(): string[] {
         throw 'Числовой атрибут не поддерживает дискретные значения';
+    }
+
+    displayValue(value: number): string {
+        return parseFloat(value.toFixed(3)).toString();
     }
 
     parse(value: string): number {

@@ -2,19 +2,20 @@ import {Dataset} from "./csv";
 import {AttributeEnum, AttributeNumber, ClassImpl, DatasetImpl, TemplateImpl} from "./csv-impl";
 
 /**
- * Загрузить набор данных из строки
+ * Преобразовать строку в таблицу
  * @param string строка
- * @param classIndex индекс столбца класса
- * @param namedAttributes присутствует ли строка с именами атрибутов? По умолчанию false.
  * @param splitter разделитель атрибутов в строках. По умолчанию ';'.
- * @return {Dataset} набор данных
+ * @return {string[][]} набор данных
  */
-export function loadDatasetFromString(string: string, classIndex?: number, namedAttributes?: boolean, splitter?: string): Dataset {
+export function toTable(string: string, splitter?: string): string[][] {
     if (splitter == undefined) {
         splitter = string.includes(';') ? ';' : ',';
     }
 
-    let lines = string.split('\n');
+    let lines = string
+        .replace(/"/g, '')
+        .replace(/_/g, ' ')
+        .split('\n');
     let array = [];
 
     for (let i = 0; i < lines.length; i++) {
@@ -29,7 +30,19 @@ export function loadDatasetFromString(string: string, classIndex?: number, named
         array.push(attributes);
     }
 
-    return loadDatasetFromData(array, classIndex, namedAttributes);
+    return array;
+}
+
+/**
+ * Загрузить набор данных из строки
+ * @param string строка
+ * @param classIndex индекс столбца класса
+ * @param namedAttributes присутствует ли строка с именами атрибутов? По умолчанию false.
+ * @param splitter разделитель атрибутов в строках. По умолчанию ';'.
+ * @return {Dataset} набор данных
+ */
+export function loadDatasetFromString(string: string, classIndex?: number, namedAttributes?: boolean, splitter?: string): Dataset {
+    return loadDatasetFromData(toTable(string, splitter), classIndex, namedAttributes);
 }
 
 /**

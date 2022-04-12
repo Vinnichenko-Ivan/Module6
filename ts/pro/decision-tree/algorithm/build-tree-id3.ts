@@ -73,19 +73,13 @@ export class BuildTreeID3Algorithm implements Algorithm {
     }
 
     async run(holder: AlgorithmHolder): Promise<TreeNode> {
-        return await this.build(holder, null, this.learnDataset, 0);
+        return await this.build(null, this.learnDataset.copyFull(), 0);
     }
 
     /**
      * Построение дерева
-     * @param holder
-     * @param condition
-     * @param dataset
-     * @param deep
-     * @private
      */
-    private async build(holder: AlgorithmHolder,
-                        condition: Condition,
+    private async build(condition: Condition,
                         dataset: Dataset,
                         deep: number): Promise<TreeNode> {
 
@@ -107,7 +101,7 @@ export class BuildTreeID3Algorithm implements Algorithm {
                         continue;
                     }
 
-                    let child = await this.build(holder, conditions[i], sets[i], deep + 1);
+                    let child = await this.build(conditions[i], sets[i], deep + 1);
                     children.push(child);
                 }
 
@@ -118,7 +112,6 @@ export class BuildTreeID3Algorithm implements Algorithm {
             }
         }
 
-        await holder.delay();
         return leaf
             ? new TreeLeafImpl(this.learnDataset, condition, targetClass)
             : new TreeFlowImpl(this.learnDataset, condition, children);

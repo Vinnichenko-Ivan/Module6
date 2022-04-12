@@ -62,9 +62,7 @@ export class AlgorithmHolder {
 
     delay(): Promise<any> {
         return new Promise(resolve => {
-            if (this.running) {
-                setTimeout(resolve, this._iterationDelay)
-            }
+            setTimeout(resolve, this.running ? this._iterationDelay : 0);
         })
     }
 

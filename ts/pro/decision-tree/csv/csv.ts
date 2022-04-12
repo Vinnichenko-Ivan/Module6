@@ -40,6 +40,12 @@ export interface Dataset {
      * @return Dataset скопированный набор.
      */
     copyFull(): Dataset;
+
+    /**
+     * Перемешать образцы в наборе
+     */
+    shuffle(): void;
+
 }
 
 /**
@@ -81,6 +87,12 @@ export interface Attribute {
      * Количество значений атрибута (только для дискретного атрибута)
      */
     get valueCount(): number;
+
+    /**
+     * Получить отображемое значение
+     * @param value значение
+     */
+    displayValue(value: number): string;
 
     /**
      * Спарсить значения атрибута по названию

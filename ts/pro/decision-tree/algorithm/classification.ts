@@ -38,7 +38,7 @@ export class ClassificationAlgorithm implements Algorithm {
     private selected: TreeNode[] = [];
 
     constructor(testDataset: Dataset, tree: TreeNode) {
-        this.testDataset = testDataset;
+        this.testDataset = testDataset.copyFull();
         this.statistic = new Statistic(testDataset.templateCount);
         this.tree = tree;
     }
@@ -47,6 +47,10 @@ export class ClassificationAlgorithm implements Algorithm {
         this.tree.resetDisplay();
 
         for (const test of this.testDataset.templates) {
+            if (!holder.running) {
+                break;
+            }
+
             let classValue = await this.classify(holder, this.tree, test);
 
             await holder.delay();
@@ -66,6 +70,10 @@ export class ClassificationAlgorithm implements Algorithm {
 
         this.selected.push(node);
 
+        if (holder.iterationDelay > 25) {
+            node.markDisplay(TreeMark.HIGHLIGHT);
+        }
+
         if (node.type == TreeNodeType.LEAF) {
             let leaf = <TreeLeaf> node;
             let classValue = leaf.classValue;
@@ -80,15 +88,11 @@ export class ClassificationAlgorithm implements Algorithm {
             return classValue;
         }
 
-        node.markDisplay(TreeMark.HIGHLIGHT);
-
         for (const child of (<TreeFlow> node).children) {
             if (child.condition.check(test)) {
                 return await this.classify(holder, child, test);
             }
         }
-
-        throw Error('Ни одно условие не было выполнено');
     }
 
     private updateStatistic(excepted: number, actual: number) {
@@ -104,8 +108,8 @@ export class ClassificationAlgorithm implements Algorithm {
     }
 
     private drawResult() {
-        document.getElementById('result-total').innerText = this.statistic.total.toString();
-        document.getElementById('result-classified').innerText = this.statistic.classifier.toString();
+        document.getElementById('result-classified').innerText
+            = `${this.statistic.classifier.toString()}/${this.statistic.total.toString()}`;
         document.getElementById('result-successful').innerText = this.statistic.successful.toString();
         document.getElementById('result-errors').innerText = this.statistic.errors.toString();
         document.getElementById('result-error-percent').innerText

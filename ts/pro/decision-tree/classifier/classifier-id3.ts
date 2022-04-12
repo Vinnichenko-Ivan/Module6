@@ -205,7 +205,7 @@ export class EnumCondition extends AbstractCondition {
     }
 
     displayValue(): string {
-        return this._attribute.values[this._value];
+        return this._attribute.displayValue(this._value);
     }
 }
 
@@ -233,6 +233,6 @@ export class NumberCondition extends AbstractCondition {
     }
 
     displayValue(): string {
-        return parseFloat(this._value.toFixed(3)).toString();
+        return this._attribute.displayValue(this._value);
     }
 }

@@ -1,33 +1,24 @@
-html,
-body {
-    height: 100%;
-    margin: 0;
+/* Глобальные настройки */
+:root {
+    /*--background-color: linear-gradient(25deg, rgb(21, 56, 19) 10%, rgb(18, 68, 57) 90%);
+    --button-color: #17a823;*/
+    --button-color: #d76700;
 }
 
-body {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-
-    background: white;
-
-    font-family: 'Inter', serif;
-    font-size: 16px;
+th, td {
+    padding: 0 15px;
 }
 
 /* Стиль верхней менюшки */
 .top {
-    background: #9fb4ce;
-
     display: flex;
     flex-direction: row;
+    justify-content: space-evenly;
 
-    justify-content: center;
     align-items: center;
 
-    box-shadow: 0 0 2px black;
-
-    height: 5%;
+    width: 100%;
+    height: 10%;
 }
 
 /* Стиль контента */
@@ -38,10 +29,154 @@ body {
 
     align-items: center;
     height: 100%;
+
+    padding: 5px 0;
 }
 
+/* Модальное окно */
+
+#modal-window-blur {
+    display: none;
+
+    background: rgba(17, 17, 17, 0.8);
+
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+    z-index: 3;
+}
+
+#modal-window {
+    display: none;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    background: #343131;
+    box-shadow: 0 0 2px #413f3f;
+
+    --width: 50%;
+    --height: 60%;
+    width: var(--width);
+    height: var(--height);
+    left: calc((100% - var(--width)) / 2);
+    top: calc((100% - var(--height)) / 2);
+
+    position: absolute;
+    z-index: 4;
+}
+
+#modal-window .modal-window-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    --margin-width: 50px;
+    --margin-height: 20px;
+    width: calc(100% - (var(--margin-width) * 2));
+    height: calc(100% - (var(--margin-height) * 2));
+    margin: var(--margin-height) var(--margin-width);
+}
+
+#modal-window .modal-window-header {
+    display: flex;
+    justify-content: center;
+
+    background: #2a2929;
+
+    padding: 15px 0;
+    width: 100%;
+}
+
+#modal-window .settings {
+    display: flex;
+    flex-direction: column;
+}
+
+#modal-window .step {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+
+    width: 100%;
+}
+
+#modal-window .buttons {
+    flex-direction: row;
+    justify-content: center;
+}
+
+#modal-window .buttons button {
+    margin: 0 5px;
+}
+
+#modal-window .error {
+    position: fixed;
+    pointer-events: none;
+}
+
+#modal-window .dataset-table {
+    font-size: 10px;
+}
+
+.error {
+    color: red;
+}
+
+/* Таблица */
+
+.dataset-table-window {
+    overflow-x: scroll;
+
+    box-shadow: 0 0 2px black;
+
+    width: 100%;
+}
+
+.dataset-table-window::-webkit-scrollbar {
+    height: 10px;
+}
+
+.dataset-table-window::-webkit-scrollbar-track {
+    background-color: #262525;
+}
+
+.dataset-table-window::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.dataset-table {
+    border-collapse: collapse;
+
+    width: 100%;
+}
+
+.dataset-table td, .dataset-table th {
+    padding: 5px;
+}
+
+.dataset-table tr:nth-child(odd) {
+    background-color: #565054;
+}
+
+.dataset-table tr:nth-child(even) {
+    background-color: #383438;
+}
+
+.dataset-table td:nth-child(odd), .dataset-table th:nth-child(odd) {
+    background-color: rgba(42, 41, 37, 0.22);
+}
+
+.dataset-table .class {
+    color: gold;
+}
+
+/* Окошко с деревом */
 .window {
-    background: wheat;
+    background: rgba(84, 102, 115, 0.5);
 
     position: relative;
     display: flex;
@@ -53,9 +188,8 @@ body {
 
     box-shadow: 0 0 2px black;
 
-    height: 90%;
+    height: 100%;
     width: 90%;
-    max-height: 90%;
 }
 
 .area {
@@ -98,7 +232,7 @@ body {
 }
 
 .tree li:before {
-    outline: solid 1px #666;
+    outline: solid 1px #212121;
     content: "";
     left: 0;
     position: absolute;
@@ -124,7 +258,7 @@ body {
 
 .tree ul:before,
 .tree span:before {
-    outline: solid 1px #666;
+    outline: solid 1px #212121;
     content: "";
     height: 1.2em;
     left: 50%;
@@ -152,24 +286,24 @@ body {
 /* Дерево решений */
 
 .tree .root {
-    border: solid .1em #620101;
+    border: solid .1em #ff0000;
     border-radius: 1em;
 
-    background-color: #ea7373;
+    background-color: #4d0000;
 }
 
 .tree .node {
     border: solid .1em #666;
     border-radius: .1em;
 
-    background-color: #e7b279;
+    background-color: #212121;
 }
 
 .tree .leaf {
     border: solid .1em #002277;
     border-radius: 5em;
 
-    background-color: #a8c0ef;
+    background-color: #001e56;
 }
 
 .tree span {
@@ -185,18 +319,18 @@ body {
 }
 
 .tree [mark='highlight'] {
-    border: solid .1em #ffcc00;
-    background-color: #ffe082;
+    border: solid .1em #ffde67;
+    background-color: #c99b00;
 }
 
 .tree [mark='right'] {
-    border: solid .1em #005b1d;
-    background-color: #45982b;
+    border: solid .1em #116228;
+    background-color: #29a200;
 }
 
 .tree [mark='wrong'] {
-    border: solid .1em #600a0a;
-    background-color: #932a2a;
+    border: solid .1em #801717;
+    background-color: #c01010;
 }
 
 .tree li:before[mark] {
@@ -214,4 +348,141 @@ body {
     font-size: 12px;
 
     margin: 2px 0 0 -28px;
+}
+
+/* Элементы взаимодействия */
+
+button {
+    font-family: 'Inter', serif;
+    font-size: 16px;
+
+    background-color: var(--button-color);
+    color: white;
+
+    border: 0;
+    border-radius: 5px;
+    box-shadow: 0 0 1px black;
+    text-shadow: 0 0 3px black;
+
+    padding: 5px 10px;
+
+    transition:
+            filter .1s linear,
+            transform .1s ease;
+
+    cursor: pointer;
+}
+
+button:hover {
+    filter: brightness(125%);
+    transform: scale(1.05);
+}
+
+input[type='file'] {
+    font-family: 'Inter', serif;
+    font-size: 16px;
+
+    background-color: var(--button-color);
+    color: white;
+
+    border: 0;
+    border-radius: 5px;
+    box-shadow: 0 0 1px black;
+    text-shadow: 0 0 3px black;
+
+    padding: 5px 10px;
+
+    transition:
+            filter .1s linear,
+            transform .1s ease;
+
+    cursor: pointer;
+}
+
+input[type='file']:hover {
+    filter: brightness(125%);
+    transform: scale(1.05);
+}
+
+input[type='file']::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+input[type='checkbox'], input[type='radio'] {
+    -webkit-appearance: none;
+
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 2px black;
+    filter: brightness(125%);
+
+    width: 16px;
+    height: 16px;
+
+    transition:
+            filter .1s linear,
+            transform .1s ease;
+}
+
+input[type='checkbox']:hover, input[type='radio']:hover {
+    filter: brightness(150%);
+    transform: scale(1.2);
+}
+
+input[type='checkbox']:checked, input[type='radio']:checked {
+    background: var(--button-color);
+}
+
+input[type='range'] {
+    -webkit-appearance: none;
+
+    background: var(--button-color);
+    border-radius: 10px;
+    box-shadow: 0 0 1px black;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+
+    height: 10px;
+}
+
+input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    cursor: pointer;
+
+    background: var(--button-color);
+    filter: brightness(125%);
+    border-radius: 8px;
+    box-shadow: 0 0 2px black;
+
+    width: 16px;
+    height: 16px;
+    margin: -3px 0 0 0;
+
+    transition:
+            filter .1s linear,
+            transform .1s ease;
+}
+
+input[type='range']::-webkit-slider-thumb:hover {
+    filter: brightness(150%);
+    transform: scale(1.2);
+}
+
+.display {
+    position: absolute;
+    margin: 0 0 0 5px;
+}
+
+.iteration-delay {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+
+    height: 10%;
+}
+
+.iteration-delay>* {
+    padding: 0 25px;
 }

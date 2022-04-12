@@ -2,9 +2,18 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Дерево Решений</title>
 
-    <!-- Подключаем стиль странички -->
+    <!-- Иконка -->
+    <link rel="icon" type="image/png" href="../assets/img/favicon/main.png">
+
+    <!-- Шрифт -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter&family=Kanit&family=Lobster&display=swap" rel="stylesheet">
+
+    <!-- Подключаем стили -->
+    <link href="../css/main.css" rel="stylesheet">
     <link href="../css/decision-tree.css" rel="stylesheet">
 
     <!-- Подключаем библиотеку jquery -->
@@ -14,43 +23,180 @@
     <script data-main="../ts/pro/decision-tree/main" src="https://requirejs.org/docs/release/2.3.6/comments/require.js"></script>
 </head>
 <body>
+    <div id="modal-window-blur" class="close-modal-window"></div>
+    <div id="modal-window">
+        <div class="modal-window-header">
+            <div class="settings">
+                <table>
+                    <tr class="range">
+                        <label>
+                            <td>
+                                <span>Максимальная глубина дерева:</span>
+                                <span class="display" target="max-depth">10</span>
+                            </td>
+                            <td>
+                                <input type="range" value="10" min="3" max="20" target="max-depth">
+                            </td>
+                        </label>
+                    </tr>
+                    <tr class="range">
+                        <label>
+                            <td>
+                                <span>Порог прироста информации:</span>
+                                <span class="display" target="min-info-gain">5%</span>
+                            </td>
+                            <td>
+                                <input type="range" value="5" min="0" max="100" target="min-info-gain" datatype="percent">
+                            </td>
+                        </label>
+                    </tr>
+                    <tr class="range">
+                        <label>
+                            <td>
+                                <span>Порог соотношения классов:</span>
+                                <span class="display" target="min-ratio">50%</span>
+                            </td>
+                            <td>
+                                <input type="range" value="50" min="0" max="100" target="min-ratio" datatype="percent">
+                            </td>
+                        </label>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="modal-window-content">
+            <div class="step" step="1">
+                <span>Предоставьте набор обучающих данных.</span>
+                <span>Загрузить CVS файл с выборкой:</span>
+            </div>
+            <div class="step" step="1">
+                <table>
+                    <input id="file-dataset" type="file">
+                </table>
+            </div>
+            <div class="step buttons" step="1">
+                <button class="to-step" step="2" check>Далее</button>
+            </div>
+            <div class="step" step="2">
+                <div class="dataset-table-window">
+                    <table class="dataset-table"></table>
+                </div>
+                <label>
+                    <span>Именованные атрибуты</span>
+                    <input id="named-dataset" type="checkbox" checked="checked">
+                </label>
+            </div>
+            <div class="step buttons" step="2">
+                <button class="to-step" step="1">Назад</button>
+                <button class="to-step" step="3" check>Далее</button>
+            </div>
+            <div class="step" step="3">
+                <span>Предоставьте набор тестовых данных.</span>
+                <span>Выберите один из вариантов:</span>
+            </div>
+            <div class="step" step="3">
+                <table>
+                    <tr class="range">
+                        <td>
+                            <label>
+                                <input type="radio" name="test-dataset" id="radio-test-dataset-ratio" checked="checked">
+                            </label>
+                            <span>Тесты из обучающего набора:</span>
+                            <span class="display" target="tests">10%</span>
+                        </td>
+                        <td>
+                            <label>
+                                <input type="range" value="10" min="1" max="99" target="tests" datatype="percent">
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>
+                                <input type="radio" name="test-dataset" id="radio-test-dataset-file">
+                            </label>
+                            <span>Свои тесты из CSV файла</span>
+                        </td>
+                        <td>
+                            <input id="file-tests" type="file">
+                        </td>
+                    </tr>
+                </table>
+                <br>
+            </div>
+            <div class="step buttons" step="3">
+                <button class="to-step" step="2">Назад</button>
+                <button class="to-step" step="4" check>Построить дерево</button>
+            </div>
+        </div>
+        <div class="error"></div>
+    </div>
+
+    <header>
+        <div class="element">
+            <img src="../assets/img/favicon/main.png" alt="">
+        </div>
+        <div class="element">
+            <h2>Decision Tree</h2>
+        </div>
+        <nav class="end">
+            <a class="element" href="https://vk.com/hits_tsu">
+                <img src="../assets/img/favicon/vk.png" alt="">
+            </a>
+            <a class="element" href="https://github.com/Vinnichenko-Ivan/Module6">
+                <img src="../assets/img/favicon/github/GitHub-Mark-Light-120px-plus.png" alt="">
+            </a>
+        </nav>
+    </header>
+
     <div class="top">
         <div>
-            <input id="file-dataset" type="file">
-            <label for="named-dataset"></label><input id="named-dataset" type="checkbox">
+            <button class="open-modal-window to-step" step="1">Обучение</button>
         </div>
-        <div>
-            <button id="load-dataset">Загрузить обучающую выборку данных</button>
-        </div>
-        <div>
-            <input id="file-tests" type="file">
-        </div>
-        <div>
-            <button id="load-tests">Загрузить тесты</button>
-        </div>
-    </div>
-    <div class="content">
-        <table>
+
+        <table class="text-shadow">
             <tr>
-                <th>Всего тестов</th>
                 <th>Классифицировано</th>
                 <th>Успешно</th>
                 <th>Ошибок</th>
                 <th>Процент ошибок</th>
             </tr>
             <tr>
-                <td id="result-total">0</td>
                 <td id="result-classified">0</td>
                 <td id="result-successful">0</td>
                 <td id="result-errors">0</td>
                 <td id="result-error-percent">0%</td>
             </tr>
         </table>
-        <!--<table id="current-test"></table>-->
+
+        <div>
+            <button id="load-tests">Классификация</button>
+        </div>
+    </div>
+
+    <div class="content">
         <div class="window">
             <div class="area"></div>
             <ul id="decision-tree" class="tree movable"></ul>
         </div>
     </div>
+
+    <div class="range iteration-delay">
+        <div>
+            <span class="text-shadow">Задержка между итерациями:</span>
+            <span class="text-shadow display" target="iteration-delay">250</span>
+        </div>
+        <label>
+            <input type="range" value="250" min="0" max="1000" target="iteration-delay">
+        </label>
+    </div>
+
+    <footer>
+        <div>
+            <span>Автор: </span>
+            <a href="https://vk.com/greenpix_dev">Аникушин Роман</a>
+        </div>
+        <a href="../index.html">На главную страницу</a>
+    </footer>
 </body>
 </html>

@@ -4,155 +4,199 @@ import {TreeNode} from "./classifier/classifier";
 import {AlgorithmHolder} from "./algorithm/algorithm";
 import {BuildTreeID3Algorithm} from "./algorithm/build-tree-id3";
 import {ClassificationAlgorithm} from "./algorithm/classification";
+import {initializeMove, resetMove} from "./move";
 
-const algorithmHolder: AlgorithmHolder = new AlgorithmHolder();
+initializeMove();
+
+const algorithmHolder: AlgorithmHolder = new AlgorithmHolder(+$('input[target="iteration-delay"]').val());
 
 let tree: TreeNode;
 let learnDataset: Dataset;
 let testDataset: Dataset
 
-document.getElementById('load-dataset').onclick = () => {
-    let files = (<HTMLInputElement>document.getElementById('file-dataset')).files;
+let currentStep: number;
+let classIndex: number;
+
+$('.to-step').on('click', e => {
+    clearError();
+    if (currentStep == undefined || !e.target.hasAttribute('check') || checkStep()) {
+        currentStep = +e.target.getAttribute('step');
+        $('.step').css({display: 'none'});
+        $(`.step[step="${currentStep}"]`).css({display: 'flex'});
+    }
+});
+
+$('#named-dataset').on('input', () => loadLearnDataset());
+
+$('.range input').on('input', e => {
+    let value = (<HTMLInputElement> e.target).value;
+    if (e.target.hasAttribute("datatype") && e.target.getAttribute("datatype") == 'percent') {
+        value = value + '%';
+    }
+    $(`.range .display[target="${e.target.getAttribute("target")}"]`)
+        .text(value)
+});
+
+$('input[target="iteration-delay"]').on('input', e => {
+    algorithmHolder.iterationDelay = +(<HTMLInputElement> e.target).value;
+})
+
+$('.close-modal-window').on('click', () => {
+    document.getElementById('modal-window-blur').style.display = 'none';
+    document.getElementById('modal-window').style.display = 'none';
+    currentStep = null;
+});
+
+$('.open-modal-window').on('click', () => {
+    document.getElementById('modal-window-blur').style.display = 'block';
+    document.getElementById('modal-window').style.display = 'flex';
+});
+
+$('#load-tests').on('click', runTests);
+
+function clearError() {
+    for (const element of $('.error')) {
+        element.textContent = ''
+    }
+}
+
+function displayError(error: string) {
+    for (const element of $('.error')) {
+        let span = element.appendChild(document.createElement('span'));
+        span.textContent = error;
+    }
+}
+
+function checkStep(): boolean {
+    switch (currentStep) {
+        case 1: {
+            if ((<HTMLInputElement> document.getElementById('file-dataset')).files.length === 0) {
+                displayError('Вы не загрузили файл с обучающей выборкой!');
+                return false;
+            }
+            resetLearnDataset();
+            loadLearnDataset();
+            return true;
+        }
+        case 2: {
+            return true;
+        }
+        case 3: {
+            if ((<HTMLInputElement> $('#radio-test-dataset-file')[0]).checked) {
+                if ((<HTMLInputElement> document.getElementById('file-tests')).files.length === 0) {
+                    displayError('Вы не загрузили файл с тестами!');
+                    return false;
+                }
+                loadTestDataset();
+                testDataset.shuffle();
+            }
+            else if ((<HTMLInputElement> $('#radio-test-dataset-ratio')[0]).checked) {
+                learnDataset.shuffle();
+                testDataset = learnDataset.copyMeta();
+                let count = (+$('input[target="tests"]').val() * learnDataset.templateCount / 100) | 0;
+
+                for (let i = 0; i < count; i++) {
+                    testDataset.templates.push(learnDataset.templates[0]);
+                    learnDataset.templates.splice(0, 1);
+                }
+            }
+            else {
+                return;
+            }
+            drawTree();
+            document.getElementById('modal-window-blur').style.display = 'none';
+            document.getElementById('modal-window').style.display = 'none';
+            currentStep = null;
+            return false;
+        }
+    }
+}
+
+function resetLearnDataset() {
+    for (const element of $('.dataset-table')) {
+        element.innerHTML = '';
+    }
+    classIndex = null;
+}
+
+function loadLearnDataset() {
+    let files = (<HTMLInputElement> document.getElementById('file-dataset')).files;
     let named = (<HTMLInputElement>document.getElementById('named-dataset')).checked;
     let reader = new FileReader();
+
     reader.onload = e => {
-        learnDataset = loadDatasetFromString(<string>e.target.result, undefined, named);
-        //test(learnDataset, 1);
-        drawTree();
+        learnDataset = loadDatasetFromString(<string> e.target.result, classIndex, named);
+        updateTable();
     }
     reader.readAsText(files[0], "UTF-8");
-};
+}
 
-document.getElementById('load-tests').onclick = () => {
+function loadTestDataset() {
     let files = (<HTMLInputElement>document.getElementById('file-tests')).files;
     let named = (<HTMLInputElement>document.getElementById('named-dataset')).value == 'on';
     let reader = new FileReader();
     reader.onload = e => {
         testDataset = loadDatasetFromString(<string>e.target.result, undefined, named);
-        runTests();
     }
     reader.readAsText(files[0], "UTF-8");
-};
-
-let elementClientX = 0;
-let elementClientY = 0;
-let elementX = 0;
-let elementY = 0;
-let elementWheel = 0;
-let elementScale = 1;
-let lastX: number;
-let lastY: number;
-
-$('.area')
-    .on('mousedown', event => {
-        lastX = event.clientX;
-        lastY = event.clientY;
-        return false;
-    })
-    .on('mousemove', event => {
-        if (lastX && lastY) {
-            elementX += (event.clientX - lastX) / elementScale;
-            elementY += (event.clientY - lastY) / elementScale;
-            lastX = event.clientX;
-            lastY = event.clientY;
-            elementClientX = elementX * elementScale;
-            elementClientY = elementY * elementScale;
-            $('.movable').css({
-                'transform': `translate(${elementClientX}px, ${elementClientY}px) scale(${elementScale})`
-            });
-        }
-    })
-    .on('mousewheel', event => {
-        elementWheel -= (<WheelEvent> event.originalEvent).deltaY / 1000;
-        elementWheel = Math.max(-1, Math.min(1, elementWheel))
-        elementScale = Math.pow(Math.E, elementWheel);
-        elementClientX = elementX * elementScale;
-        elementClientY = elementY * elementScale;
-        $('.movable').css({
-            'transform': `translate(${elementClientX}px, ${elementClientY}px) scale(${elementScale})`
-        });
-    })
-    .on('mouseout', () => {
-        if (lastX && lastY) {
-            lastX = null;
-            lastY = null;
-        }
-    })
-    .on('mouseup', () => {
-        lastX = null;
-        lastY = null;
-    });
-
-/*function test(dataset: Dataset, iterations: number) {
-    drawTree(dataset);
-    average(dataset, 0.99, iterations);
-    average(dataset, 0.9, iterations);
-    average(dataset, 0.5, iterations);
-    average(dataset, 0.1, iterations);
-    average(dataset, 0.01, iterations);
 }
 
-async function average(sourceDataset: Dataset, testPercent: number, iterations: number): void {
-    let learnPercent = 1 - testPercent;
-    let totalErrors = 0;
-    let ms = Date.now();
+function updateTable() {
+    for (const element of $('.dataset-table')) {
+        element.innerHTML = '';
 
-    for (let k = 0; k < iterations; k++) {
-        let dataset = sourceDataset.copyFull();
-        let train = dataset.copyMeta();
-        let tests = dataset.copyMeta();
-
-        let total = dataset.templateCount;
-        let i;
-        for (i = 0; i < learnPercent * total; i++) {
-            let rnd = Math.trunc(Math.random() * dataset.templateCount);
-            train.templates.push(dataset.templates[rnd]);
-            dataset.templates.splice(rnd, 1);
-        }
-        for (; i < total; i++) {
-            tests.templates.push(dataset.templates[0]);
-            dataset.templates.splice(0, 1);
+        let rows = 10;
+        let trElements = new Array<HTMLElement>(rows);
+        for (let i = 0; i < trElements.length; i++) {
+            trElements[i] = element.appendChild(document.createElement('tr'));
         }
 
-        algorithmHolder.algorithm = new BuildTreeID3Algorithm(
-            learnDataset,
-            2,
-            0,
-            10,
-            1,
-            0.5);
+        for (let i = 0; i < learnDataset.attributeCount; i++) {
+            let attribute = learnDataset.attributes[i];
+            let columnElements = new Array<HTMLElement>(rows)
 
-        let tree = await algorithmHolder.start<TreeNode>();
-        //console.log(tree.toString());
+            let thElement = trElements[0].appendChild(document.createElement('th'));
+            columnElements[0] = thElement;
+            thElement.textContent = attribute.name;
 
-        let errors = 0;
-        for (const test of tests.templates) {
-            let excepted = test.value(tests.class);
-            let actual = tree.classify(test);
-            if (excepted != actual) {
-                errors++;
+            for (let j = 1; j < trElements.length - 1; j++) {
+                let tdElement = trElements[j].appendChild(document.createElement('td'));
+                columnElements[j] = tdElement;
+                tdElement.textContent = attribute.displayValue(learnDataset.templates[j - 1].value(attribute));
+            }
+
+            let etcElement = trElements[trElements.length - 1].appendChild(document.createElement('td'));
+            columnElements[trElements.length - 1] = etcElement;
+            etcElement.textContent = '...';
+
+            if (attribute.isClass) {
+                for (const element of columnElements) {
+                    element.classList.add('class');
+                }
+            }
+
+            for (const element of columnElements) {
+                element.onclick = () => {
+                    classIndex = i;
+                    loadLearnDataset();
+                }
             }
         }
-        totalErrors += errors / tests.templateCount * 100;
     }
-
-    ms = Date.now() - ms;
-    console.log(`[процент тестов = ${testPercent * 100}%] средний процент ошибок: ${(totalErrors / iterations).toFixed(2)}% за ${ms} мс`);
-}*/
+}
 
 async function drawTree() {
     if (algorithmHolder.running) {
-        return;
+        await algorithmHolder.stop();
     }
 
-    algorithmHolder.iterationDelay = 0;
     algorithmHolder.algorithm = new BuildTreeID3Algorithm(
         learnDataset,
         2,
-        0,
-        10,
+        +$('input[target="min-info-gain"]').val() / 100,
+        +$('input[target="max-depth"]').val(),
         1,
-        0.5);
+        +$('input[target="min-ratio"]').val() / 100);
     let newTree = await algorithmHolder.start<TreeNode>();
 
     if (tree) {
@@ -164,47 +208,18 @@ async function drawTree() {
     htmlElement.innerHTML = ''
     htmlElement.appendChild(tree.htmlElement);
     tree.createDisplay();
-
-    elementX = 0;
-    elementY = 0;
-    $('.movable').css({
-        'transform': `translate(${elementX}px, ${elementY}px) scale(${elementScale})`
-    });
+    resetMove();
 }
 
-/*function drawTemplate(dataset: Dataset, index: number) {
-    let template = dataset.templates[index];
-
-    let htmlElement = $('#current-test')[0];
-    if (!htmlElement) {
-        return;
-    }
-
-    htmlElement.innerHTML = '';
-
-    let headElement = htmlElement.appendChild(document.createElement('tr'));
-    let indexNameElement = headElement.appendChild(document.createElement('th'));
-    indexNameElement.innerText = 'ID';
-
-    let valuesElement = htmlElement.appendChild(document.createElement('tr'));
-    let indexValueElement = valuesElement.appendChild(document.createElement('td'));
-    indexValueElement.innerText = (index + 1).toString();
-
-    for (const attribute of testDataset.attributes) {
-        let attributeNameElement = headElement.appendChild(document.createElement('th'));
-        attributeNameElement.innerText = attribute.name;
-
-        let attributeValueElement = valuesElement.appendChild(document.createElement('td'));
-        attributeValueElement.innerText = template.value(attribute).toString();
-    }
-}*/
-
 async function runTests() {
-    if (algorithmHolder.running) {
+    if (!testDataset) {
         return;
     }
 
-    algorithmHolder.iterationDelay = 250;
+    if (algorithmHolder.running) {
+        await algorithmHolder.stop();
+    }
+
     algorithmHolder.algorithm = new ClassificationAlgorithm(
         testDataset,
         tree
