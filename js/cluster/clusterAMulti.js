@@ -183,6 +183,10 @@ clusterCount.addEventListener('input', function() {
 
 buttonClear.addEventListener('click', function() {
     mainField.clear()
+    fieldAlgo1.clear()
+    fieldAlgo2.clear()
+    fieldAlgo3.clear()
+    fieldAlgo4.clear()
 });
 
 buttonIter.addEventListener('click', function() {
