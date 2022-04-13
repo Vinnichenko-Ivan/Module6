@@ -1,32 +1,184 @@
-html,
-body {
-    height: 100%;
-    margin: 0;
+/* Глобальные настройки */
+
+:root {
+    --background-color: linear-gradient(25deg, rgb(20, 70, 72) 10%, rgb(19, 32, 79) 90%);
+    --button-color: #d77300;
+    /*--button-color: #1786a8;*/
+    --hint-color: #0d0d0e;
+
+    --canvas-color: #1e1b1b;
+    --canvas-border-color: #939fef;
 }
 
+/* Контейнер */
 
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    width: 100%;
+}
+
+/* Канвас */
 
 canvas {
-    border: 1px solid white;
+    background: var(--canvas-color);
+    border: 1px solid var(--canvas-border-color);
+    box-shadow:
+            0 0 3px var(--canvas-border-color),
+            inset 0 0 2px var(--canvas-border-color);
 }
-
-#menu {
+#content {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    background: #e1e1e1;
-    width: 100%;
-    padding: 10px 0;
-}
 
-#content {
-    background: black;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
     width: 100%;
     height: 100%;
-    padding-bottom: 1px;
+    line-height: 0;
+}
+#mainField {
+    border: 2px solid var(--canvas-border-color);
+}
+.block {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Менюшки */
+
+.topbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    width: 20vw;
+    height: 100%;
+    margin: 50px;
+}
+.sidebar.left {
+    align-items: flex-end;
+}
+.sidebar.right {
+    align-items: flex-start;
+}
+.sidebar * {
+    display: flex;
+}
+.sidebar.left .column {
+    flex-direction: column;
+    align-items: flex-end;
+}
+.sidebar.right .column {
+    flex-direction: column;
+    align-items: flex-start;
+}
+.sidebar.left .row {
+    flex-direction: row;
+    align-items: center;
+}
+.sidebar.right .row {
+    flex-direction: row-reverse;
+    align-items: center;
+}
+.icon {
+    width: 40px;
+    height: 40px;
+}
+
+/* Ввод */
+
+button,
+input[type=number] {
+    font-size: 16px;
+
+    background-color: var(--button-color);
+    color: white;
+
+    border: 0;
+    border-radius: 5px;
+    box-shadow: 0 0 1px black;
+    text-shadow: 0 0 3px black;
+
+    padding: 5px 10px;
+    margin: 3px 5px;
+
+    transition:
+            filter .1s linear,
+            transform .1s ease;
+    cursor: pointer;
+}
+button:hover,
+input[type=number]:hover,
+input[type=number]:focus {
+    filter: brightness(125%);
+    transform: scale(1.05);
+}
+input[type=number]:focus {
+    outline: 0;
+}
+input[type=number] {
+    width: 50px;
+}
+
+/* Чекбоксы */
+
+input[type=checkbox] {
+    -webkit-appearance: none;
+
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 0 2px black;
+    filter: brightness(125%);
+
+    width: 24px;
+    height: 24px;
+    margin: 5px;
+
+    transition:
+            filter .1s linear,
+            transform .1s ease;
+    cursor: pointer;
+}
+input[type=checkbox]:hover {
+    filter: brightness(150%);
+    transform: scale(1.2);
+}
+input[type=checkbox]:checked {
+    background: var(--button-color);
+}
+
+/* Всплывающие окошки */
+[hint] {
+    position: relative;
+}
+[hint]:hover::before {
+    display: inline-block;
+
+    content: attr(hint);
+    color: white;
+    border-radius: 3px;
+    background: var(--hint-color);
+    font-size: 12px;
+    font-family: sans-serif;
+    white-space: nowrap;
+
+    position: absolute;
+    bottom: -26px;
+    padding: 3px 6px;
+    line-height: 1;
+    z-index: 100;
+}
+.left [hint]:hover::before {
+    align-self: flex-start;
+}
+.right [hint]:hover::before {
+    align-self: flex-end;
 }
