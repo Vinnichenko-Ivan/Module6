@@ -147,5 +147,5 @@ setIterationDelay(iterDelayElement);
 setFieldSize(fieldSizeElement);
 resizeField().then();
 
-// Добавить драйва
+// Добавить атмосферы
 initializeAudio();
