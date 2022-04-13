@@ -1,0 +1,198 @@
+html,
+body {
+    margin: 0;
+    height:100%
+}
+
+:root {
+    --background-color: linear-gradient(25deg, rgb(19, 78, 92) 10%, rgb(89, 20, 85) 90%);
+}
+
+/* Настройка текста */
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+    margin: 0;
+}
+
+h1 {
+    font-size: 55px;
+}
+h2 {
+    font-size: 25px;
+}
+h3 {
+    font-size: 25px;
+}
+
+/* Задаём глобальные параметры */
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    background:
+            url("../assets/img/main/background.png") no-repeat center,
+            var(--background-color);
+    background-size: cover;
+
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: white;
+
+    width: 100%;
+    height: 100%;
+
+    user-select: none;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+/* Header */
+header {
+    display: flex;
+    flex-direction: row;
+
+    background: black;
+    box-shadow: 0 0 3px black;
+    font-family: 'Kanit', sans-serif;
+
+    padding: 5px 100px;
+}
+
+header .element {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    height: 100%;
+    margin: 0 10px;
+}
+
+header img {
+    width: 64px;
+    height: 64px;
+}
+
+header .end {
+    display: inherit;
+    margin-left: auto;
+}
+
+header .end img {
+    width: 48px;
+    height: 48px;
+}
+
+header a:hover {
+    transform: scale(1.1);
+}
+
+/* Контент */
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 100%;
+}
+
+.categories {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Кнопки */
+
+.button {
+    overflow: hidden;
+    position: relative;
+
+    border-radius: 25px;
+    box-shadow: 0 0 3px black;
+
+    width: 200px;
+    height: 300px;
+
+    margin: 10px;
+}
+
+.button-image {
+    background-size: cover;
+    background-position-x: center;
+
+    height: 100%;
+    box-shadow: 0 -100px 100px 0 rgba(121, 67, 0, 0.5) inset;
+
+    transition:
+            box-shadow 0.5s linear,
+            transform 1s ease;
+}
+
+.button-image:hover {
+    transform: scale(1.1);
+    box-shadow: none;
+}
+
+.button-content {
+    position: absolute;
+    top: 30%;
+    padding: 5px;
+
+    pointer-events: none;
+
+    color: white;
+}
+
+.button-content .description {
+    color: gainsboro;
+}
+
+/* Footer */
+
+footer {
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+    flex-wrap: wrap;
+
+    width: 100%;
+    height: 35px;
+
+    background-color: black;
+    box-shadow: 0 0 3px black;
+    font-size: 15px;
+}
+
+footer a {
+    color: white;
+
+    transition: color 0.15s ease-out;
+}
+footer a:hover{
+    color: wheat;
+}
+
+/* Вспомогательные классы */
+.text-shadow-small {
+    text-shadow:
+            0 0 5px black,
+            0 0 15px black,
+            0 0 50px black
+}
+
+.text-shadow {
+    text-shadow:
+            0 0 5px black,
+            0 0 10px black,
+            0 0 15px black,
+            0 0 20px black,
+            0 0 30px black,
+            0 0 40px black
+}

@@ -1,0 +1,118 @@
+import {Algorithm, AlgorithmHolder} from "./algorithm";
+import {Dataset, Template} from "../csv/csv";
+import {TreeFlow, TreeLeaf, TreeMark, TreeNode, TreeNodeType} from "../classifier/classifier";
+
+class Statistic {
+
+    total: number;
+    classifier: number = 0;
+    successful: number = 0;
+    errors: number = 0;
+    errorPercent: number = 0;
+
+    constructor(total: number) {
+        this.total = total;
+    }
+}
+
+export class ClassificationAlgorithm implements Algorithm {
+
+    /**
+     * Датасет для тестирования
+     */
+    private readonly testDataset: Dataset;
+
+    /**
+     * Для статистики
+     */
+    private readonly statistic: Statistic;
+
+    /**
+     * Дерево классификации
+     */
+    private readonly tree: TreeNode;
+
+    /**
+     * Выбранные узлы в дереве (для анимации)
+     */
+    private selected: TreeNode[] = [];
+
+    constructor(testDataset: Dataset, tree: TreeNode) {
+        this.testDataset = testDataset.copyFull();
+        this.statistic = new Statistic(testDataset.templateCount);
+        this.tree = tree;
+    }
+
+    async run(holder: AlgorithmHolder): Promise<any> {
+        this.tree.resetDisplay();
+
+        for (const test of this.testDataset.templates) {
+            if (!holder.running) {
+                break;
+            }
+
+            let classValue = await this.classify(holder, this.tree, test);
+
+            await holder.delay();
+
+            this.updateStatistic(test.value(this.testDataset.class), classValue);
+            this.drawResult();
+
+            for (const selected of this.selected) {
+                selected.markDisplay(TreeMark.NONE);
+            }
+            this.selected = [];
+        }
+    }
+
+    async classify(holder: AlgorithmHolder, node: TreeNode, test: Template): Promise<number> {
+        await holder.delay();
+
+        this.selected.push(node);
+
+        if (holder.iterationDelay > 25) {
+            node.markDisplay(TreeMark.HIGHLIGHT);
+        }
+
+        if (node.type == TreeNodeType.LEAF) {
+            let leaf = <TreeLeaf> node;
+            let classValue = leaf.classValue;
+
+            if (test.value(this.testDataset.class) == classValue) {
+                leaf.markDisplay(TreeMark.RIGHT);
+            }
+            else {
+                leaf.markDisplay(TreeMark.WRONG);
+            }
+
+            return classValue;
+        }
+
+        for (const child of (<TreeFlow> node).children) {
+            if (child.condition.check(test)) {
+                return await this.classify(holder, child, test);
+            }
+        }
+    }
+
+    private updateStatistic(excepted: number, actual: number) {
+        if (excepted == actual) {
+            this.statistic.successful++;
+        }
+        else {
+            this.statistic.errors++;
+        }
+
+        this.statistic.classifier++;
+        this.statistic.errorPercent = this.statistic.errors / this.statistic.classifier;
+    }
+
+    private drawResult() {
+        document.getElementById('result-classified').innerText
+            = `${this.statistic.classifier.toString()}/${this.statistic.total.toString()}`;
+        document.getElementById('result-successful').innerText = this.statistic.successful.toString();
+        document.getElementById('result-errors').innerText = this.statistic.errors.toString();
+        document.getElementById('result-error-percent').innerText
+            = parseFloat((this.statistic.errorPercent * 100).toFixed(2)).toString() + '%';
+    }
+}

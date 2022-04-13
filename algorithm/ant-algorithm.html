@@ -6,29 +6,91 @@
     <link rel="stylesheet" type="text/css" href="../css/ant-algorithm.css">
 </head>
 <body>
+
+
 <header>
-    <nav>
-        <ul class="top-menu">
-            <li><a href="../index.html">На базу</a></li>
-            <li><a class="submenu-link">Настройки</a>
-                <ul class="submenu">
-                    <li><a href="">Коэффициенты</a></li>
-                    <li><a href="">Цвета</a></li>
-                </ul>
-            </li>
-            <li><a href="">Так что-нибудь</a></li>
-            <li><a href="">Тоже что-то</a></li>
-        </ul>
-    </nav>
+    <div id="headerButtonsContainer">
+
+        <button id="lobbyButton" onclick="window.location.href = '../index.html'">На базу</button>
+
+        <button id="showGraphicsModalWindow" onclick="window.location.href='#shadowGraphics'">Графика</button>
+
+        <button id="showSettingsModalWindow">Настройки</button>
+
+    </div>
+
+    <button id="changeVersion" onclick="window.location.href='./ant-algorithm-pro.html'">PRO</button>
 </header>
 
 
-
-<div>
-    <button id="mainButton">Start</button>
+<div id="buttonsContainer">
+    <button id="mainButton">Начать</button>
 </div>
-<canvas height="500px" width="500px" id="myCanvas">Update your browser!</canvas>
 
-<script src="../js/ant-algorithm.js"></script>
+
+<div id="outputDiv">
+    <span id="vertexNumberId">Вершины</span>
+    <span id="bestPathId">Длина</span>
+    <span id="iterationId">Итерация</span>
+</div>
+
+
+
+<canvas width="800px" height="600px" id="myCanvas">Update your browser!</canvas>
+
+
+
+<div id="shadowSettings" class="shadow">
+    <div id="settingsModalWindow" class="modalWindow">
+        <button id="closeSettingsModalWindow" class="close" onclick="window.location.href='#'">Закрыть</button>
+
+        <form>
+            <label for="maxCitiesNumberInputId">Максимальное кол-во городов</label>
+            <input id="maxCitiesNumberInputId" type="range" min="10" max="100" value="50" oninput="maxCitiesNumberOutputId.value = maxCitiesNumberInputId.value"/>
+            <output id="maxCitiesNumberOutputId">50</output>
+        </form>
+
+        <button class="save" id="saveSettings">Сохранить</button>
+
+    </div>
+</div>
+
+<div id="shadowGraphics" class="shadow">
+    <div id="graphicsModalWindow" class="modalWindow">
+        <button id="closeGraphicsModalWindow" class="close" onclick="window.location.href='#'">Закрыть</button>
+
+        <form>
+            <label for="citiesColorId">Вершины</label>
+            <input id="citiesColorId" type="color" value="#000000"/>
+        </form>
+
+        <form>
+            <label for="otherEdgesColorId">Ребра</label>
+            <input id="otherEdgesColorId" type="color" value="#999999"/>
+        </form>
+
+        <form>
+            <label for="mainEdgesColorId">Ребра+</label>
+            <input id="mainEdgesColorId" type="color" value="#ffff00"/>
+        </form>
+
+        <form>
+            <label for="resultEdgesColorId">Ребра++</label>
+            <input id="resultEdgesColorId" type="color" value="#00ff00"/>
+        </form>
+
+        <form>
+            <label for="otherEdgesOpacityInputId">Прозрачность ребер</label>
+            <input id="otherEdgesOpacityInputId" type="range" min="0" max="1" value="0.15" step="0.05" oninput="otherEdgesOpacityOutputId.value = otherEdgesOpacityInputId.value"/>
+            <output id="otherEdgesOpacityOutputId">0.15</output>
+        </form>
+
+        <button class="save" id="saveGraphics">Сохранить</button>
+
+    </div>
+</div>
+
+
+<script src="../js/base/ant/main.js"></script>
 </body>
 </html>
