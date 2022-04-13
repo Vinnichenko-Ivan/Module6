@@ -15,14 +15,15 @@ window.addEventListener("load", function onWindowLoad() {
     //--------------------------------------------------------------
     //--------------------------------------------------------------
     //~~~~~~~~~~~~~~~~~~~~~~ДОБАВИТЬ ДРАЙВА!!!~~~~~~~~~~~~~~~~~~~~~~
+    let myAudio = document.getElementById("myAudioId");
     document.getElementById("driveId").onclick = function (){
         if(vars.driveMode) {
-            vars.audio.autoplay = false;
+            myAudio.autoplay = false;
 
             vars.driveMode = false;
         }
         else{
-            vars.audio.autoplay = true;
+            myAudio.autoplay = true;
 
             vars.driveMode = true;
         }
