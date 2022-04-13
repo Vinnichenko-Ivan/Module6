@@ -4,6 +4,10 @@ body {
     height:100%
 }
 
+:root {
+    --background-color: linear-gradient(25deg, rgb(19, 78, 92) 10%, rgb(89, 20, 85) 90%);
+}
+
 /* Настройка текста */
 
 h1, h2, h3, h4, h5, h6 {
@@ -29,7 +33,7 @@ body {
 
     background:
             url("../assets/img/main/background.png") no-repeat center,
-            linear-gradient(25deg, rgb(19, 78, 92) 10%, rgb(89, 20, 85) 90%);
+            var(--background-color);
     background-size: cover;
 
     font-family: 'Inter', sans-serif;

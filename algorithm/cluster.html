@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Cluster for three hugred backs</title>
@@ -36,41 +36,104 @@
 </header>
 
 <div class="container">
-    <div  class="menu">
-        <label for="autoRun"></label><input type="checkbox" id="autoRun" title="Автоматическая работа основного алгоритма в главном окне.">
-        <input type="button" value="Перезапуск алгоритма" id="rerun" title="Распространяется на основной алгоритм кластеризации работающий в главном окне.">
-        <label for="clusterCount"></label><input type="number" step="1" min="1" max="100" value="4" id="clusterCount" title="Количество кластеров для алгоритма k-means и для алгоритма на основе минимального оставного дерева."/>
+    <div class="sidebar left">
+        <div class="column" hint="Автоматическая работа основного алгоритма в главном окне.">
+            <span class="text-shadow">Auto Algorithm</span>
+            <label class="row">
+                <img class="icon" src="../assets/img/cluster/auto.svg" alt="">
+                <input type="checkbox" id="autoRun">
+            </label>
+        </div>
+        <br>
+        <div class="column" hint="Автоматическая работа алгоритма dbscan.">
+            <span class="text-shadow">Auto Dbscan</span>
+            <label class="row">
+                <img class="icon" src="../assets/img/cluster/auto-dbscan.svg" alt="">
+                <input type="checkbox" id="autoRunDbscan">
+            </label>
+        </div>
+        <br>
+        <div class="column" hint="Рисовка линий к центрам кластеров.">
+            <span class="text-shadow">Draw Lines</span>
+            <label class="row">
+                <img class="icon" src="../assets/img/cluster/draw-lines.svg" alt="">
+                <input type="checkbox" id="linesToCentres">
+            </label>
+        </div>
+        <br>
+        <div class="column" hint="Рисовка центров кластеров.">
+            <span class="text-shadow">Draw Centers</span>
+            <label class="row">
+                <img class="icon" src="../assets/img/cluster/draw-centers.svg" alt="">
+                <input type="checkbox" id="clusterCenters">
+            </label>
+        </div>
     </div>
 
     <div>
-        <div>
-            <label for="linesToCentres"> </label><input type="checkbox" id="linesToCentres" title="Рисовка линий к центрам кластеров.">
-            <label for="clusterCenters"></label><input type="checkbox" id="clusterCenters" title="Рисовка центров кластеров.">
-            <input type="button" value="Кластеризация" id="iter" title="Запуск алгоритмов кластеризации">
-            <input type="button" value="Очистка всех точек" id="clear">
+        <div class="topbar">
+            <div hint="Запуск алгоритмов кластеризации">
+                <button id="iter">Кластеризация</button>
+            </div>
+            <div>
+                <button id="clear">Очистка всех точек</button>
+            </div>
+            <div hint="Распространяется на основной алгоритм кластеризации работающий в главном окне.">
+                <button id="rerun" >Перезапуск алгоритма</button>
+            </div>
         </div>
 
         <div id="content">
             <div class="block">
-                <canvas width="200" height="200" id="algo1" title="Алгоритм основанный на минимальном оставном дереве."></canvas>
-                <canvas width="200" height="200" id="algo2" title="Алгоритм основанный на минимальном оставном дереве с постобработкой k-means."></canvas>
+                <div hint="Алгоритм основанный на минимальном оставном дереве.">
+                    <canvas width="200" height="200" id="algo1"></canvas>
+                </div>
+                <div hint="Алгоритм основанный на минимальном оставном дереве с постобработкой k-means.">
+                    <canvas width="200" height="200" id="algo2"></canvas>
+                </div>
             </div>
 
             <div class="block">
-                <canvas width="400" height="400" id="mainField"></canvas>
+                <div>
+                    <canvas width="400" height="400" id="mainField"></canvas>
+                </div>
             </div>
 
             <div class="block">
-                <canvas width="200" height="200" id="algo3" title="Алгоритм DBSCAN."></canvas>
-                <canvas width="200" height="200" id="algo4"></canvas>
+                <div hint="Алгоритм DBSCAN.">
+                    <canvas width="200" height="200" id="algo3"></canvas>
+                </div>
+                <div>
+                    <canvas width="200" height="200" id="algo4"></canvas>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="menu">
-        <label for="dbscanEps"></label><input type="number" step="0.1" min="0" max="600" value="10" id="dbscanEps" title = "Расстояние для вычисления ближайших точек. Параметр алгоритма dbscan." />
-        <label for="dbscanMinPoint"></label><input type="number" step="1" min="1" max="100" value="4" id="dbscanMinPoint" title = "Минимальное количество точек для образования кластера. Параметр алгоритма dbscan." />
-        <label for="autoRunDbscan"></label><input type="checkbox" id="autoRunDbscan" title="Автоматическая работа алгоритма dbscan.">
+    <div class="sidebar right">
+        <div class="column" hint="Расстояние для вычисления ближайших точек. Параметр алгоритма dbscan.">
+            <span class="text-shadow">Dbscan Distance</span>
+            <label class="row">
+                <img class="icon" src="../assets/img/cluster/distance.svg" alt="">
+                <input type="number" step="0.1" min="0" max="600" value="10" id="dbscanEps">
+            </label>
+        </div>
+        <br>
+        <div class="column" hint="Минимальное количество точек для образования кластера. Параметр алгоритма dbscan.">
+            <span class="text-shadow">Dbscan Minimum Points</span>
+            <label class="row">
+                <img class="icon" src="../assets/img/cluster/min-points.svg" alt="">
+                <input type="number" step="1" min="1" max="100" value="4" id="dbscanMinPoint">
+            </label>
+        </div>
+        <br>
+        <div class="column" hint="Количество кластеров для алгоритма k-means и для алгоритма на основе минимального оставного дерева.">
+            <span class="text-shadow">K-means & Spanning Tree</span>
+            <label class="row">
+                <img class="icon" src="../assets/img/cluster/spanning-tree.svg" alt="">
+                <input type="number" step="1" min="1" max="100" value="4" id="clusterCount">
+            </label>
+        </div>
     </div>
 </div>
 
