@@ -74,24 +74,24 @@ export function initMainObjects() {
                     if (this.wall) {
 
                         //СТЕНА
-                        vars.extraCtx1.fillStyle = "#95A3A4";
-                        vars.extraCtx1.fillRect(this.x, this.y, vars.mapPixelScale, vars.mapPixelScale);
+                        vars.extraCtxForMainObjects.fillStyle = "#95A3A4";
+                        vars.extraCtxForMainObjects.fillRect(this.x, this.y, vars.mapPixelScale, vars.mapPixelScale);
 
                     } else if (this.food > 0) {
 
                         //ЕДА
                         if (this.food < 16) {
-                            vars.extraCtx1.strokeStyle = `#000${(this.food).toString(16)}00`;
-                            vars.extraCtx1.fillStyle = `#000${(this.food).toString(16)}00`;
+                            vars.extraCtxForMainObjects.strokeStyle = `#000${(this.food).toString(16)}00`;
+                            vars.extraCtxForMainObjects.fillStyle = `#000${(this.food).toString(16)}00`;
                         } else {
-                            vars.extraCtx1.strokeStyle = `#00${(this.food).toString(16)}00`;
-                            vars.extraCtx1.fillStyle = `#00${(this.food).toString(16)}00`;
+                            vars.extraCtxForMainObjects.strokeStyle = `#00${(this.food).toString(16)}00`;
+                            vars.extraCtxForMainObjects.fillStyle = `#00${(this.food).toString(16)}00`;
                         }
-                        vars.extraCtx1.beginPath();
-                        vars.extraCtx1.arc(this.x + vars.mapPixelScale / 2, this.y + vars.mapPixelScale / 2, vars.mapPixelScale / 2, 0, Math.PI * 2, false);
-                        vars.extraCtx1.closePath();
-                        vars.extraCtx1.fill();
-                        vars.extraCtx1.stroke();
+                        vars.extraCtxForMainObjects.beginPath();
+                        vars.extraCtxForMainObjects.arc(this.x + vars.mapPixelScale / 2, this.y + vars.mapPixelScale / 2, vars.mapPixelScale / 2, 0, Math.PI * 2, false);
+                        vars.extraCtxForMainObjects.closePath();
+                        vars.extraCtxForMainObjects.fill();
+                        vars.extraCtxForMainObjects.stroke();
                     }
                 }
             }

@@ -5,8 +5,8 @@ import {vars} from "./vars.js";
 //~~~~~~~~~~~~~~~~~~~~~~~ФУНКЦИИ ОТРИСОВКИ~~~~~~~~~~~~~~~~~~~~~~~
 export function updateCtx() {
     vars.ctx.clearRect(0, 0, vars.MyCanvas.width, vars.MyCanvas.height);
-    vars.ctx.drawImage(vars.ExtraCanvas2, 0, 0);
-    vars.ctx.drawImage(vars.ExtraCanvas1, 0, 0);
+    vars.ctx.drawImage(vars.ExtraCanvasForPheromones, 0, 0);
+    vars.ctx.drawImage(vars.ExtraCanvasForMainObjects, 0, 0);
 
     if (vars.anthill.isBuilt) {
         for (let i = 0; i < vars.ants.length; i++)
@@ -23,26 +23,26 @@ export function updateCtx() {
     }
 }
 
-export function updateExtraCtx1() {
-    vars.extraCtx1.clearRect(0, 0, vars.MyCanvas.width, vars.MyCanvas.height);
+export function updateExtraCtxForMainObjects() {
+    vars.extraCtxForMainObjects.clearRect(0, 0, vars.MyCanvas.width, vars.MyCanvas.height);
     for (let i = 0; i < vars.mainObjects.length; i++)
         for (let j = 0; j < vars.mainObjects[i].length; j++)
             if (vars.mainObjects[i][j].notEmpty)
                 vars.mainObjects[i][j].next();
 
     if (vars.anthill.isBuilt) {
-        vars.extraCtx1.beginPath();
-        vars.extraCtx1.fillStyle = vars.anthill.color;
-        vars.extraCtx1.strokeStyle = vars.anthill.borderColor;
-        vars.extraCtx1.arc(vars.anthill.x, vars.anthill.y, vars.anthill.radius, 0, Math.PI * 2, false);
-        vars.extraCtx1.closePath();
-        vars.extraCtx1.fill();
-        vars.extraCtx1.stroke();
+        vars.extraCtxForMainObjects.beginPath();
+        vars.extraCtxForMainObjects.fillStyle = vars.anthill.color;
+        vars.extraCtxForMainObjects.strokeStyle = vars.anthill.borderColor;
+        vars.extraCtxForMainObjects.arc(vars.anthill.x, vars.anthill.y, vars.anthill.radius, 0, Math.PI * 2, false);
+        vars.extraCtxForMainObjects.closePath();
+        vars.extraCtxForMainObjects.fill();
+        vars.extraCtxForMainObjects.stroke();
     }
 }
 
-export function updateExtraCtx2() {
-    vars.extraCtx2.clearRect(0, 0, vars.MyCanvas.width, vars.MyCanvas.height);
+export function updateExtraCtxForPheromones() {
+    vars.extraCtxForPheromones.clearRect(0, 0, vars.MyCanvas.width, vars.MyCanvas.height);
     for (let i = 0; i < vars.pheromones.length; i++) {
         for (let j = 0; j < vars.pheromones[i].length; j++) {
             vars.pheromones[i][j].next();
@@ -53,11 +53,11 @@ export function updateExtraCtx2() {
 
                 if (vars.pheromonesDrawingMode === 1) {
                     if (vars.pheromones[i][j].toHomePheromones && vars.pheromones[i][j].toFoodPheromones)
-                        vars.extraCtx2.fillStyle = "#ccee00";
+                        vars.extraCtxForPheromones.fillStyle = "#ccee00";
                     else if (vars.pheromones[i][j].toHomePheromones)
-                        vars.extraCtx2.fillStyle = "orange";
+                        vars.extraCtxForPheromones.fillStyle = "orange";
                     else
-                        vars.extraCtx2.fillStyle = "green";
+                        vars.extraCtxForPheromones.fillStyle = "green";
                 } else if(vars.pheromonesDrawingMode === 2){
                     let toHomeColor, toFoodColor;
 
@@ -71,17 +71,17 @@ export function updateExtraCtx2() {
                     else
                         toFoodColor = `${Math.min(Math.floor(vars.pheromones[i][j].toFoodPheromones), 255).toString(16)}`;
 
-                    vars.extraCtx2.fillStyle = `#${toHomeColor}${toFoodColor}00`;
+                    vars.extraCtxForPheromones.fillStyle = `#${toHomeColor}${toFoodColor}00`;
                 }
                 else
                     continue;
 
-                vars.extraCtx2.beginPath();
-                vars.extraCtx2.strokeStyle = "black";
-                vars.extraCtx2.arc(vars.pheromones[i][j].x, vars.pheromones[i][j].y, vars.pheromonesRadius, 0, Math.PI * 2, false);
-                vars.extraCtx2.closePath();
-                vars.extraCtx2.fill();
-                vars.extraCtx2.stroke();
+                vars.extraCtxForPheromones.beginPath();
+                vars.extraCtxForPheromones.strokeStyle = "black";
+                vars.extraCtxForPheromones.arc(vars.pheromones[i][j].x, vars.pheromones[i][j].y, vars.pheromonesRadius, 0, Math.PI * 2, false);
+                vars.extraCtxForPheromones.closePath();
+                vars.extraCtxForPheromones.fill();
+                vars.extraCtxForPheromones.stroke();
             }
         }
     }

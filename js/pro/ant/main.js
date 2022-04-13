@@ -1,4 +1,4 @@
-import {updateCtx, updateExtraCtx1, updateExtraCtx2} from "./draw.js";
+import {updateCtx, updateExtraCtxForMainObjects, updateExtraCtxForPheromones} from "./draw.js";
 import {initAnts, initMainObjects, initPheromones, reset} from "./inits.js";
 import {vars} from "./vars.js";
 
@@ -201,11 +201,11 @@ window.addEventListener("load", function onWindowLoad() {
             it = (it + 1) % vars.howOftenToRedrawPheromones;
 
             if (vars.somethingChanged)
-                updateExtraCtx1();
+                updateExtraCtxForMainObjects();
             vars.somethingChanged = false;
 
             if (it === 0)
-                updateExtraCtx2();
+                updateExtraCtxForPheromones();
 
             updateCtx();
         }

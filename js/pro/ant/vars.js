@@ -3,10 +3,10 @@ export class Variables {
     // ЭЛЕМЕНТИКИ
     MyCanvas = document.getElementById("myCanvas");
     ctx = this.MyCanvas.getContext('2d');
-    ExtraCanvas1 = document.getElementById("extraCanvas1");
-    extraCtx1 = this.ExtraCanvas1.getContext('2d');
-    ExtraCanvas2 = document.getElementById("extraCanvas2");
-    extraCtx2 = this.ExtraCanvas2.getContext('2d');
+    ExtraCanvasForMainObjects = document.getElementById("extraCanvas1");
+    extraCtxForMainObjects = this.ExtraCanvasForMainObjects.getContext('2d');
+    ExtraCanvasForPheromones = document.getElementById("extraCanvas2");
+    extraCtxForPheromones = this.ExtraCanvasForPheromones.getContext('2d');
 
     // САМАЯ ВАЖНАЯ ВЕЩЬ!!! ПОЗВОЛЯЕТ УВЕЛИЧИТЬ ФПС!!!
     mapPixelScale = 10;//каждый i-ый пиксель хранит объект, остальные - лишь картинка

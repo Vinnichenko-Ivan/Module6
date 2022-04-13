@@ -1,4 +1,3 @@
-
 /*
 Основное:
 */
@@ -9,28 +8,30 @@
     font-weight: normal;
     font-size: large;
 }
-body{
+
+body {
     margin: 0;
     background: rgb(226, 232, 221);
 }
-button:hover{
+
+button:hover {
     cursor: pointer;
 }
-#myCanvas{
+
+#myCanvas {
     position: relative;
     left: 50%;
     transform: translate(-50%, 0);
-    border-style: solid ;
+    border-style: solid;
     border-radius: 5px;
     border-width: 5px;
     border-color: #697268;
     background: url('https://kartinkin.net/uploads/posts/2021-07/1627408186_14-kartinkin-com-p-pikselnie-teksturi-zemli-krasivo-17.png');
 }
-#extraCanvas1, #extraCanvas2{
+
+#extraCanvas1, #extraCanvas2 {
     display: none;
 }
-
-
 
 
 /*
@@ -43,7 +44,8 @@ header {
     padding: 20px;
     box-shadow: 0 0 10px black;
 }
-#lobbyButton, #showSettingsModalWindow, #showGraphicsModalWindow, #changeVersion{
+
+#lobbyButton, #showSettingsModalWindow, #showGraphicsModalWindow, #changeVersion {
     box-shadow: inset -3px 3px 5px grey, inset 3px -3px 5px grey, -3px 3px 5px #383737, 3px -3px 5px #383737;
     background: rgb(149, 163, 164);
     border: 2px solid rgb(105, 114, 104);
@@ -56,14 +58,17 @@ header {
     text-align: center;
     align-items: center;
 }
-#lobbyButton:hover, #showSettingsModalWindow:hover, #showGraphicsModalWindow:hover, #changeVersion:hover{
+
+#lobbyButton:hover, #showSettingsModalWindow:hover, #showGraphicsModalWindow:hover, #changeVersion:hover {
     background: rgb(140, 158, 158);
 }
-#headerButtonsContainer{
+
+#headerButtonsContainer {
     display: flex;
     justify-content: center;
 }
-#changeVersion{
+
+#changeVersion {
     width: 10%;
     position: absolute;
     top: 20px;
@@ -71,20 +76,19 @@ header {
 }
 
 
-
-
 /*
 Панель меню:
 */
 
-#buttonsContainer{
+#buttonsContainer {
     display: flex;
     justify-content: center;
     align-content: center;
     margin-top: 20px;
     margin-bottom: 0;
 }
-#clear, #food, #walls, #ants, #erase{
+
+#clear, #food, #walls, #ants, #erase {
     box-shadow: inset -1px 1px 5px darkgrey, inset 1px -1px 5px darkgrey, -1px 1px 5px darkgrey, 1px -1px 5px darkgrey;
     border-radius: 10px;
     border-color: rgb(142, 161, 161);
@@ -95,16 +99,19 @@ header {
     width: 10%;
     height: 40px;
 }
-#clear:hover, #food:hover, #walls:hover, #ants:hover, #erase:hover{
+
+#clear:hover, #food:hover, #walls:hover, #ants:hover, #erase:hover {
     background: rgb(178, 202, 211);
 }
-#brushWidthDiv{
+
+#brushWidthDiv {
     display: flex;
     justify-content: center;
     align-content: center;
     margin: 20px;
 }
-input{
+
+input {
     -webkit-appearance: none;
     width: 20%;
     height: 20px;
@@ -115,6 +122,7 @@ input{
     -webkit-transition: .2s;
     transition: opacity .2s;
 }
+
 input::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -124,6 +132,7 @@ input::-webkit-slider-thumb {
     background: rgb(78, 83, 64);
     cursor: pointer;
 }
+
 input::-moz-range-thumb {
     width: 25px;
     height: 25px;
@@ -131,11 +140,10 @@ input::-moz-range-thumb {
     background: rgb(78, 83, 64);
     cursor: pointer;
 }
-input:hover{opacity: 1;}
 
-
-
-
+input:hover {
+    opacity: 1;
+}
 
 
 /*
@@ -157,6 +165,7 @@ input:hover{opacity: 1;}
     margin: auto;
     background: rgb(226, 232, 221);
 }
+
 .shadow {
     background: rgba(102, 102, 102, 0.5);
     width: 100%;
@@ -166,7 +175,11 @@ input:hover{opacity: 1;}
     left: 0;
     display: none;
 }
-.modalWindow:target {display: block;}
+
+.modalWindow:target {
+    display: block;
+}
+
 .close {
     width: 10%;
     height: 10%;
@@ -179,10 +192,16 @@ input:hover{opacity: 1;}
     background: rgb(202, 212, 202);
     box-shadow: inset -1px 1px 5px rgb(168, 182, 166), inset 1px -1px 5px rgb(168, 182, 166), -1px 1px 5px rgb(168, 182, 166), 1px -1px 5px rgb(168, 182, 166);
 }
-.shadow:target {display: block;}
-.close:hover, .save:hover{background: rgb(191, 203, 191)
+
+.shadow:target {
+    display: block;
 }
-.save{
+
+.close:hover, .save:hover {
+    background: rgb(191, 203, 191)
+}
+
+.save {
     width: 10%;
     height: 50px;
     text-align: center;
@@ -197,16 +216,18 @@ input:hover{opacity: 1;}
 }
 
 
-.modalWindow input{
+.modalWindow input {
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);
 }
-.modalWindow output{
+
+.modalWindow output {
     position: absolute;
     right: 30%;
 }
-.modalWindow form{
+
+.modalWindow form {
     margin: 20px;
 }
 
