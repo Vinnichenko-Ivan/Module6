@@ -15,6 +15,10 @@ export class Variables {
     //MODAL WINDOW
     modalWindowMode = false;//false - не открыто, true - открыто
 
+    //DRIVE
+    driveMode = false;//играет ли музыка
+    audio = new Audio('...../assets/audio/astronomia.mp3');
+
     //ANTS
     antsNumber = 300;
     antsRadius = 4;

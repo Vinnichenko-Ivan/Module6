@@ -45,7 +45,7 @@ header {
     box-shadow: 0 0 10px black;
 }
 
-#lobbyButton, #showSettingsModalWindow, #showGraphicsModalWindow, #changeVersion {
+#lobbyButton, #showSettingsModalWindow, #showGraphicsModalWindow, #changeVersion, #driveId {
     box-shadow: inset -3px 3px 5px grey, inset 3px -3px 5px grey, -3px 3px 5px #383737, 3px -3px 5px #383737;
     background: rgb(149, 163, 164);
     border: 2px solid rgb(105, 114, 104);
@@ -59,7 +59,7 @@ header {
     align-items: center;
 }
 
-#lobbyButton:hover, #showSettingsModalWindow:hover, #showGraphicsModalWindow:hover, #changeVersion:hover {
+#lobbyButton:hover, #showSettingsModalWindow:hover, #showGraphicsModalWindow:hover, #changeVersion:hover, #driveId:hover {
     background: rgb(140, 158, 158);
 }
 
