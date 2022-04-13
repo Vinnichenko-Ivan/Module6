@@ -5,8 +5,10 @@ import {AlgorithmHolder} from "./algorithm/algorithm";
 import {BuildTreeID3Algorithm} from "./algorithm/build-tree-id3";
 import {ClassificationAlgorithm} from "./algorithm/classification";
 import {initializeMove, resetMove} from "./move";
+import {initializeAudio} from "../../audio";
 
 initializeMove();
+initializeAudio();
 
 const algorithmHolder: AlgorithmHolder = new AlgorithmHolder(+$('input[target="iteration-delay"]').val());
 
