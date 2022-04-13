@@ -166,6 +166,10 @@ input:hover {
     background: rgb(226, 232, 221);
 }
 
+.extraDivForModalWindows{
+    margin: 20px;
+}
+
 .shadow {
     background: rgba(102, 102, 102, 0.5);
     width: 100%;
