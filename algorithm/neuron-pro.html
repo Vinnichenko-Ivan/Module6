@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link href="../css/neuron.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Нейронка Ультра</title>
+
+    <!-- Иконка -->
+    <link rel="icon" type="image/png" href="../assets/img/favicon/main.png">
+
+    <!-- Шрифт -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter&family=Kanit&family=Lobster&display=swap" rel="stylesheet">
+
+    <!-- Стили -->
+    <link href="../css/main.css" rel="stylesheet">
+    <link href="../css/neuron.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- СССР -->
+<audio id="audio" src="../assets/audio/ussr.mp3"></audio>
+
+<header>
+    <div class="element">
+        <img src="../assets/img/favicon/main.png" alt="">
+    </div>
+    <div class="element">
+        <h2>Neuron++</h2>
+    </div>
+    <nav class="end">
+        <a class="element" href="https://vk.com/hits_tsu">
+            <img src="../assets/img/favicon/vk.png" alt="">
+        </a>
+        <a class="element" href="https://github.com/Vinnichenko-Ivan/Module6">
+            <img src="../assets/img/favicon/github/GitHub-Mark-Light-120px-plus.png" alt="">
+        </a>
+    </nav>
+</header>
+
+<div id="menu">
+    <div>
+        <button id="run">Run</button>
+        <button id="add">Add</button>
+        <label>
+            <input type="number" step="1" min="0" max="9" value="1" id="answerInput">
+        </label>
+        <button id="save">Save</button>
+        <button id="saveK">SaveK</button>
+        <button id="get">Get</button>
+        <button id="clear">Clear</button>
+        <input type="file" value="..." id = "getter">
+        <button id="iter">Get Answer</button>
+    </div>
+    <div>
+        <h3 class="text-shadow">Ответ:</h3>
+        <h3 class="text-shadow" id="answer">1</h3>
+    </div>
+</div>
+
+<div id="content">
+    <div>
+        <canvas width="500" height="500" id="drawer"></canvas>
+        <canvas width="50" height="50" id="input"></canvas>
+    </div>
+</div>
+
+<footer>
+    <div>
+        <span>Автор: </span>
+        <a href="https://vk.com/id350816787">Винниченко Иван</a>
+    </div>
+    <a class="audio" target="audio">Добавить патриотизма</a>
+    <a href="../algorithm/neuron.html">Базовая Версия</a>
+    <a href="../index.html">На главную страницу</a>
+</footer>
+
+<script src="../js/neuron-beta.js"></script>
+<script src="../js/audio.js"></script>
+
+</body>
+</html>

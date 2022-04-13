@@ -1,0 +1,91 @@
+/* Глобальные настройки */
+
+:root {
+    --background-color: linear-gradient(25deg, rgb(28, 2, 37) 10%, rgb(70, 2, 30) 90%);
+    --button-color: #258d4a;
+    /*--button-color: #1786a8;*/
+    --hint-color: #0d0d0e;
+
+    --canvas-color: black;
+    --canvas-border-color: #9e0da8;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    display: inline;
+}
+
+/* Настройки странички */
+
+canvas {
+    background: var(--canvas-color);
+    border: 1px solid var(--canvas-border-color);
+    box-shadow:
+            0 0 3px var(--canvas-border-color),
+            inset 0 0 2px var(--canvas-border-color);
+}
+#menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 10px 0;
+}
+#menu>*{
+    margin: 5px 0;
+}
+#answer {
+    position: absolute;
+    margin: 0 0 0 5px;
+}
+#content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 1px;
+}
+
+/* Ввод */
+
+button,
+input[type=number],
+input[type=file] {
+    font-size: 16px;
+
+    background-color: var(--button-color);
+    color: white;
+
+    border: 0;
+    border-radius: 5px;
+    box-shadow: 0 0 1px black;
+    text-shadow: 0 0 3px black;
+
+    padding: 5px 10px;
+    margin: 3px 5px;
+
+    transition:
+            filter .1s linear,
+            transform .1s ease;
+    cursor: pointer;
+}
+button:hover,
+input[type=number]:hover,
+input[type=number]:focus,
+input[type=file]:hover {
+    filter: brightness(125%);
+    transform: scale(1.05);
+}
+input[type=number]:focus {
+    outline: 0;
+}
+input[type=number] {
+    width: 50px;
+}
+input[type=file] {
+    width: 150px;
+}
+input[type=file]::-webkit-file-upload-button {
+    display: none;
+}
