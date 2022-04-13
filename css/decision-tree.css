@@ -1,8 +1,7 @@
 /* Глобальные настройки */
 :root {
-    /*--background-color: linear-gradient(25deg, rgb(21, 56, 19) 10%, rgb(18, 68, 57) 90%);
-    --button-color: #17a823;*/
-    --button-color: #d76700;
+    --background-color: linear-gradient(25deg, rgb(21, 56, 19) 10%, rgb(18, 84, 69) 90%);
+    --button-color: #9d329b;
 }
 
 th, td {
