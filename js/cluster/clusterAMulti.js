@@ -92,6 +92,8 @@ function loop() {
         newClusterCenters(mainField);
     }
     if(autoRunDbscanFlag){
+        dbscanEps.value = getReal(0, 600, true, dbscanEps.value);
+        dbscanMinPoint.value = getReal(1, 100, false, dbscanMinPoint.value);
         dbscan(fieldAlgo3, getReal(0, 600, true, dbscanEps.value), getReal(1, 100, false, dbscanMinPoint.value));
     }
 }
@@ -168,7 +170,8 @@ buttonRerun.addEventListener('click', function() {
 });
 
 clusterCount.addEventListener('input', function() {
-    globalClusterCount = getReal(1,100, false, clusterCount.value);
+    clusterCount.value = getReal(1,100, false, clusterCount.value);
+    globalClusterCount = clusterCount.value;
     mainField.rerun()
     fieldAlgo1.rerun()
     fieldAlgo2.rerun()
@@ -202,14 +205,20 @@ buttonIter.addEventListener('click', function() {
         dataDist(fieldAlgo2)
         newClusterCenters(fieldAlgo2)
     }
+    dbscanEps.value = getReal(0, 600, true, dbscanEps.value);
+    dbscanMinPoint.value = getReal(1, 100, false, dbscanMinPoint.value);
     dbscan(fieldAlgo3, getReal(0, 600, true, dbscanEps.value), getReal(1, 100, false, dbscanMinPoint.value))
 });
 
 dbscanEps.addEventListener('input', function() {
-    dbscan(fieldAlgo3, getReal(0, 600, true, dbscanEps.value), getReal(1, 100, false, dbscanMinPoint.value))
+    dbscanEps.value = getReal(0, 600, true, dbscanEps.value);
+    dbscanMinPoint.value = getReal(1, 100, false, dbscanMinPoint.value);
+    dbscan(fieldAlgo3, dbscanEps.value, dbscanMinPoint.value);
 });
 
 dbscanMinPoint.addEventListener('input', function() {
+    dbscanEps.value = getReal(0, 600, true, dbscanEps.value);
+    dbscanMinPoint.value = getReal(1, 100, false, dbscanMinPoint.value);
     dbscan(fieldAlgo3, getReal(0, 600, true, dbscanEps.value), getReal(1, 100, false, dbscanMinPoint.value))
 });
 requestAnimationFrame(loop);

@@ -12,8 +12,9 @@ function genRandColor(colors, count) {
     colors.push('blue')
     colors.push('brown')
     while (colors.length < count) {
+        let color;
         do {
-            var color = Math.floor((Math.random() * 1000000) + 1);
+            color = Math.trunc((Math.random() * 256 * 256 * 256));
         } while (colors.indexOf(color) >= 0);
         colors.push("#" + ("000000" + color.toString(16)).slice(-6));
     }
@@ -29,12 +30,12 @@ function randDouble(min, max){
 
 function dataDist(area){
     area.points.forEach(function (point, j){
-        let minD = 1000000;
+        let minD = Infinity;
         let index = 0
-        area.clusterCenters.forEach(function (cl, i){
-            if(lenBetweenPoints(cl, point) < minD){
+        area.clusterCenters.forEach(function (clusterCenter, i){
+            if(lenBetweenPoints(clusterCenter, point) < minD){
                 index = i;
-                minD = lenBetweenPoints(cl, point)
+                minD = lenBetweenPoints(clusterCenter, point)
             }
         })
         area.points[j].color = colorIndex[index]
@@ -76,23 +77,22 @@ function newClusterCenters(area){
 function sizeOfComp(matrix, point)
 {
     let n = matrix.length;
-    let matrixPs = new Array(n).fill(0);
+    let matrixTemp = new Array(n).fill(0);
     let mass = [];
     mass.push(point);
-    matrixPs[point] = 1;
+    matrixTemp[point] = 1;
     while(mass.length !== 0)
     {
         let p = mass[mass.length - 1];
         mass.pop();
         for(let i = 0; i < n; i++){
-            if(matrixPs[i] === 0 && matrix[p][i] !== 0){
-                matrixPs[i] = 1;
+            if(matrixTemp[i] === 0 && matrix[p][i] !== 0){
+                matrixTemp[i] = 1;
                 mass.push(i);
             }
         }
     }
-    return matrixPs;
-
+    return matrixTemp;
 }
 
 function compare(a, b) {
