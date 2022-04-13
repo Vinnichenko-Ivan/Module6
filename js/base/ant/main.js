@@ -66,21 +66,32 @@ window.addEventListener("load", function onWindowLoad() {
         }
     }
 
+    //функция перерисовки при изменении настроек графики
+    function redrawChanges(){
+        ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
+
+        drawTowns(townColor, townRadius);
+
+        for (let i = 0; i < List.x.length; i++)
+            for (let j = i + 1; j < List.x.length; j++)
+                drawEdges(otherEdgesWidth, otherEdgesOpacity, i, j, otherEdgesColor);
+    }
+
     //------------------------------------------------------------------------------------------
 
     //ВАЖНЫЕ КОНСТАНТЫ
-    const otherEdgesOpacity = 0.2;
-    const otherEdgesColor = "#aaa";
-    const otherEdgesWidth = 2;
-    const townRadius = 5;
-    const townColor = "black";
-    const resultEdgesOpacity = 1;
-    const resultEdgesColor = "green";
-    const resultEdgesWidth = 4;
-    const mainEdgesWidth = 4;
-    const mainEdgesColor = "yellow";
-    const mainEdgesOpacity = 1;
-    const maxNumberOfCities = 50;
+    let otherEdgesOpacity = 0.15;
+    let otherEdgesColor = "#999999";
+    let otherEdgesWidth = 2;
+    let townRadius = 7;
+    let townColor = "#000000";
+    let resultEdgesOpacity = 1;
+    let resultEdgesColor = "#00ff00";
+    let resultEdgesWidth = 4;
+    let mainEdgesWidth = 4;
+    let mainEdgesColor = "#ffff00";
+    let mainEdgesOpacity = 1;
+    let maxNumberOfCities = 50;
 
     //------------------------------------------------------------------------------------------
 
@@ -95,11 +106,14 @@ window.addEventListener("load", function onWindowLoad() {
                 State.mapBuilding = 1;
                 numberOfCities = 0;
                 ctx.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
-                document.getElementById("mainButton").textContent = "Find Path";
+                document.getElementById("mainButton").textContent = "Найти путь";
+                vertexNumberOutput.textContent = "Вершины";
+                bestPathOutput.textContent = "Длина";
+                iterationOutput.textContent = "Итерация";
             } else if (State.mapBuilding && List.x.length !== 0) {
                 State.mapBuilding = 0;
                 State.pathFinding = 1;
-                document.getElementById("mainButton").textContent = "Break";
+                document.getElementById("mainButton").textContent = "Прервать";
 
 
                 //------------------------------------------------------------------------------------------
@@ -168,7 +182,7 @@ window.addEventListener("load", function onWindowLoad() {
 
                         State.pathFinding = 0;
                         State.preStart = 1;
-                        document.getElementById("mainButton").textContent = "Start";
+                        document.getElementById("mainButton").textContent = "Начать";
 
                         redrawing(minPath, resultEdgesWidth, resultEdgesOpacity, resultEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
 
@@ -261,6 +275,8 @@ window.addEventListener("load", function onWindowLoad() {
                             minPathLength = newMinPathLength;
                             minPath = newMinPath.slice(0, newMinPath.length);
                             redrawing(newMinPath, mainEdgesWidth, mainEdgesOpacity, mainEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
+                            bestPathOutput.textContent = Math.floor(minPathLength).toString();
+                            iterationOutput.textContent = it.toString();
                         }
 
                         //******************************************************************************************
@@ -270,7 +286,7 @@ window.addEventListener("load", function onWindowLoad() {
             } else if (State.pathFinding) {
                 State.pathFinding = 0;
                 State.preStart = 1;
-                document.getElementById("mainButton").textContent = "Start";
+                document.getElementById("mainButton").textContent = "Начать";
             }
         }
     }
@@ -285,10 +301,50 @@ window.addEventListener("load", function onWindowLoad() {
     }
     let numberOfCities;
 
-    //обработчик на кнопку
+    //обработчик на кнопки
     document.getElementById("mainButton").onclick = function nextState() {
         State.next();
     };
+    let vertexNumberOutput = document.getElementById("vertexNumberId");
+    let bestPathOutput = document.getElementById("bestPathId");
+    let iterationOutput = document.getElementById("iterationId");
+
+    //---------------------------------------------------------------
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~НАСТРОЙКИ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    document.getElementById("showSettingsModalWindow").onclick = function (){
+        document.getElementById("maxCitiesNumberInputId").value = maxNumberOfCities;
+        document.getElementById("maxCitiesNumberOutputId").value = maxNumberOfCities;
+        window.location.href='#shadowSettings';
+    }
+    document.getElementById("saveSettings").onclick = function (){
+        maxNumberOfCities = document.getElementById("maxCitiesNumberInputId").value;
+        window.location.href='#';
+    }
+
+    //---------------------------------------------------------------
+    //~~~~~~~~~~~~~~~~~~~~~~~НАСТРОЙКИ ГРАФИКИ~~~~~~~~~~~~~~~~~~~~~~~
+    document.getElementById("showGraphicsModalWindow").onclick = function (){
+
+        document.getElementById("citiesColorId").value = townColor;
+        document.getElementById("otherEdgesColorId").value = otherEdgesColor;
+        document.getElementById("mainEdgesColorId").value = mainEdgesColor;
+        document.getElementById("resultEdgesColorId").value = resultEdgesColor;
+        document.getElementById("otherEdgesOpacityInputId").value = otherEdgesOpacity.toString();
+        document.getElementById("otherEdgesOpacityOutputId").value = otherEdgesOpacity.toString();
+
+        window.location.href='#shadowGraphics';
+    }
+    document.getElementById("saveGraphics").onclick = function (){
+        townColor = document.getElementById("citiesColorId").value;
+        otherEdgesColor = document.getElementById("otherEdgesColorId").value;
+        mainEdgesColor = document.getElementById("mainEdgesColorId").value;
+        resultEdgesColor = document.getElementById("resultEdgesColorId").value;
+        otherEdgesOpacity = Number(document.getElementById("otherEdgesOpacityInputId").value);
+        if(State.mapBuilding)
+            redrawChanges();
+        window.location.href='#';
+    }
+
 
     // На нажатие мыши по canvas будет выполняться эта функция
     MyCanvas.onmousedown = function newTown(e) {
@@ -308,6 +364,8 @@ window.addEventListener("load", function onWindowLoad() {
                 }
                 if (flag) {
                     numberOfCities++;
+                    vertexNumberOutput.textContent = numberOfCities.toString();
+
                     //рисуем город
                     ctx.lineCap = "round";
                     ctx.strokeStyle = townColor;
@@ -321,6 +379,7 @@ window.addEventListener("load", function onWindowLoad() {
                     ctx.lineWidth = otherEdgesWidth;
                     for (let i = 0; i < List.x.length; i++) {
                         ctx.globalAlpha = otherEdgesOpacity;
+                        ctx.strokeStyle = otherEdgesColor;
                         ctx.beginPath();
                         ctx.moveTo(List.x[i], List.y[i]);
                         ctx.lineTo(x, y);
