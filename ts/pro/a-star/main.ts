@@ -3,6 +3,7 @@ import {AlgorithmHolder} from "./algoritm/algorithm";
 import {Cell, CellMark, Field} from "./field";
 import {Position} from "./utils";
 import {PrimeAlgorithm} from "./algoritm/prime";
+import {initializeAudio} from "../../audio";
 
 const field: Field = new Field(document.getElementById("field"));
 const algorithmHolder: AlgorithmHolder = new AlgorithmHolder();
@@ -145,3 +146,6 @@ function setFieldSize(target: HTMLElement) {
 setIterationDelay(iterDelayElement);
 setFieldSize(fieldSizeElement);
 resizeField().then();
+
+// Добавить драйва
+initializeAudio();
