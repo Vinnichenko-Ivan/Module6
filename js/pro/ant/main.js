@@ -16,18 +16,32 @@ window.addEventListener("load", function onWindowLoad() {
     //--------------------------------------------------------------
     //~~~~~~~~~~~~~~~~~~~~~~ДОБАВИТЬ ДРАЙВА!!!~~~~~~~~~~~~~~~~~~~~~~
     let myAudio = document.getElementById("myAudioId");
-    document.getElementById("driveId").onclick = function (){
-        if(vars.driveMode) {
-            myAudio.autoplay = false;
+    myAudio.autoplay = true;
 
-            vars.driveMode = false;
+    myAudio.onended = function (){
+        myAudio.currentTime = 0;
+        myAudio.play();
+    }
+
+    let driveButton = document.getElementById("driveId");
+    driveButton.onclick = function (){
+        if(!vars.driveMode) {
+            myAudio.play();
+            vars.driveMode = true;
+            driveButton.textContent = "Остыть";
+            document.getElementById("wave1").style.display = "flex";
+            document.getElementById("wave2").style.display = "flex";
+            document.getElementById("wave3").style.display = "flex";
         }
         else{
-            myAudio.autoplay = true;
-
-            vars.driveMode = true;
+            myAudio.currentTime = 0;
+            myAudio.pause();
+            vars.driveMode = false;
+            driveButton.textContent = "Еще драйва!";
+            document.getElementById("wave1").style.display = "none";
+            document.getElementById("wave2").style.display = "none";
+            document.getElementById("wave3").style.display = "none";
         }
-
     };
 
     //--------------------------------------------------------------
@@ -73,7 +87,11 @@ window.addEventListener("load", function onWindowLoad() {
         document.getElementById("antsColorId").value = vars.antsColor;
         document.getElementById("anthillColorId").value = vars.anthill.color;
         document.getElementById("antsRadiusInputId").value = vars.antsRadius;
+        document.getElementById("antsRadiusOutputId").value = vars.antsRadius;
         document.getElementById("pheromonesDrawingModeInputId").value = vars.pheromonesDrawingMode;
+        document.getElementById("pheromonesDrawingModeOutputId").value = vars.pheromonesDrawingMode;
+        document.getElementById("howOftenToUpdateColorInputId").value = vars.howOftenToUpdateColor;
+        document.getElementById("howOftenToUpdateColorOutputId").value = vars.howOftenToUpdateColor;
     };
     document.getElementById("closeGraphicsModalWindow").onclick = function (){
         window.location.href = '#';
@@ -86,6 +104,7 @@ window.addEventListener("load", function onWindowLoad() {
         vars.anthill.color = document.getElementById("anthillColorId").value;
         vars.antsRadius = Number(document.getElementById("antsRadiusInputId").value);
         vars.pheromonesDrawingMode = Number(document.getElementById("pheromonesDrawingModeInputId").value);
+        vars.howOftenToUpdateColor = Number(document.getElementById("howOftenToUpdateColorInputId").value);
         vars.somethingChanged = true;
     }
 
@@ -216,13 +235,28 @@ window.addEventListener("load", function onWindowLoad() {
     let it = 0;
     setInterval(function () {
         if(!vars.modalWindowMode) {
-            it = (it + 1) % vars.howOftenToRedrawPheromones;
+
+            //ПОКРАСКА В ДРАЙВ РЕЖИМЕ)))
+            if(vars.driveMode && it%vars.howOftenToUpdateColor===0){
+                if(vars.antsColor >= "#eeeeee"){
+                    vars.antsColorIsGrowing = false;
+                }
+                else if(vars.antsColor <= "#111111"){
+                    vars.antsColorIsGrowing = true;
+                }
+                if(vars.antsColorIsGrowing)
+                    vars.antsColor = '#'+(parseInt(vars.antsColor.slice(1, 7), 16)+74565).toString(16);
+                else
+                    vars.antsColor = '#'+(parseInt(vars.antsColor.slice(1, 7), 16)-74565).toString(16);
+            }
+
+            it = (it + 1) % 10000000;
 
             if (vars.somethingChanged)
                 updateExtraCtxForMainObjects();
             vars.somethingChanged = false;
 
-            if (it === 0)
+            if (it % vars.howOftenToRedrawPheromones === 0)
                 updateExtraCtxForPheromones();
 
             updateCtx();

@@ -12,6 +12,7 @@
 body {
     margin: 0;
     background: rgb(226, 232, 221);
+    overflow:hidden;
 }
 
 button:hover {
@@ -235,3 +236,48 @@ input:hover {
     margin: 20px;
 }
 
+
+/*
+ВОЛНА В ДРАЙВ РЕЖИМЕ
+*/
+
+#wave1,
+#wave2,
+#wave3{
+    display: none;
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 250vw;
+    height: 250vw;
+    margin-left: -125vw;
+    transform-origin: 50% 50%;
+    background-color: transparent;
+    border-radius: 38% 42%;
+    box-shadow: inset 0 0 10vw rgba(255,0,255,0.8);
+    animation: spin 16s infinite linear;
+    mix-blend-mode: multiply;
+}
+
+#wave2{
+    width: 260vw;
+    height: 240vw;
+    transform-origin: 49% 51%;
+    border-radius: 40% 38%;
+    box-shadow: inset 0 0 10vw rgba(255,255,0,0.8);
+    animation: spin 13s infinite linear;
+}
+
+#wave3{
+    width: 255vw;
+    height: 245vw;
+    transform-origin: 51% 49%;
+    border-radius: 48% 42%;
+    box-shadow: inset 0 0 10vw rgba(0,255,255,0.8);
+    animation: spin 10s infinite linear;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}

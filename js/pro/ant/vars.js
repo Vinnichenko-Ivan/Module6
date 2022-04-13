@@ -15,6 +15,11 @@ export class Variables {
     //MODAL WINDOW
     modalWindowMode = false;//false - не открыто, true - открыто
 
+    //DRIVE
+    driveMode = false;
+    antsColorIsGrowing = true;
+    howOftenToUpdateColor = 50;
+
     //ANTS
     antsNumber = 300;
     antsRadius = 4;
