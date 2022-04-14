@@ -17,7 +17,7 @@ const buttonRerun = document.getElementById('rerun')
 const buttonIter = document.getElementById('iter')
 const clusterCount = document.getElementById('clusterCount');
 const canvas = document.getElementById('mainField');
-const context =canvas.getContext('2d');
+const context = canvas.getContext('2d');
 
 checkBoxAutoRun.checked = autoRun
 checkBoxClusterCentres.checked = drawCenters

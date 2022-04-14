@@ -1,5 +1,8 @@
 :root {
+    --background-color: linear-gradient(25deg, rgb(19, 78, 92) 10%, rgb(89, 20, 85) 90%);
     --button-color: #d76700;
+
+    --neon-color: #ffcd03;
 }
 
 /* Задаём параметры контейнера */
@@ -179,7 +182,6 @@ input[type='range']::-webkit-slider-thumb:hover {
 
 /* Вспомогательные классы */
 .text-neon {
-    --neon-color: #ffcd03;
     text-shadow:
             0 0 5px black,
             0 0 10px black,
