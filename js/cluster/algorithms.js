@@ -181,11 +181,33 @@ function clusterInit(clusterCount, area){
     }
 }
 
+function dbscanDeep(field, eps, minPointCount, pointIndex, stack)
+{
+    let point = field.points[pointIndex];
+    let nearPointsIndex = []
+    field.points.forEach(function (pointTemp, indexTemp){
+        if(lenBetweenPoints(pointTemp, point) <= eps && pointIndex !== indexTemp){
+            nearPointsIndex.push(indexTemp);
+        }
+    });
+
+    while(nearPointsIndex.length !== 0)
+    {
+        let tempPointIndex = nearPointsIndex.pop();
+        if(field.points[tempPointIndex].id === -1){
+            field.points[tempPointIndex].id = field.points[pointIndex].id;
+            field.points[tempPointIndex].color = field.points[pointIndex].color;
+            stack.push(tempPointIndex);
+        }
+    }
+}
+
 function dbscan(field, eps, minPointCount){
     let clusterCounter = -1;
     field.rerun();
     field.points.forEach(function (point, index){
         if(point.id === -1){
+            let stack = []
             let nearPointsIndex = []
             field.points.forEach(function (pointTemp, indexTemp){
                 if(lenBetweenPoints(pointTemp, point) <= eps && index !== indexTemp){
@@ -194,7 +216,6 @@ function dbscan(field, eps, minPointCount){
             });
             if(nearPointsIndex.length < minPointCount - 1){//-1 because nearPointsIndex dont contain start point
                 field.points[index].id = -2; // -2 => noise
-
                 return;
             }
             clusterCounter++;
@@ -204,21 +225,28 @@ function dbscan(field, eps, minPointCount){
             }
             field.points[index].id = clusterCounter;
             field.points[index].color = colorIndex[clusterCounter];
+
             while(nearPointsIndex.length !== 0)
             {
                 let tempPointIndex = nearPointsIndex.pop();
                 if(field.points[tempPointIndex].id === -1){
                     field.points[tempPointIndex].id = clusterCounter;
                     field.points[tempPointIndex].color = colorIndex[clusterCounter];
+                    stack.push(tempPointIndex)
                 }
                 else if(field.points[tempPointIndex].id !== -2){
                     continue;
                 }
                 field.points[tempPointIndex].id = clusterCounter;
                 field.points[tempPointIndex].color = colorIndex[clusterCounter];
+            }
 
+            while(stack.length > 0)
+            {
+                dbscanDeep(field, eps, minPointCount, stack.pop(), stack);
             }
         }
+
 
 
     });
