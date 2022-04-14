@@ -5,18 +5,23 @@
     <title>Ant Algorithm PRO</title>
     <link rel="stylesheet" type="text/css" href="../css/ant-algorithm-pro.css">
 </head>
+
+<!-- Добавить драйва -->
+<audio id="myAudioId" src="../assets/audio/astronomia.mp3"></audio>
+<div id="wave1"></div>
+<div id="wave2"></div>
+<div id="wave3"></div>
+
 <body>
-
-
 <header>
     <div id="headerButtonsContainer">
         <button id="lobbyButton" onclick="window.location.href = '../index.html'">На базу</button>
+        <button id="driveId">Добавить драйва</button>
         <button id="showGraphicsModalWindow">Графика</button>
         <button id="showSettingsModalWindow">Настройки</button>
     </div>
     <button id="changeVersion" onclick="window.location.href='./ant-algorithm.html'">BASE</button>
 </header>
-
 
 <div id="buttonsContainer">
     <button id="food">
@@ -110,6 +115,13 @@
             <input type="range" id="pheromonesDrawingModeInputId" min="0" max="2" value="0" step="1"
                    oninput="pheromonesDrawingModeOutputId.value = pheromonesDrawingModeInputId.value"/>
             <output id="pheromonesDrawingModeOutputId">0</output>
+        </div>
+
+        <div class="extraDivForModalWindows">
+            <label for="howOftenToUpdateColorInputId">Частота смены цвета</label>
+            <input type="range" id="howOftenToUpdateColorInputId" min="5" max="200" value="50" step="5"
+                   oninput="howOftenToUpdateColorOutputId.value = howOftenToUpdateColorInputId.value"/>
+            <output id="howOftenToUpdateColorOutputId">50</output>
         </div>
 
 
