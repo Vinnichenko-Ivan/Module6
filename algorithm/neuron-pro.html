@@ -41,28 +41,37 @@
 
 <div id="menu">
     <div>
-        <button id="run">Run</button>
-        <button id="add">Add</button>
-        <label>
+        <button id="run" class="hidden">Run</button>
+        <button id="add" class="hidden">Add</button>
+        <label class="hidden">
             <input type="number" step="1" min="0" max="9" value="1" id="answerInput">
         </label>
-        <button id="save">Save</button>
-        <button id="saveK">SaveK</button>
-        <button id="get">Get</button>
-        <button id="clear">Clear</button>
-        <input type="file" value="..." id = "getter">
-        <button id="iter">Get Answer</button>
+        <button id="save" class="hidden">Save</button>
+        <button id="saveK" class="hidden">SaveK</button>
+        <button id="get" class="hidden">Get</button>
+        <button id="clear">Отчистить</button>
+        <input type="file" value="..." id="getter" class="hidden">
+        <button id="iter">Получить Ответ</button>
     </div>
     <div>
-        <h3 class="text-shadow">Ответ:</h3>
-        <h3 class="text-shadow" id="answer">1</h3>
+        <h4 class="text-shadow">Я думаю это</h4>
+        <h4 class="text-shadow" id="answer">1</h4>
     </div>
 </div>
 
 <div id="content">
+    <canvas width="500" height="500" id="drawer"></canvas>
     <div>
-        <canvas width="500" height="500" id="drawer"></canvas>
-        <canvas width="50" height="50" id="input"></canvas>
+        <canvas width="50" height="50" id="letter0"></canvas>
+        <canvas width="50" height="50" id="letter1"></canvas>
+        <canvas width="50" height="50" id="letter2"></canvas>
+        <canvas width="50" height="50" id="letter3"></canvas>
+        <canvas width="50" height="50" id="letter4"></canvas>
+        <canvas width="50" height="50" id="letter5"></canvas>
+        <canvas width="50" height="50" id="letter6"></canvas>
+        <canvas width="50" height="50" id="letter7"></canvas>
+        <canvas width="50" height="50" id="letter8"></canvas>
+        <canvas width="50" height="50" id="letter9"></canvas>
     </div>
 </div>
 
@@ -71,13 +80,15 @@
         <span>Автор: </span>
         <a href="https://vk.com/id350816787">Винниченко Иван</a>
     </div>
-    <a class="audio" target="audio">Добавить патриотизма</a>
+    <a class="audio" target="audio" id="ussr">Добавить патриотизма</a>
     <a href="../algorithm/neuron.html">Базовая Версия</a>
     <a href="../index.html">На главную страницу</a>
 </footer>
 
+<script src="../js/weights.js"></script>
 <script src="../js/neuron-beta.js"></script>
 <script src="../js/audio.js"></script>
+<script src="../js/ussr.js"></script>
 
 </body>
 </html>
