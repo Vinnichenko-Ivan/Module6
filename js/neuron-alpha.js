@@ -1,6 +1,5 @@
 //https://proglib.io/p/pishem-neyroset-na-python-s-nulya-2020-10-07
 function sigmoid(x){
-    //return 1 / (1 + Math.exp(-x));
     return Math.max(0, x);
 }
 
@@ -9,8 +8,6 @@ function derivSigmoid(x){
         return 0;
     }
     return 1;
-    // let fx = sigmoid(x);
-    // return fx * (1 - fx);
 }
 
 function randParam(){
@@ -318,97 +315,7 @@ function matrixToLineMatrix(matrix){
 }
 
 let inputs = []
-{
-    let inputNoLine = []
-    inputNoLine.push([0, 1, 1, 1, 0])
-    inputNoLine.push([0, 1, 0, 1, 0])
-    inputNoLine.push([0, 1, 0, 1, 0])
-    inputNoLine.push([0, 1, 0, 1, 0])
-    inputNoLine.push([0, 1, 1, 1, 0])
-    let input = matrixToLineMatrix(inputNoLine)
-    inputs.push(input)
 
-    inputNoLine = []
-    inputNoLine.push([0, 0, 1, 0, 0])
-    inputNoLine.push([0, 0, 1, 0, 0])
-    inputNoLine.push([0, 0, 1, 0, 0])
-    inputNoLine.push([0, 0, 1, 0, 0])
-    inputNoLine.push([0, 0, 1, 0, 0])
-    input = matrixToLineMatrix(inputNoLine)
-    inputs.push(input)
-
-    inputNoLine = []
-    inputNoLine.push([0, 1, 1, 1, 0])
-    inputNoLine.push([0, 0, 0, 1, 0])
-    inputNoLine.push([0, 1, 1, 1, 0])
-    inputNoLine.push([0, 1, 0, 0, 0])
-    inputNoLine.push([0, 1, 1, 1, 0])
-    input = matrixToLineMatrix(inputNoLine)
-    inputs.push(input)
-
-    inputNoLine = []
-    inputNoLine.push([0, 1, 1, 1, 0])
-    inputNoLine.push([0, 0, 0, 1, 0])
-    inputNoLine.push([0, 0, 1, 1, 0])
-    inputNoLine.push([0, 0, 0, 1, 0])
-    inputNoLine.push([0, 1, 1, 1, 0])
-    input = matrixToLineMatrix(inputNoLine)
-    inputs.push(input)
-
-    inputNoLine = []
-    inputNoLine.push([0, 1, 0, 1, 0])
-    inputNoLine.push([0, 1, 0, 1, 0])
-    inputNoLine.push([0, 1, 1, 1, 0])
-    inputNoLine.push([0, 0, 0, 1, 0])
-    inputNoLine.push([0, 0, 0, 1, 0])
-    input = matrixToLineMatrix(inputNoLine)
-    inputs.push(input)
-
-    inputNoLine = []
-    inputNoLine.push([0, 1, 1, 1, 0])
-    inputNoLine.push([0, 1, 0, 0, 0])
-    inputNoLine.push([0, 1, 1, 1, 0])
-    inputNoLine.push([0, 0, 0, 1, 0])
-    inputNoLine.push([0, 1, 1, 1, 0])
-    input = matrixToLineMatrix(inputNoLine)
-    inputs.push(input)
-
-    inputNoLine = []
-    inputNoLine.push([0, 1, 1, 1, 0])
-    inputNoLine.push([0, 1, 0, 0, 0])
-    inputNoLine.push([0, 1, 1, 1, 0])
-    inputNoLine.push([0, 1, 0, 1, 0])
-    inputNoLine.push([0, 1, 1, 1, 0])
-    input = matrixToLineMatrix(inputNoLine)
-    inputs.push(input)
-
-    inputNoLine = []
-    inputNoLine.push([0, 1, 1, 1, 0])
-    inputNoLine.push([0, 0, 0, 1, 0])
-    inputNoLine.push([0, 0, 0, 1, 0])
-    inputNoLine.push([0, 0, 0, 1, 0])
-    inputNoLine.push([0, 0, 0, 1, 0])
-    input = matrixToLineMatrix(inputNoLine)
-    inputs.push(input)
-
-    inputNoLine = []
-    inputNoLine.push([0, 1, 1, 1, 0])
-    inputNoLine.push([0, 1, 0, 1, 0])
-    inputNoLine.push([0, 1, 1, 1, 0])
-    inputNoLine.push([0, 1, 0, 1, 0])
-    inputNoLine.push([0, 1, 1, 1, 0])
-    input = matrixToLineMatrix(inputNoLine)
-    inputs.push(input)
-
-    inputNoLine = []
-    inputNoLine.push([0, 1, 1, 1, 0])
-    inputNoLine.push([0, 1, 0, 1, 0])
-    inputNoLine.push([0, 1, 1, 1, 0])
-    inputNoLine.push([0, 0, 0, 1, 0])
-    inputNoLine.push([0, 1, 1, 1, 0])
-    input = matrixToLineMatrix(inputNoLine)
-    inputs.push(input)
-}
 
 let neuroNet = new NeuronFullNet();
 neuroNet.setSizes(inputLayersSize, invisibleLayersCount, invisibleLayersSize, outputLayerSize);
@@ -436,11 +343,11 @@ let weightCount = 5
 let heightCount = 5
 
 let inputNoLine = []
-inputNoLine.push([1, 1, 1, 0, 1])
-inputNoLine.push([1, 1, 0, 0, 0])
-inputNoLine.push([0, 0, 1, 0, 0])
-inputNoLine.push([0, 0, 0, 1, 0])
-inputNoLine.push([0, 0, 0, 0, 1])
+inputNoLine.push([0, 0, 0, 0, 0])
+inputNoLine.push([0, 0, 0, 0, 0])
+inputNoLine.push([0, 0, 0, 0, 0])
+inputNoLine.push([0, 0, 0, 0, 0])
+inputNoLine.push([0, 0, 0, 0, 0])
 
 function drawLine(x1, y1, x2, y2){
     context.strokeStyle = 'white'
