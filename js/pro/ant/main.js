@@ -16,7 +16,6 @@ window.addEventListener("load", function onWindowLoad() {
     //--------------------------------------------------------------
     //~~~~~~~~~~~~~~~~~~~~~~ДОБАВИТЬ ДРАЙВА!!!~~~~~~~~~~~~~~~~~~~~~~
     let myAudio = document.getElementById("myAudioId");
-    myAudio.autoplay = true;
 
     myAudio.onended = function (){
         myAudio.currentTime = 0;
@@ -26,6 +25,7 @@ window.addEventListener("load", function onWindowLoad() {
     let driveButton = document.getElementById("driveId");
     driveButton.onclick = function (){
         if(!vars.driveMode) {
+            myAudio.autoplay = true;
             myAudio.play();
             vars.driveMode = true;
             driveButton.textContent = "Остыть";
