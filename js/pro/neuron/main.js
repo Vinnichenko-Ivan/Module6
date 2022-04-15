@@ -3,7 +3,7 @@ let a = 1.6733
 let b = 1.0507
 
 /**
- * Лру функция
+ * Лру функция(правильная версия от a и b)
  * @param x - входное значение
  * @returns {number} - выходное значение
  */
@@ -15,7 +15,7 @@ function LRU(x){
 }
 
 /**
- * производная Лру функции
+ * производная Лру функции(правильная версия от a и b)
  * @param x - входное значение
  * @returns {number} - выходное значение
  */
@@ -24,27 +24,6 @@ function derivLRU(x){
         return a * b * Math.exp(x);
     }
     return b;
-}
-
-/**
- * Функция генерации рандомного веса
- * @returns {number}
- */
-function randParam(){
-    return Math.random() / 10;
-}
-
-/**
- * Функция генерации списка рандомных весов
- * @param size - размер списка
- * @returns {*[]} - список с рандомными весами
- */
-function randParams(size){
-    let answer = []
-    for(let i = 0; i < size; i++){
-        answer.push(randParam());
-    }
-    return answer;
 }
 
 /**
@@ -88,10 +67,6 @@ class Neuron{
     }
 }
 
-class SaveOBJ{
-    invisibleLayers = []
-    outputLayer = []
-}
 
 class NeuronFullNet{
     learningRate = 0.001
@@ -325,52 +300,9 @@ class NeuronFullNet{
     }
 }
 
-
 let inputLayersSize = 2500
 let outputLayerSize = 10
 
-/**
- * Преобразование двумерной матрицы в одномерную
- * @param matrix двумерная матрица
- * @returns {*[]} одномерная матрица
- */
-function matrixToLineMatrix(matrix){
-    let lineMatrix = []
-    for(let i = 0; i < matrix.length; i++){
-        for(let j = 0; j < matrix[i].length; j++){
-            lineMatrix.push(matrix[i][j]);
-        }
-    }
-    return lineMatrix;
-}
-
-/**
- * Преобразование одномерной матрицы в двумерную.
- * @param lineMatrix одномерная матрица
- * @param n размер двумерной матрицы
- * @returns {*[]} двумерная матрица
- */
-function lineMatrixToMatrix(lineMatrix, n){
-    let matrix = new Array(n).fill(new Array(n).fill(0));
-    matrix = JSON.parse(JSON.stringify(matrix));
-    let max = -Infinity;
-    for(let i = 0; i < n; i++)
-    {
-        for(let j = 0; j < n; j++)
-        {
-            matrix[i][j] = lineMatrix[i * n + j];
-            max = Math.max(max, matrix[i][j]);
-        }
-    }
-    for(let i = 0; i < n; i++)
-    {
-        for(let j = 0; j < n; j++)
-        {
-            matrix[i][j] /= max;
-        }
-    }
-    return matrix;
-}
 
 let neuroNet = new NeuronFullNet();
 neuroNet.setSizes(inputLayersSize, outputLayerSize);
@@ -440,37 +372,7 @@ let heightCount = 50
 
 let inputNoLine =  new Array(heightCount).fill(0).map( () => new Array(weightCount).fill(0))
 
-class Test{
-    input
-    answer = 0
-}
-
 let tests = []
-
-/**
- * Функция отрисовки связей для наглядности работы.
- * @param neuron нейрон
- * @param context контент для рисования
- * @param n размер двумерной матрицы связей
- */
-function drawNeuron(neuron, context, n){
-    context.clearRect(0, 0, n, n)
-    let input = lineMatrixToMatrix(neuron.weights, n)
-    let dx = 1;
-    let dy = 1;
-    for(let i = 0; i < n; i++){
-        for(let j = 0; j < n; j++){
-            let temp = input[i][j] * 255;
-            if(input[i][j] > 0) {
-                context.fillStyle = 'rgb(' + temp + "," + 0 + "," + 0 + ")";
-            }
-            if(input[i][j] < 0) {
-                context.fillStyle = 'rgb(' + 0 + "," + 0 + "," + -temp + ")";
-            }
-            context.fillRect(dx * j, dy * i , dx, dy);
-        }
-    }
-}
 
 function loop() {
     requestAnimationFrame(loop);
