@@ -34,3 +34,20 @@
 <p>Проект получился. Все топ! Результат работы можете увидеть по ссылке ниже.</p>
 <a href="https://vinnichenko-ivan.github.io/Module6/"> Ссылочка:)</a>
 
+<h3>Использованные материалы:</h3>
++ Нейросеть:
+  - https://proglib.io/p/pishem-neyroset-na-python-s-nulya-2020-10-07
+  - https://programforyou.ru/poleznoe/pishem-neuroset-pryamogo-rasprostraneniya
+  - https://habr.com/ru/post/556076/
+  - https://www.susu.ru/sites/default/files/laboratornaya_rabota.pdf
++ Кластеры:
+  - https://github.com/tayden/dbscanjs/blob/master/index.js
+  - https://habr.com/ru/post/427761/
+  - https://en.wikipedia.org/wiki/DBSCAN
+  - https://en.wikipedia.org/wiki/Cluster_analysis#Fuzzy_c-means_clustering
+  - https://ru.wikipedia.org/wiki/%D0%9C%D0%B5%D1%82%D0%BE%D0%B4_%D0%BD%D0%B5%D1%87%D1%91%D1%82%D0%BA%D0%BE%D0%B9_%D0%BA%D0%BB%D0%B0%D1%81%D1%82%D0%B5%D1%80%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_C-%D1%81%D1%80%D0%B5%D0%B4%D0%BD%D0%B8%D1%85
++ Дерево решений:
+  - https://habr.com/ru/company/productstar/blog/523044/
+  - https://habr.com/ru/company/ods/blog/322534/
+  - https://ru.wikipedia.org/wiki/Weka
+
