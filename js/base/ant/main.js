@@ -186,8 +186,8 @@ window.addEventListener("load", function onWindowLoad() {
 
                         redrawing(minPath, resultEdgesWidth, resultEdgesOpacity, resultEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
 
-                        List.x.splice(0, List.x.length);
-                        List.y.splice(0, List.y.length);
+                        List.x.splice(0);
+                        List.y.splice(0);
                         clearInterval(id);
                     } else {
                         //------------------------------------------------------------------------------------------
@@ -203,7 +203,7 @@ window.addEventListener("load", function onWindowLoad() {
                             ants.push({
                                 path: [],
                                 pathLength: 0,
-                                unvisitedCities: unvisitedCitiesArray.slice(0, unvisitedCitiesArray.length)
+                                unvisitedCities: unvisitedCitiesArray.slice()
                             });
 
                         //обнуляем матрицу с добавочными феромонами
@@ -259,7 +259,7 @@ window.addEventListener("load", function onWindowLoad() {
 
                             if(ants[i].pathLength < newMinPathLength) {
                                 newMinPathLength = ants[i].pathLength;
-                                newMinPath = ants[i].path.slice(0, ants[i].path.length);
+                                newMinPath = ants[i].path.slice();
                             }
                         }
 
@@ -273,7 +273,7 @@ window.addEventListener("load", function onWindowLoad() {
                         {
                             itOfWithoutResultGenerations = 0;
                             minPathLength = newMinPathLength;
-                            minPath = newMinPath.slice(0, newMinPath.length);
+                            minPath = newMinPath.slice();
                             redrawing(newMinPath, mainEdgesWidth, mainEdgesOpacity, mainEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
                             bestPathOutput.textContent = Math.floor(minPathLength).toString();
                             iterationOutput.textContent = it.toString();

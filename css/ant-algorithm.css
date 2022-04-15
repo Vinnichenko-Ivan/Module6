@@ -1,4 +1,3 @@
-
 /*
 Основное:
 */
@@ -9,18 +8,21 @@
     font-weight: normal;
     font-size: large;
 }
-body{
+
+body {
     margin: 0;
     background: rgb(226, 232, 221);
 }
-button:hover{
+
+button:hover {
     cursor: pointer;
 }
-#myCanvas{
+
+#myCanvas {
     position: relative;
     left: 50%;
     transform: translate(-50%, 0);
-    border-style: solid ;
+    border-style: solid;
     border-radius: 5px;
     border-width: 5px;
     border-color: #697268;
@@ -37,7 +39,8 @@ header {
     padding: 20px;
     box-shadow: 0 0 10px black;
 }
-#lobbyButton, #showSettingsModalWindow, #showGraphicsModalWindow, #changeVersion{
+
+#lobbyButton, #showSettingsModalWindow, #showGraphicsModalWindow, #changeVersion {
     box-shadow: inset -3px 3px 5px grey, inset 3px -3px 5px grey, -3px 3px 5px #383737, 3px -3px 5px #383737;
     background: rgb(149, 163, 164);
     border: 2px solid rgb(105, 114, 104);
@@ -50,14 +53,17 @@ header {
     text-align: center;
     align-items: center;
 }
-#lobbyButton:hover, #showSettingsModalWindow:hover, #showGraphicsModalWindow:hover, #changeVersion:hover{
+
+#lobbyButton:hover, #showSettingsModalWindow:hover, #showGraphicsModalWindow:hover, #changeVersion:hover {
     background: rgb(140, 158, 158);
 }
-#headerButtonsContainer{
+
+#headerButtonsContainer {
     display: flex;
     justify-content: center;
 }
-#changeVersion{
+
+#changeVersion {
     width: 10%;
     position: absolute;
     top: 20px;
@@ -65,20 +71,19 @@ header {
 }
 
 
-
-
 /*
 Панель меню:
 */
 
-#buttonsContainer{
+#buttonsContainer {
     display: flex;
     justify-content: center;
     align-content: center;
     margin-top: 20px;
     margin-bottom: 0;
 }
-#mainButton{
+
+#mainButton {
     box-shadow: inset -1px 1px 5px darkgrey, inset 1px -1px 5px darkgrey, -1px 1px 5px darkgrey, 1px -1px 5px darkgrey;
     border-radius: 10px;
     border-color: rgb(142, 161, 161);
@@ -89,12 +94,13 @@ header {
     width: 10%;
     height: 40px;
 }
-#mainButton:hover{
+
+#mainButton:hover {
     background: rgb(178, 202, 211);
 }
 
 
-#outputDiv{
+#outputDiv {
     display: flex;
     justify-content: space-around;
     align-content: center;
@@ -103,7 +109,8 @@ header {
     padding-inline: 30%;
     height: 24px;
 }
-#outputDiv span{
+
+#outputDiv span {
     background-color: rgb(183, 209, 218);
     border-radius: 10px;
     text-align: center;
@@ -111,7 +118,7 @@ header {
 }
 
 
-input{
+input {
     -webkit-appearance: none;
     width: 20%;
     height: 20px;
@@ -122,6 +129,7 @@ input{
     -webkit-transition: .2s;
     transition: opacity .2s;
 }
+
 input::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -131,6 +139,7 @@ input::-webkit-slider-thumb {
     background: rgb(78, 83, 64);
     cursor: pointer;
 }
+
 input::-moz-range-thumb {
     width: 25px;
     height: 25px;
@@ -138,10 +147,10 @@ input::-moz-range-thumb {
     background: rgb(78, 83, 64);
     cursor: pointer;
 }
-input:hover{opacity: 1;}
 
-
-
+input:hover {
+    opacity: 1;
+}
 
 
 /*
@@ -149,6 +158,8 @@ input:hover{opacity: 1;}
 */
 
 .modalWindow {
+    display: flex;
+    flex-direction: column;
     width: 60%;
     height: 400px;
     padding: 15px;
@@ -163,6 +174,7 @@ input:hover{opacity: 1;}
     margin: auto;
     background: rgb(226, 232, 221);
 }
+
 .shadow {
     background: rgba(102, 102, 102, 0.5);
     width: 100%;
@@ -172,30 +184,32 @@ input:hover{opacity: 1;}
     left: 0;
     display: none;
 }
-.modalWindow:target {display: block;}
+
+.modalWindow:target {
+    display: block;
+}
+
 .close {
-    width: 10%;
-    height: 10%;
+    width: 100px;
+    height: 40px;
     border-radius: 8px;
     border: 1px solid rgb(150, 162, 148);
     color: #333;
-    position: absolute;
-    left: 88%;
-    bottom: 85%;
     background: rgb(202, 212, 202);
     box-shadow: inset -1px 1px 5px rgb(168, 182, 166), inset 1px -1px 5px rgb(168, 182, 166), -1px 1px 5px rgb(168, 182, 166), 1px -1px 5px rgb(168, 182, 166);
 }
-.shadow:target {display: block;}
-.close:hover, .save:hover{background: rgb(191, 203, 191)
+
+.shadow:target {
+    display: block;
 }
-.save{
-    width: 10%;
+
+.close:hover, .save:hover {
+    background: rgb(191, 203, 191)
+}
+
+.save {
+    width: 120px;
     height: 50px;
-    text-align: center;
-    align-items: center;
-    position: absolute;
-    bottom: 5%;
-    left: 45%;
     border-radius: 8px;
     border: 1px solid rgb(150, 162, 148);
     background: rgb(202, 212, 202);
@@ -203,19 +217,106 @@ input:hover{opacity: 1;}
 }
 
 
-.modalWindow input{
+.modalWindow input {
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);
 }
-.modalWindow output{
+
+.modalWindow output {
     position: absolute;
     right: 30%;
 }
-.modalWindow form{
-    margin: 20px;
+
+.divForModalWindows {
+    margin: 15px;
 }
 
+.divForSaveButton {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
 
+.divForCloseButton {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
 
+/*
+Подписка
+*/
+#subscribeModalWindow {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    height: 600px;
+    padding: 15px;
+    border: 3px solid rgb(183, 209, 218);
+    border-radius: 50px;
+    color: #777;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    background: white;
+}
 
+#subscribeModalWindow:target {
+    display: block;
+}
+
+#subscribeButtonId {
+    width: 120px;
+    height: 50px;
+    text-align: center;
+    align-items: center;
+    border-radius: 15px;
+    border: 1px solid lightskyblue;
+    background: whitesmoke;
+    box-shadow: -1px 1px 5px rgb(168, 182, 166), 1px -1px 5px rgb(168, 182, 166);
+}
+
+#closeSubscribeModalWindow {
+    border-radius: 15px;
+    border: 1px solid lightskyblue;
+    color: #333;
+    background: whitesmoke;
+    box-shadow: -1px 1px 5px rgb(168, 182, 166), 1px -1px 5px rgb(168, 182, 166);
+}
+
+#divContainerForSubscribe {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.divForSubscribe {
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+}
+
+#divForSubscribeButton {
+    height: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+#shadowSubscribe input {
+    width: 150px;
+    height: 30px;
+}
+
+#shadowSubscribe p {
+    font-size: 25px;
+}
