@@ -3,7 +3,7 @@ const displayOn = 'Добавить атмосферы';
 const displayOff = 'Сделать скучным =|';
 
 // Громкость музыки
-const volume = 0.05;
+const volume = 0.5;
 
 // Музыка
 let audio: HTMLAudioElement;

@@ -4,7 +4,7 @@ define(["require", "exports"], function (require, exports) {
     exports.initializeAudio = void 0;
     const displayOn = 'Добавить атмосферы';
     const displayOff = 'Сделать скучным =|';
-    const volume = 0.05;
+    const volume = 0.5;
     let audio;
     function playAudio(button) {
         if (audio != undefined && !audio.paused) {
