@@ -6,7 +6,7 @@ function playAudio(element) {
     alert("Я предупреждал!")
     let audioId = element.getAttribute('target');
     audio = document.getElementById(audioId);
-    audio.volume = 0.5;
+    audio.volume = 0.01;
     audio.play();
 }
 
