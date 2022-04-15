@@ -1,6 +1,12 @@
 //https://proglib.io/p/pishem-neyroset-na-python-s-nulya-2020-10-07
 let a = 1.6733
 let b = 1.0507
+
+/**
+ * Лру функция
+ * @param x - входное значение
+ * @returns {number} - выходное значение
+ */
 function LRU(x){
     if(x > 0){
         return b * x;
@@ -8,6 +14,11 @@ function LRU(x){
     return a*b*(Math.exp(x) - 1);
 }
 
+/**
+ * производная Лру функции
+ * @param x - входное значение
+ * @returns {number} - выходное значение
+ */
 function derivLRU(x){
     if(x < 0){
         return a * b * Math.exp(x);
@@ -15,10 +26,19 @@ function derivLRU(x){
     return b;
 }
 
+/**
+ * Функция генерации рандомного веса
+ * @returns {number}
+ */
 function randParam(){
     return Math.random() / 10;
 }
 
+/**
+ * Функция генерации списка рандомных весов
+ * @param size - размер списка
+ * @returns {*[]} - список с рандомными весами
+ */
 function randParams(size){
     let answer = []
     for(let i = 0; i < size; i++){
@@ -27,6 +47,9 @@ function randParams(size){
     return answer;
 }
 
+/**
+ * класс нейрона
+ */
 class Neuron{
     output = 0;
     error = 0;
@@ -35,6 +58,12 @@ class Neuron{
     input = [];
     total = 0
 
+    /**
+     * функция задающяя веса нейронам
+     * @param weightsCount - количество весов
+     * @param weights - сами веса
+     * @param b - bias(более не используется)
+     */
     setWeights(weightsCount, weights, b){
         this.weightsCount = weightsCount;
         for(let i = 0; i < weightsCount; i++){
@@ -43,6 +72,10 @@ class Neuron{
         }
     }
 
+    /**
+     * функция высчитывующая выходное значение нейрона
+     * @param input - слой нейронов чьим потомком является наш нейрон
+     */
     result(input){
         let total = 0;
         for(let i = 0; i < this.weightsCount; i++)
@@ -69,11 +102,19 @@ class NeuronFullNet{
     outputLayerSize = 0
     outputLayer = []
 
+    /**
+     * Функция задающая конфигурацию нейросети
+     * @param inputLayersSize
+     * @param outputLayerSize
+     */
     setSizes(inputLayersSize, outputLayerSize){
         this.inputLayersSize = inputLayersSize;
         this.outputLayerSize = outputLayerSize;
     }
 
+    /**
+     * Функция генерирующая нейроны
+     */
     genNeurons(){
         this.inputLayers = [];
         this.outputLayer = []
@@ -85,12 +126,19 @@ class NeuronFullNet{
         }
     }
 
+    /**
+     * Функция задающая рандомные веса связям в нейросети
+     */
     genRandParam(){
         for(let i = 0; i < this.outputLayerSize; i++){
             this.outputLayer[i].setWeights(2500, randParams(2500), randParam());
         }
     }
 
+    /**
+     * Функция создающая обьект для сохранения весов нейросети
+     * @returns {SaveOBJ} обьект с весами
+     */
     toSaveObj(){
         let saveObj = new SaveOBJ;
         for(let i = 0; i < this.outputLayerSize; i++){
@@ -99,24 +147,38 @@ class NeuronFullNet{
         return saveObj;
     }
 
+    /**
+     * Функция загружающяя веса из обьекта
+     * @param saveObj - обьект с весами
+     */
     fromSaveObj(saveObj) {
         for(let i = 0; i < this.outputLayerSize; i++){
             this.outputLayer[i].setWeights(2500, (JSON.parse(JSON.stringify(saveObj.outputLayer[i]))), randParam());
         }
     }
 
+    /**
+     * Функция задающая output входному слою.
+     * @param input - значения
+     */
     setInput(input){
         for(let i = 0; i < this.inputLayersSize; i++){
             this.inputLayers[i].output = input[i];
         }
     }
 
+    /**
+     * Функция вычисляющая результат работы нейросети
+     */
     genOutput(){
         for(let i = 0; i < this.outputLayerSize; i++){
             this.outputLayer[i].result(this.inputLayers);
         }
     }
 
+    /**
+     * Тестовая функция печатающая результат работы выходных нейронов
+     */
     printOutput(){
         for(let i = 0; i < this.outputLayerSize; i++){
             console.log(this.outputLayer[i].output)
@@ -124,9 +186,12 @@ class NeuronFullNet{
         }
     }
 
+    /**
+     * Софтмакс функция. Обрабатывает значения выходных нейронов и приводит их к правильному значению
+     */
     softMax(){
         let total = 0
-        let maxim = - 100000000000000
+        let maxim = -Infinity
         this.outputLayer.forEach(function (i) {
             maxim = Math.max(maxim,i.output)
         })
@@ -138,6 +203,11 @@ class NeuronFullNet{
         })
     }
 
+    /**
+     * Функция кросс етропии
+     * @param answer правильный ответ
+     * @returns {number} значение кросс ентропии
+     */
     crossEntropyForTen(answer){
         let p = [0,0,0,0,0,0,0,0,0,0]
         let q = [0,0,0,0,0,0,0,0,0,0]
@@ -153,6 +223,11 @@ class NeuronFullNet{
         return error
     }
 
+    /**
+     * Вычисление ошибки выходного слоя
+     * @param answer правильный ответ
+     * @returns {number[]} массив значений ошибок
+     */
     countDError(answer){
         let p = [0,0,0,0,0,0,0,0,0,0]
         let q = [0,0,0,0,0,0,0,0,0,0]
@@ -166,12 +241,20 @@ class NeuronFullNet{
         return q;
     }
 
+    /**
+     * Тестовая функция вычисления ошибки. Более не используется.
+     * @param answer
+     * @param output
+     * @returns {number}
+     */
     doubleError(answer, output){
         return (answer - output);
     }
 
-
-
+    /**
+     * Функция выдающая итоговый ответ нейросети
+     * @returns {number} - ответ
+     */
     out(){
         let answer = 0;
         let answerIni = 0;
@@ -184,22 +267,42 @@ class NeuronFullNet{
         return answer;
     }
 
+    /**
+     * Функция обнуляющая ошибку у нейронов
+     */
     setZeroErrors(){
         for(let i = 0; i < this.outputLayerSize; i++){
             this.outputLayer[i].error = 0;
         }
     }
 
+    /**
+     * Функция вычисляющая t1 нейрона
+     * @param n нейрон
+     * @param l номер нейрона предыдущего слоя с которым сохраняется связь
+     * @returns {number} Значение t1
+     */
     t1(n, l){
         return n.error * derivLRU(n.total);
     }
 
+    /**
+     * Функция вычисляющая новый вес нейрона
+     * @param n нейрон
+     * @param l номер нейрона предыдущего слоя с которым сохраняется связь
+     * @returns {number} значение нового веса нейрона
+     */
     newWeight(n, l){
         let t1 = n.error * derivLRU(n.total);
         let temp = n.weights[l] - t1 * this.learningRate * n.input[l];
         return temp;
     }
 
+    /**
+     * Функция обучение нейросети
+     * @param answer Верный ответ
+     * @returns {number} Ентропия(loss)
+     */
     teach(answer){
         this.setZeroErrors()
         this.softMax()
@@ -210,8 +313,6 @@ class NeuronFullNet{
         for(let i = 0; i < 10; i++){
             this.outputLayer[i].error = dOutput[i];
         }
-
-
 
         for(let i = 0; i < 10; i++){
             for(let j = 0; j < 2500; j++){
@@ -228,6 +329,11 @@ class NeuronFullNet{
 let inputLayersSize = 2500
 let outputLayerSize = 10
 
+/**
+ * Преобразование двумерной матрицы в одномерную
+ * @param matrix двумерная матрица
+ * @returns {*[]} одномерная матрица
+ */
 function matrixToLineMatrix(matrix){
     let lineMatrix = []
     for(let i = 0; i < matrix.length; i++){
@@ -238,6 +344,12 @@ function matrixToLineMatrix(matrix){
     return lineMatrix;
 }
 
+/**
+ * Преобразование одномерной матрицы в двумерную.
+ * @param lineMatrix одномерная матрица
+ * @param n размер двумерной матрицы
+ * @returns {*[]} двумерная матрица
+ */
 function lineMatrixToMatrix(lineMatrix, n){
     let matrix = new Array(n).fill(new Array(n).fill(0));
     matrix = JSON.parse(JSON.stringify(matrix));
@@ -266,8 +378,6 @@ neuroNet.genNeurons()
 // neuroNet.genRandParam()
 
 neuroNet.fromSaveObj(JSON.parse(oldKF))
-
-
 
 const iter = document.getElementById('iter');
 const clearButton = document.getElementById('clear');
@@ -330,15 +440,6 @@ let heightCount = 50
 
 let inputNoLine =  new Array(heightCount).fill(0).map( () => new Array(weightCount).fill(0))
 
-function drawLine(x1, y1, x2, y2){
-    context.strokeStyle = 'white'
-    context.beginPath();
-    context.moveTo(x1, y1);
-    context.lineTo(x2, y2);
-    context.stroke();
-    context.closePath();
-}
-
 class Test{
     input
     answer = 0
@@ -346,6 +447,12 @@ class Test{
 
 let tests = []
 
+/**
+ * Функция отрисовки связей для наглядности работы.
+ * @param neuron нейрон
+ * @param context контент для рисования
+ * @param n размер двумерной матрицы связей
+ */
 function drawNeuron(neuron, context, n){
     context.clearRect(0, 0, n, n)
     let input = lineMatrixToMatrix(neuron.weights, n)
@@ -485,12 +592,10 @@ run.addEventListener('click', function() {
         let i = Math.floor(Math.random() * tests.length);
         neuroNet.setInput(matrixToLineMatrix(tests[i].input))
         neuroNet.genOutput()
-        //neuroNet.printOutput()
         let a = "";
         a += i;
         a += " ";
         a += neuroNet.out();
-        //console.log(a)
         if(tests[i].answer === neuroNet.out()){
             good ++;
         }
