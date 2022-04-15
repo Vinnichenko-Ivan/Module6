@@ -3,7 +3,7 @@ import {AlgorithmHolder} from "./algoritm/algorithm";
 import {Cell, CellMark, Field} from "./field";
 import {Position} from "./utils";
 import {PrimeAlgorithm} from "./algoritm/prime";
-import {initializeAudio} from "../../audio";
+import {initializeAudio} from "../decision-tree/audio";
 
 const field: Field = new Field(document.getElementById("field"));
 const algorithmHolder: AlgorithmHolder = new AlgorithmHolder();

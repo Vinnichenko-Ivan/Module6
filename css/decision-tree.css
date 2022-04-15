@@ -8,6 +8,14 @@ th, td {
     padding: 0 15px;
 }
 
+/* Анимация */
+
+.animation {
+    --time: 0s;
+    --function: ease;
+    transition: all var(--time) var(--function);
+}
+
 /* Стиль верхней менюшки */
 .top {
     display: flex;

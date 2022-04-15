@@ -3,7 +3,7 @@ let audio;
 function playAudio(element) {
     let audioId = element.getAttribute('target');
     audio = document.getElementById(audioId);
-    audio.volume = 0.1;
+    audio.volume = 1;
     audio.play();
 }
 

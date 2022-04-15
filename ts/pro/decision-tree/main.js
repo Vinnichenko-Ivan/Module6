@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "./csv/csv-loader", "./algorithm/algorithm", "./algorithm/build-tree-id3", "./algorithm/classification", "./move", "../../audio"], function (require, exports, csv_loader_1, algorithm_1, build_tree_id3_1, classification_1, move_1, audio_1) {
+define(["require", "exports", "./csv/csv-loader", "./algorithm/algorithm", "./algorithm/build-tree-id3", "./algorithm/classification", "./move", "./audio"], function (require, exports, csv_loader_1, algorithm_1, build_tree_id3_1, classification_1, move_1, audio_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     move_1.initializeMove();

@@ -17,17 +17,17 @@
     <link href="../css/decision-tree.css" rel="stylesheet">
 
     <!-- Подключаем библиотеку jquery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="../js/jquery.js"></script>
 
     <!-- Подключаем библиотеку requirejs, где входная точка - наш скрипт -->
     <script data-main="../ts/pro/decision-tree/main" src="https://requirejs.org/docs/release/2.3.6/comments/require.js"></script>
 </head>
 
 <!-- Добавить интриги -->
-<audio id="a-star-audio" src="../assets/audio/decision-tree.mp3"></audio>
+<audio id="audio" src="../assets/audio/crabrave.mp3"></audio>
 
 <!-- Тело -->
-<body>
+<body class="animation">
     <div id="modal-window-blur" class="close-modal-window"></div>
     <div id="modal-window">
         <div class="modal-window-header">
@@ -138,56 +138,56 @@
     </div>
 
     <header>
-        <div class="element">
+        <div class="element animation disco">
             <img src="../assets/img/favicon/main.png" alt="">
         </div>
-        <div class="element">
+        <div class="element animation disco">
             <h2>Decision Tree</h2>
         </div>
         <nav class="end">
-            <a class="element" href="https://vk.com/hits_tsu">
+            <a class="element animation disco" href="https://vk.com/hits_tsu">
                 <img src="../assets/img/favicon/vk.png" alt="">
             </a>
-            <a class="element" href="https://github.com/Vinnichenko-Ivan/Module6">
+            <a class="element animation disco" href="https://github.com/Vinnichenko-Ivan/Module6">
                 <img src="../assets/img/favicon/github/GitHub-Mark-Light-120px-plus.png" alt="">
             </a>
         </nav>
     </header>
 
     <div class="top">
-        <div>
+        <div class="animation disco beat">
             <button class="open-modal-window to-step" step="1">Обучение</button>
         </div>
 
         <table class="text-shadow">
             <tr>
-                <th>Классифицировано</th>
-                <th>Успешно</th>
-                <th>Ошибок</th>
-                <th>Процент ошибок</th>
+                <th class="animation slide-left">Классифицировано</th>
+                <th class="animation slide-left">Успешно</th>
+                <th class="animation slide-left">Ошибок</th>
+                <th class="animation slide-left">Процент ошибок</th>
             </tr>
             <tr>
-                <td id="result-classified">0</td>
-                <td id="result-successful">0</td>
-                <td id="result-errors">0</td>
-                <td id="result-error-percent">0%</td>
+                <td id="result-classified" class="animation slide-right">0</td>
+                <td id="result-successful" class="animation slide-right">0</td>
+                <td id="result-errors" class="animation slide-right">0</td>
+                <td id="result-error-percent" class="animation slide-right">0%</td>
             </tr>
         </table>
 
-        <div>
+        <div class="animation disco beat">
             <button id="load-tests">Классификация</button>
         </div>
     </div>
 
     <div class="content">
-        <div class="window">
-            <div class="area"></div>
+        <div class="window animation">
+            <div class="area animation"></div>
             <ul id="decision-tree" class="tree movable"></ul>
         </div>
     </div>
 
-    <div class="range iteration-delay">
-        <div>
+    <div class="range iteration-delay animation disco">
+        <div class="animation disco">
             <span class="text-shadow">Задержка между итерациями:</span>
             <span class="text-shadow display" target="iteration-delay">250</span>
         </div>
@@ -197,12 +197,12 @@
     </div>
 
     <footer>
-        <div>
+        <div class="animation jump">
             <span>Автор: </span>
             <a href="https://vk.com/greenpix_dev">Аникушин Роман</a>
         </div>
-        <a class="audio" target="a-star-audio">Тудум тудум</a>
-        <a href="../index.html">На главную страницу</a>
+        <a class="audio animation jump" target="audio">RTX ON</a>
+        <a class="animation jump" href="../index.html">На главную страницу</a>
     </footer>
 </body>
 </html>

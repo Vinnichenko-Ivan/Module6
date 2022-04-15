@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "./algoritm/a-star", "./algoritm/algorithm", "./field", "./utils", "./algoritm/prime", "../../audio"], function (require, exports, a_star_1, algorithm_1, field_1, utils_1, prime_1, audio_1) {
+define(["require", "exports", "./algoritm/a-star", "./algoritm/algorithm", "./field", "./utils", "./algoritm/prime", "../decision-tree/audio"], function (require, exports, a_star_1, algorithm_1, field_1, utils_1, prime_1, audio_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const field = new field_1.Field(document.getElementById("field"));
