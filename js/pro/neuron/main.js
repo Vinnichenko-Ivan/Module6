@@ -329,12 +329,7 @@ function loop() {
     context.clearRect(0, 0, canvas.width, canvas.height)
     let dx = weightCanvas / weightCount;
     let dy = heightCanvas / heightCount;
-    for(let i = 0; i < weightCount; i++){
-        drawLine(dx * i, 0, dx * i, heightCanvas);
-    }
-    for(let j = 0; j < heightCount; j++){
-        drawLine(0, j * dy, weightCanvas, j * dy);
-    }
+
     for(let i = 0; i < weightCount; i++){
         for(let j = 0; j < heightCount; j++){
             let temp = inputNoLine[i][j] * 255;
