@@ -385,6 +385,7 @@ button:hover {
     transform: scale(1.05);
 }
 
+select,
 input[type='file'] {
     font-family: 'Inter', serif;
     font-size: 16px;
@@ -398,6 +399,7 @@ input[type='file'] {
     text-shadow: 0 0 3px black;
 
     padding: 5px 10px;
+    width: 200px;
 
     transition:
             filter .1s linear,
@@ -406,13 +408,22 @@ input[type='file'] {
     cursor: pointer;
 }
 
+select:hover,
 input[type='file']:hover {
     filter: brightness(125%);
     transform: scale(1.05);
 }
 
 input[type='file']::-webkit-file-upload-button {
-    visibility: hidden;
+    display: none;
+}
+
+select:focus {
+    outline: 0;
+}
+
+option {
+    background: #363434;
 }
 
 input[type='checkbox'], input[type='radio'] {
