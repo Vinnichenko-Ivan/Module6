@@ -1,4 +1,8 @@
 //https://proglib.io/p/pishem-neyroset-na-python-s-nulya-2020-10-07
+//https://programforyou.ru/poleznoe/pishem-neuroset-pryamogo-rasprostraneniya
+//https://habr.com/ru/post/556076/
+//https://www.susu.ru/sites/default/files/laboratornaya_rabota.pdf
+
 /**
  * Лру функция
  * @param x - входное значение
