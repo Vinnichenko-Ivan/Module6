@@ -7,7 +7,6 @@
 </head>
 <body>
 
-
 <header>
     <div id="headerButtonsContainer">
 
@@ -27,7 +26,6 @@
     <button id="mainButton">Начать</button>
 </div>
 
-
 <div id="outputDiv">
     <span id="vertexNumberId">Вершины</span>
     <span id="bestPathId">Длина</span>
@@ -35,9 +33,7 @@
 </div>
 
 
-
 <canvas width="800px" height="600px" id="myCanvas">Update your browser!</canvas>
-
 
 
 <div id="shadowSettings" class="shadow">
@@ -49,7 +45,8 @@
 
         <div class="divForModalWindows">
             <label for="maxCitiesNumberInputId">Максимальное кол-во городов</label>
-            <input id="maxCitiesNumberInputId" type="range" min="10" max="100" value="50" oninput="maxCitiesNumberOutputId.value = maxCitiesNumberInputId.value"/>
+            <input id="maxCitiesNumberInputId" type="range" min="10" max="100" value="50"
+                   oninput="maxCitiesNumberOutputId.value = maxCitiesNumberInputId.value"/>
             <output id="maxCitiesNumberOutputId">50</output>
         </div>
 
@@ -89,7 +86,8 @@
 
         <div class="divForModalWindows">
             <label for="otherEdgesOpacityInputId">Прозрачность ребер</label>
-            <input id="otherEdgesOpacityInputId" type="range" min="0" max="1" value="0.15" step="0.05" oninput="otherEdgesOpacityOutputId.value = otherEdgesOpacityInputId.value"/>
+            <input id="otherEdgesOpacityInputId" type="range" min="0" max="1" value="0.15" step="0.05"
+                   oninput="otherEdgesOpacityOutputId.value = otherEdgesOpacityInputId.value"/>
             <output id="otherEdgesOpacityOutputId">0.15</output>
         </div>
 
@@ -127,7 +125,8 @@
         </div>
 
         <div id="divForSubscribeButton">
-            <button id="subscribeButtonId" onclick="window.location.href = './genetic-algorithm-pro.html'">Оформить</button>
+            <button id="subscribeButtonId" onclick="window.location.href = './genetic-algorithm-pro.html'">Оформить
+            </button>
         </div>
 
     </div>
