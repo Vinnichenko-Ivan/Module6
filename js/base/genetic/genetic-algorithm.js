@@ -166,7 +166,7 @@ window.addEventListener("load", function onWindowLoad() {
                 findPathLength(chromosome, mat);
 
                 let population = [{
-                    arr: chromosome.arr.slice(0, chromosome.arr.length),
+                    arr: chromosome.arr.slice(),
                     pathLength: chromosome.pathLength
                 }];
 
@@ -179,7 +179,7 @@ window.addEventListener("load", function onWindowLoad() {
                     chromosome.pathLength = 0;
                     findPathLength(chromosome, mat);
                     population.push({
-                        arr: chromosome.arr.slice(0, chromosome.arr.length),
+                        arr: chromosome.arr.slice(),
                         pathLength: chromosome.pathLength
                     });
                 }
@@ -206,8 +206,8 @@ window.addEventListener("load", function onWindowLoad() {
                         //отрисовка
                         redrawing(population, resultEdgesWidth, resultEdgesOpacity, resultEdgesColor, otherEdgesWidth, otherEdgesOpacity, otherEdgesColor);
 
-                        List.x.splice(0, List.x.length);
-                        List.y.splice(0, List.y.length);
+                        List.x.splice(0);
+                        List.y.splice(0);
                         clearInterval(id);
                     } else {
                         //создаем потомков в количестве NumberOfDescendants
@@ -215,12 +215,12 @@ window.addEventListener("load", function onWindowLoad() {
                             //Берем 2 случайных хромосомы(a, b) из популяции и скрещиваем их, получая потомков(descendant1,2)
                             let v = getRandomInt(0, population.length);
                             let a = {
-                                arr: population[v].arr.slice(0, population[v].arr.length),
+                                arr: population[v].arr.slice(),
                                 pathLength: population[v].pathLength
                             }
                             v = getRandomInt(0, population.length);
                             let b = {
-                                arr: population[v].arr.slice(0, population[v].arr.length),
+                                arr: population[v].arr.slice(),
                                 pathLength: population[v].pathLength
                             }
 
@@ -281,11 +281,11 @@ window.addEventListener("load", function onWindowLoad() {
                             findPathLength(descendant2, mat);
 
                             population.push({
-                                arr: descendant1.arr.slice(0, descendant1.arr.length),
+                                arr: descendant1.arr.slice(),
                                 pathLength: descendant1.pathLength
                             });
                             population.push({
-                                arr: descendant2.arr.slice(0, descendant1.arr.length),
+                                arr: descendant2.arr.slice(),
                                 pathLength: descendant2.pathLength
                             });
 
