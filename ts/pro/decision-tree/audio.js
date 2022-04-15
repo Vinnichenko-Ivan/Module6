@@ -11,23 +11,28 @@ define(["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.initializeAudio = void 0;
+    const displayOn = 'RTX ON';
+    const displayOff = 'RTX OFF';
     const volume = 0.05;
     const bpm = 125.66;
     const beatDelay = 60000 / bpm / 4;
     let audio;
     let timestamp;
     let beat = 0;
-    function playAudio(element) {
+    function playAudio(button) {
         if (audio != undefined && !audio.paused) {
+            audio.pause();
+            audio.currentTime = 0;
             return;
         }
-        let audioId = element.getAttribute('target');
+        let audioId = button.getAttribute('target');
         audio = $(`audio#${audioId}`)[0];
         audio.volume = volume;
         audio.play();
-        runTask();
+        runTask(button);
+        button.textContent = displayOff;
     }
-    function runTask() {
+    function runTask(button) {
         return __awaiter(this, void 0, void 0, function* () {
             timestamp = Date.now();
             while (!audio.paused) {
@@ -66,7 +71,7 @@ define(["require", "exports"], function (require, exports) {
                         '--time': '.2s'
                     });
                 }
-                if (((beat >= 256 && beat <= 642) || (beat >= 770 && beat <= 1156)) && beat % 4 === 0) {
+                if (((beat >= 256 && beat <= 642) || (beat >= 770 && beat <= 1157)) && beat % 4 === 0) {
                     $('.animation.area')
                         .css({
                         '--time': '0',
@@ -78,7 +83,7 @@ define(["require", "exports"], function (require, exports) {
                         '--time': '.1s'
                     });
                 }
-                if (((beat >= 256 && beat <= 642) || (beat >= 770 && beat <= 1156)) && beat % 4 === 1) {
+                if (((beat >= 256 && beat <= 642) || (beat >= 770 && beat <= 1157)) && beat % 4 === 1) {
                     $('.animation.area')
                         .css({
                         '--time': '.1s',
@@ -104,14 +109,14 @@ define(["require", "exports"], function (require, exports) {
                         transform: `scale(1)`,
                     });
                 }
-                if (((beat >= 352 && beat <= 368) || (beat >= 870 && beat <= 884)) && beat % 2 === 0) {
+                if (((beat >= 352 && beat <= 368) || (beat >= 870 && beat <= 885)) && beat % 2 === 0) {
                     $('.animation.beat')
                         .css({
                         '--time': '0',
                         transform: `scale(1.2)`,
                     });
                 }
-                if (((beat >= 352 && beat <= 368) || (beat >= 870 && beat <= 884)) && beat % 2 === 1) {
+                if (((beat >= 352 && beat <= 368) || (beat >= 870 && beat <= 885)) && beat % 2 === 1) {
                     $('.animation.beat')
                         .css({
                         '--time': '.05s',
@@ -165,7 +170,7 @@ define(["require", "exports"], function (require, exports) {
                         'background-position-y': beat % 16 === 0 ? '0' : 'center'
                     });
                 }
-                if (beat >= 914 && beat <= 1156 && (beat + 4) % 8 === 0) {
+                if (beat >= 914 && beat <= 1144 && (beat + 4) % 8 === 0) {
                     $('body')
                         .css({
                         '--time': '1s',
@@ -173,6 +178,7 @@ define(["require", "exports"], function (require, exports) {
                     });
                 }
             }
+            button.textContent = displayOn;
         });
     }
     function initializeAudio() {

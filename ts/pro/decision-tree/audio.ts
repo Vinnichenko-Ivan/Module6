@@ -1,3 +1,7 @@
+// Название кнопок для различных состояний
+const displayOn = 'RTX ON';
+const displayOff = 'RTX OFF';
+
 // Громкость музыки
 const volume = 0.05;
 
@@ -16,20 +20,24 @@ let timestamp: number;
 // Текущий бит
 let beat = 0;
 
-function playAudio(element: HTMLElement) {
+function playAudio(button: HTMLElement) {
     if (audio != undefined && !audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
         return;
     }
 
-    let audioId = element.getAttribute('target');
+    let audioId = button.getAttribute('target');
     audio = <HTMLAudioElement> $(`audio#${audioId}`)[0];
     audio.volume = volume;
 
     audio.play();
-    runTask();
+    runTask(button);
+
+    button.textContent = displayOff;
 }
 
-async function runTask() {
+async function runTask(button: HTMLElement) {
     timestamp = Date.now();
 
     while (!audio.paused) {
@@ -77,7 +85,7 @@ async function runTask() {
         }
 
         // Мерцание окошка
-        if (((beat >= 256 && beat <= 642) || (beat >= 770 && beat <= 1156)) && beat % 4 === 0) {
+        if (((beat >= 256 && beat <= 642) || (beat >= 770 && beat <= 1157)) && beat % 4 === 0) {
             $('.animation.area')
                 .css({
                     '--time': '0',
@@ -89,7 +97,7 @@ async function runTask() {
                     '--time': '.1s'
                 });
         }
-        if (((beat >= 256 && beat <= 642) || (beat >= 770 && beat <= 1156)) && beat % 4 === 1) {
+        if (((beat >= 256 && beat <= 642) || (beat >= 770 && beat <= 1157)) && beat % 4 === 1) {
             $('.animation.area')
                 .css({
                     '--time': '.1s',
@@ -119,14 +127,14 @@ async function runTask() {
         }
 
         // Кнопки набирали макс. темп
-        if (((beat >= 352 && beat <= 368) || (beat >= 870 && beat <= 884)) && beat % 2 === 0) {
+        if (((beat >= 352 && beat <= 368) || (beat >= 870 && beat <= 885)) && beat % 2 === 0) {
             $('.animation.beat')
                 .css({
                     '--time': '0',
                     transform: `scale(1.2)`,
                 })
         }
-        if (((beat >= 352 && beat <= 368) || (beat >= 870 && beat <= 884)) && beat % 2 === 1) {
+        if (((beat >= 352 && beat <= 368) || (beat >= 870 && beat <= 885)) && beat % 2 === 1) {
             $('.animation.beat')
                 .css({
                     '--time': '.05s',
@@ -184,7 +192,7 @@ async function runTask() {
                     'background-position-y': beat % 16 === 0 ? '0' : 'center'
                 })
         }
-        if (beat >= 914 && beat <= 1156 && (beat + 4) % 8 === 0) {
+        if (beat >= 914 && beat <= 1144 && (beat + 4) % 8 === 0) {
             $('body')
                 .css({
                     '--time': '1s',
@@ -192,6 +200,7 @@ async function runTask() {
                 })
         }
     }
+    button.textContent = displayOn;
 }
 
 export function initializeAudio() {

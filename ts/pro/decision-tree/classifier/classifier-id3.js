@@ -56,16 +56,16 @@ define(["require", "exports", "../utils/id3"], function (require, exports, id3_1
             let sortedTemplates = [...this.dataset.templates].sort((e1, e2) => {
                 return e1.value(this.attribute) - e2.value(this.attribute);
             });
-            let thresholds = [];
+            let thresholds = new Set();
             for (let i = 1; i < sortedTemplates.length; i++) {
                 let lastValue = sortedTemplates[i - 1].value(this.attribute);
                 let currentValue = sortedTemplates[i].value(this.attribute);
                 let lastClass = sortedTemplates[i - 1].value(this.dataset.class);
                 let currentClass = sortedTemplates[i].value(this.dataset.class);
-                if (lastValue == currentValue || lastClass == currentClass) {
+                if (lastClass == currentClass) {
                     continue;
                 }
-                thresholds.push((lastValue + currentValue) / 2);
+                thresholds.add((lastValue + currentValue) / 2);
             }
             for (const threshold of thresholds) {
                 let bags = new id3_1.Distribution(2, this.dataset.class.valueCount);

@@ -89,8 +89,7 @@ function checkStep(): boolean {
                     displayError('Вы не загрузили файл с тестами!');
                     return false;
                 }
-                loadTestDataset();
-                testDataset.shuffle();
+                loadTestDataset(() => testDataset.shuffle());
             }
             else if ((<HTMLInputElement> $('#radio-test-dataset-ratio')[0]).checked) {
                 learnDataset.shuffle();
@@ -133,12 +132,13 @@ function loadLearnDataset() {
     reader.readAsText(files[0], "UTF-8");
 }
 
-function loadTestDataset() {
+function loadTestDataset(callback: () => void) {
     let files = (<HTMLInputElement>document.getElementById('file-tests')).files;
     let named = (<HTMLInputElement>document.getElementById('named-dataset')).value == 'on';
     let reader = new FileReader();
     reader.onload = e => {
         testDataset = loadDatasetFromString(<string>e.target.result, undefined, named);
+        callback();
     }
     reader.readAsText(files[0], "UTF-8");
 }
