@@ -26,46 +26,7 @@ function derivLRU(x){
     return b;
 }
 
-/**
- * класс нейрона
- */
-class Neuron{
-    output = 0;
-    error = 0;
-    weights = [];
-    weightsCount = 0;
-    input = [];
-    total = 0
 
-    /**
-     * функция задающяя веса нейронам
-     * @param weightsCount - количество весов
-     * @param weights - сами веса
-     * @param b - bias(более не используется)
-     */
-    setWeights(weightsCount, weights, b){
-        this.weightsCount = weightsCount;
-        for(let i = 0; i < weightsCount; i++){
-            this.weights.push(weights[i]);
-            this.input.push(0);
-        }
-    }
-
-    /**
-     * функция высчитывующая выходное значение нейрона
-     * @param input - слой нейронов чьим потомком является наш нейрон
-     */
-    result(input){
-        let total = 0;
-        for(let i = 0; i < this.weightsCount; i++)
-        {
-            this.input[i] = input[i].output;
-            total += this.weights[i] * input[i].output;
-        }
-        this.total = total
-        this.output = LRU(total)
-    }
-}
 
 
 class NeuronFullNet{
