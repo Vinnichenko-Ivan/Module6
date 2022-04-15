@@ -30,6 +30,10 @@ define(["require", "exports"], function (require, exports) {
                 });
             }
         })
+            .on('mouseup', () => {
+            lastX = null;
+            lastY = null;
+        })
             .on('mousewheel', event => {
             elementWheel -= event.originalEvent.deltaY / 1000;
             elementWheel = Math.max(-1, Math.min(1, elementWheel));
@@ -45,10 +49,6 @@ define(["require", "exports"], function (require, exports) {
                 lastX = null;
                 lastY = null;
             }
-        })
-            .on('mouseup', () => {
-            lastX = null;
-            lastY = null;
         });
     }
     exports.initializeMove = initializeMove;

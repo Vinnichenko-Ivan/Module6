@@ -1,3 +1,7 @@
+/*
+ * Модуль с пасхалкой
+ */
+
 // Название кнопок для различных состояний
 const displayOn = 'RTX ON';
 const displayOff = 'RTX OFF';
