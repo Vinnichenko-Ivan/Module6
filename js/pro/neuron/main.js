@@ -1,30 +1,18 @@
 //https://proglib.io/p/pishem-neyroset-na-python-s-nulya-2020-10-07
 let a = 1.6733
 let b = 1.0507
-function sigmoid(x){
-    //return 1 / (1 + Math.exp(-x));
+function LRU(x){
     if(x > 0){
         return b * x;
     }
     return a*b*(Math.exp(x) - 1);
-
-    return Math.max(0, x);
 }
 
-
-function derivSigmoid(x){
+function derivLRU(x){
     if(x < 0){
         return a * b * Math.exp(x);
     }
     return b;
-
-
-    if(x < 0){
-        return 0;
-    }
-    return 1;
-    // let fx = sigmoid(x);
-    // return fx * (1 - fx);
 }
 
 function randParam(){
@@ -40,40 +28,31 @@ function randParams(size){
 }
 
 class Neuron{
-    t1 = 0
     output = 0;
     error = 0;
     weights = [];
     weightsCount = 0;
     input = [];
-
-    b = 0;
-
     total = 0
+
     setWeights(weightsCount, weights, b){
         this.weightsCount = weightsCount;
         for(let i = 0; i < weightsCount; i++){
             this.weights.push(weights[i]);
             this.input.push(0);
         }
-
-        //this.b = b;
     }
 
     result(input){
-        //this.input = input;
         let total = 0;
         for(let i = 0; i < this.weightsCount; i++)
         {
             this.input[i] = input[i].output;
             total += this.weights[i] * input[i].output;
         }
-        //total += this.b;
         this.total = total
-        this.output = sigmoid(total)
-        //return sigmoid(total);
+        this.output = LRU(total)
     }
-
 }
 
 class SaveOBJ{
@@ -212,11 +191,11 @@ class NeuronFullNet{
     }
 
     t1(n, l){
-        return n.error * derivSigmoid(n.total);
+        return n.error * derivLRU(n.total);
     }
 
     newWeight(n, l){
-        let t1 = n.error * derivSigmoid(n.total);
+        let t1 = n.error * derivLRU(n.total);
         let temp = n.weights[l] - t1 * this.learningRate * n.input[l];
         return temp;
     }
@@ -537,7 +516,6 @@ form.addEventListener("change", handleFiles, false);
 function handleFiles() {
     const fileList = this.files;
     let reader = new FileReader();
-    // reader.readAsDataURL(file);
     reader.onload = function(e) {
         console.log( e.target.result) ;
         tests = JSON.parse(e.target.result);
