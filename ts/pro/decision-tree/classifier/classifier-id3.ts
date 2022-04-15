@@ -96,8 +96,8 @@ export class NumberSplit implements Split {
             return e1.value(this.attribute) - e2.value(this.attribute);
         });
 
-        // Поиск всех возможных порогов
-        let thresholds = []
+        // Поиск всех порогов, где класс меняется
+        let thresholds = new Set<number>()
         for (let i = 1; i < sortedTemplates.length; i++) {
             let lastValue = sortedTemplates[i - 1].value(this.attribute);
             let currentValue = sortedTemplates[i].value(this.attribute);
@@ -105,11 +105,13 @@ export class NumberSplit implements Split {
             let lastClass = sortedTemplates[i - 1].value(this.dataset.class);
             let currentClass = sortedTemplates[i].value(this.dataset.class);
 
-            if (lastValue == currentValue || lastClass == currentClass) {
+            // ЭВРИСТИКА ДЛЯ ОПТИМИЗАЦИИ
+            // https://habr.com/ru/company/ods/blog/322534/
+            if (lastClass == currentClass) {
                 continue;
             }
 
-            thresholds.push((lastValue + currentValue) / 2);
+            thresholds.add((lastValue + currentValue) / 2);
         }
 
         // Поиск наилучшего разделения

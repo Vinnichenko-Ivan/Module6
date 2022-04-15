@@ -79,8 +79,7 @@ define(["require", "exports", "./csv/csv-loader", "./algorithm/algorithm", "./al
                         displayError('Вы не загрузили файл с тестами!');
                         return false;
                     }
-                    loadTestDataset();
-                    testDataset.shuffle();
+                    loadTestDataset(() => testDataset.shuffle());
                 }
                 else if ($('#radio-test-dataset-ratio')[0].checked) {
                     learnDataset.shuffle();
@@ -118,12 +117,13 @@ define(["require", "exports", "./csv/csv-loader", "./algorithm/algorithm", "./al
         };
         reader.readAsText(files[0], "UTF-8");
     }
-    function loadTestDataset() {
+    function loadTestDataset(callback) {
         let files = document.getElementById('file-tests').files;
         let named = document.getElementById('named-dataset').value == 'on';
         let reader = new FileReader();
         reader.onload = e => {
             testDataset = csv_loader_1.loadDatasetFromString(e.target.result, undefined, named);
+            callback();
         };
         reader.readAsText(files[0], "UTF-8");
     }
