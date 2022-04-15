@@ -13,7 +13,7 @@ define(["require", "exports"], function (require, exports) {
     exports.initializeAudio = void 0;
     const displayOn = 'RTX ON';
     const displayOff = 'RTX OFF';
-    const volume = 0.05;
+    const volume = 0.5;
     const bpm = 125.66;
     const beatDelay = 60000 / bpm / 4;
     let audio;

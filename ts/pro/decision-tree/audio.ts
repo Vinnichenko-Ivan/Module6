@@ -7,7 +7,7 @@ const displayOn = 'RTX ON';
 const displayOff = 'RTX OFF';
 
 // Громкость музыки
-const volume = 0.05;
+const volume = 0.5;
 
 // Количество битов в минуту
 const bpm = 125.66;
