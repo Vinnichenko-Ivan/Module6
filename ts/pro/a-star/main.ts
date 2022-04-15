@@ -1,9 +1,9 @@
-import {AStarAlgorithm} from "./algoritm/a-star";
-import {AlgorithmHolder} from "./algoritm/algorithm";
+import {AStarAlgorithm} from "./algorithm/a-star";
+import {AlgorithmHolder} from "./algorithm/algorithm";
 import {Cell, CellMark, Field} from "./field";
 import {Position} from "./utils";
-import {PrimeAlgorithm} from "./algoritm/prime";
-import {initializeAudio} from "../decision-tree/audio";
+import {PrimeAlgorithm} from "./algorithm/prime";
+import {initializeAudio} from "./audio";
 
 const field: Field = new Field(document.getElementById("field"));
 const algorithmHolder: AlgorithmHolder = new AlgorithmHolder();
