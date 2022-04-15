@@ -149,6 +149,8 @@ input:hover{opacity: 1;}
 */
 
 .modalWindow {
+    display: flex;
+    flex-direction: column;
     width: 60%;
     height: 400px;
     padding: 15px;
@@ -174,14 +176,11 @@ input:hover{opacity: 1;}
 }
 .modalWindow:target {display: block;}
 .close {
-    width: 10%;
-    height: 10%;
+    width: 100px;
+    height: 40px;
     border-radius: 8px;
     border: 1px solid rgb(150, 162, 148);
     color: #333;
-    position: absolute;
-    left: 88%;
-    bottom: 85%;
     background: rgb(202, 212, 202);
     box-shadow: inset -1px 1px 5px rgb(168, 182, 166), inset 1px -1px 5px rgb(168, 182, 166), -1px 1px 5px rgb(168, 182, 166), 1px -1px 5px rgb(168, 182, 166);
 }
@@ -189,13 +188,8 @@ input:hover{opacity: 1;}
 .close:hover, .save:hover{background: rgb(191, 203, 191)
 }
 .save{
-    width: 10%;
+    width: 120px;
     height: 50px;
-    text-align: center;
-    align-items: center;
-    position: absolute;
-    bottom: 5%;
-    left: 45%;
     border-radius: 8px;
     border: 1px solid rgb(150, 162, 148);
     background: rgb(202, 212, 202);
@@ -212,6 +206,87 @@ input:hover{opacity: 1;}
     position: absolute;
     right: 30%;
 }
-.modalWindow form{
-    margin: 20px;
+.divForModalWindows{
+    margin: 15px;
 }
+
+.divForSaveButton{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+.divForCloseButton{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+/*
+Подписка
+*/
+#subscribeModalWindow{
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    height: 600px;
+    padding: 15px;
+    border: 3px solid rgb(183, 209, 218);
+    border-radius: 50px;
+    color: #777;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    background: white;
+}
+#subscribeModalWindow:target {display: block;}
+#subscribeButtonId{
+    width: 120px;
+    height: 50px;
+    text-align: center;
+    align-items: center;
+    border-radius: 15px;
+    border: 1px solid lightskyblue;
+    background: whitesmoke;
+    box-shadow: -1px 1px 5px rgb(168, 182, 166), 1px -1px 5px rgb(168, 182, 166);
+}
+#closeSubscribeModalWindow{
+    border-radius: 15px;
+    border: 1px solid lightskyblue;
+    color: #333;
+    background: whitesmoke;
+    box-shadow: -1px 1px 5px rgb(168, 182, 166), 1px -1px 5px rgb(168, 182, 166);
+}
+#divContainerForSubscribe{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+.divForSubscribe{
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+}
+#divForSubscribeButton{
+    height: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+#shadowSubscribe input{
+    width: 150px;
+    height: 30px;
+}
+#shadowSubscribe p{
+    font-size: 25px;
+}
+
+
+
