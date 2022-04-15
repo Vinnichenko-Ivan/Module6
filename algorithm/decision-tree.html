@@ -76,7 +76,41 @@
             </div>
             <div class="step" step="1">
                 <table>
-                    <input id="file-dataset" type="file">
+                    <tr class="range">
+                        <td>
+                            <label>
+                                <input type="radio" name="learn-dataset" id="radio-learn-dataset-list" checked="checked">
+                            </label>
+                            <span>Предлагаемые выборки</span>
+                        </td>
+                        <td>
+                            <select id="learn-dataset-type">
+                                <option value="monks1">monks</option>
+                                <option value="kr-vs-kp">kr-vs-kp</option>
+                                <option value="iris">iris</option>
+                                <option value="ionosphere">ionosphere</option>
+                                <option value="glass">glass</option>
+                                <option value="dogs">dogs</option>
+                                <option value="diabetes">diabetes</option>
+                                <option value="car">car</option>
+                                <option value="banknote">banknote</option>
+                                <option value="bank-full">bank-full</option>
+                                <option value="bank">bank</option>
+                                <option value="abalone">abalone</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>
+                                <input type="radio" name="learn-dataset" id="radio-learn-dataset-file">
+                            </label>
+                            <span>Своя выборка из CSV файла</span>
+                        </td>
+                        <td>
+                            <input id="file-dataset" type="file">
+                        </td>
+                    </tr>
                 </table>
             </div>
             <div class="step buttons" step="1">
@@ -127,7 +161,6 @@
                         </td>
                     </tr>
                 </table>
-                <br>
             </div>
             <div class="step buttons" step="3">
                 <button class="to-step" step="2">Назад</button>

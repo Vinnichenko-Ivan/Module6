@@ -2,7 +2,7 @@
  * Модуль модальной менюшки
  */
 
-import {dataset, drawTree, loadLearnDataset, loadTestDataset} from "./main";
+import {dataset, drawTree, loadLearnDataset, loadLearnFileDataset, loadTestFileDataset} from "./main";
 
 /*
  * ПЕРЕМЕННЫЕ
@@ -20,14 +20,7 @@ let currentStep: number;
  */
 export function initializeModal() {
     // Обработка события перехода на следующий шаг
-    $('.to-step').on('click', e => {
-        clearError();
-        if (currentStep == undefined || !e.target.hasAttribute('check') || tryNextStep()) {
-            currentStep = +e.target.getAttribute('step');
-            $('.step').css({display: 'none'});
-            $(`.step[step="${currentStep}"]`).css({display: 'flex'});
-        }
-    });
+    $('.to-step').on('click', onClickNextStep);
 
     // Обработка события закрытия модального окна
     $('.close-modal-window').on('click', () => {
@@ -44,7 +37,7 @@ export function initializeModal() {
 
 
     // Обработка события переключения именования атрибутов
-    $('#named-dataset').on('input', () => loadLearnDataset(updateTable));
+    $('#named-dataset').on('input', () => loadLearnFileDataset(updateTable));
 }
 
 /**
@@ -78,36 +71,72 @@ function resetLearnDataset() {
 }
 
 /**
+ * Функция клика перехода на следующий шаг
+ */
+async function onClickNextStep(e: JQuery.ClickEvent) {
+    clearError();
+    if (currentStep == undefined || !e.target.hasAttribute('check') || await tryNextStep()) {
+        currentStep = +e.target.getAttribute('step');
+        $('.step').css({display: 'none'});
+        $(`.step[step="${currentStep}"]`).css({display: 'flex'});
+    }
+}
+
+/**
  * Функция перехода на следующий шага
  * @return true, если можно перейти на следующий шаг
  */
-function tryNextStep(): boolean {
+async function tryNextStep(): Promise<boolean> {
     switch (currentStep) {
+
         // Шаг первый - загрузка обучающей выборки
         case 1: {
-            if ((<HTMLInputElement> document.getElementById('file-dataset')).files.length === 0) {
-                displayError('Вы не загрузили файл с обучающей выборкой!');
-                return false;
-            }
             resetLearnDataset();
-            loadLearnDataset(updateTable);
+
+            // Если выбираем выборку из предлагаемых
+            if ((<HTMLInputElement> $('#radio-learn-dataset-list')[0]).checked) {
+                let datasetName = (<HTMLInputElement> document.getElementById('learn-dataset-type')).value;
+                let result = await fetch('../assets/datasets/' + datasetName + '.csv');
+
+                if (!result.ok) {
+                    displayError('Этого набора нет в стандартных, возможно он был удален =/');
+                    return false;
+                }
+
+                dataset.learnDatasetString = await result.text();
+                loadLearnDataset();
+                updateTable();
+            }
+
+            // Если из файла
+            else if ((<HTMLInputElement> $('#radio-learn-dataset-file')[0]).checked) {
+                if ((<HTMLInputElement> document.getElementById('file-dataset')).files.length === 0) {
+                    displayError('Вы не загрузили файл с обучающей выборкой!');
+                    return false;
+                }
+                loadLearnFileDataset(updateTable);
+            }
             return true;
         }
+
         // Шаг первый - предпросмотр таблицы обучающей выборки
         case 2: {
             return true;
         }
+
         // Шаг первый - загрузка тестов
         case 3: {
-            // Если выбираем тесты из обучающего набора
+
+            // Если выбираем тесты из файла
             if ((<HTMLInputElement> $('#radio-test-dataset-file')[0]).checked) {
                 if ((<HTMLInputElement> document.getElementById('file-tests')).files.length === 0) {
                     displayError('Вы не загрузили файл с тестами!');
                     return false;
                 }
-                loadTestDataset(() => dataset.testDataset.shuffle());
+                loadTestFileDataset(() => dataset.testDataset.shuffle());
             }
-            // Если из файла
+
+            // Если из обучающего набора
             else if ((<HTMLInputElement> $('#radio-test-dataset-ratio')[0]).checked) {
                 dataset.learnDataset.shuffle();
                 dataset.testDataset = dataset.learnDataset.copyMeta();
@@ -118,10 +147,7 @@ function tryNextStep(): boolean {
                     dataset.learnDataset.templates.splice(0, 1);
                 }
             }
-            // Этого не должно произойти
-            else {
-                return;
-            }
+
             // Рисуем дерево
             drawTree().then();
             document.getElementById('modal-window-blur').style.display = 'none';
@@ -172,7 +198,8 @@ function updateTable() {
             for (const element of columnElements) {
                 element.onclick = () => {
                     dataset.classIndex = i;
-                    loadLearnDataset(updateTable);
+                    loadLearnDataset();
+                    updateTable();
                 }
             }
         }

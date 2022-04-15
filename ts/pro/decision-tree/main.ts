@@ -28,6 +28,7 @@ initializeAudio();
  * Класс с переменными для доступа из других модулей
  */
 class DatasetSettings {
+    learnDatasetString: string;
     learnDataset: Dataset;
     testDataset: Dataset;
     classIndex: number;
@@ -75,13 +76,21 @@ $('#run-classification').on('click', runClassification);
 /**
  * Функция загрузки обучающего датасета
  */
-export function loadLearnDataset(callback?: () => void) {
-    let files = (<HTMLInputElement> document.getElementById('file-dataset')).files;
+export function loadLearnDataset() {
     let named = (<HTMLInputElement>document.getElementById('named-dataset')).checked;
+    dataset.learnDataset = loadDatasetFromString(dataset.learnDatasetString, dataset.classIndex, named);
+}
+
+/**
+ * Функция загрузки файла обучающего датасета
+ */
+export function loadLearnFileDataset(callback?: () => void) {
+    let files = (<HTMLInputElement> document.getElementById('file-dataset')).files;
     let reader = new FileReader();
 
     reader.onload = e => {
-        dataset.learnDataset = loadDatasetFromString(<string> e.target.result, dataset.classIndex, named);
+        dataset.learnDatasetString = <string> e.target.result;
+        loadLearnDataset();
         if (callback != undefined) {
             callback();
         }
@@ -90,10 +99,10 @@ export function loadLearnDataset(callback?: () => void) {
 }
 
 /**
- * Функция загрузки датасета с тестами
+ * Функция загрузки файла датасета с тестами
  * @param callback событие, которые выполнится после загрузки
  */
-export function loadTestDataset(callback?: () => void) {
+export function loadTestFileDataset(callback?: () => void) {
     let files = (<HTMLInputElement>document.getElementById('file-tests')).files;
     let named = (<HTMLInputElement>document.getElementById('named-dataset')).value == 'on';
     let reader = new FileReader();

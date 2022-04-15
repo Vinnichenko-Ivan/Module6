@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 define(["require", "exports", "./csv/csv-loader", "./algorithm/algorithm", "./algorithm/build-tree-id3", "./algorithm/classification", "./move", "./audio", "./modal"], function (require, exports, csv_loader_1, algorithm_1, build_tree_id3_1, classification_1, move_1, audio_1, modal_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.drawTree = exports.loadTestDataset = exports.loadLearnDataset = exports.dataset = void 0;
+    exports.drawTree = exports.loadTestFileDataset = exports.loadLearnFileDataset = exports.loadLearnDataset = exports.dataset = void 0;
     move_1.initializeMove();
     modal_1.initializeModal();
     audio_1.initializeAudio();
@@ -31,20 +31,25 @@ define(["require", "exports", "./csv/csv-loader", "./algorithm/algorithm", "./al
         algorithmHolder.iterationDelay = +e.target.value;
     });
     $('#run-classification').on('click', runClassification);
-    function loadLearnDataset(callback) {
-        let files = document.getElementById('file-dataset').files;
+    function loadLearnDataset() {
         let named = document.getElementById('named-dataset').checked;
+        exports.dataset.learnDataset = csv_loader_1.loadDatasetFromString(exports.dataset.learnDatasetString, exports.dataset.classIndex, named);
+    }
+    exports.loadLearnDataset = loadLearnDataset;
+    function loadLearnFileDataset(callback) {
+        let files = document.getElementById('file-dataset').files;
         let reader = new FileReader();
         reader.onload = e => {
-            exports.dataset.learnDataset = csv_loader_1.loadDatasetFromString(e.target.result, exports.dataset.classIndex, named);
+            exports.dataset.learnDatasetString = e.target.result;
+            loadLearnDataset();
             if (callback != undefined) {
                 callback();
             }
         };
         reader.readAsText(files[0], "UTF-8");
     }
-    exports.loadLearnDataset = loadLearnDataset;
-    function loadTestDataset(callback) {
+    exports.loadLearnFileDataset = loadLearnFileDataset;
+    function loadTestFileDataset(callback) {
         let files = document.getElementById('file-tests').files;
         let named = document.getElementById('named-dataset').value == 'on';
         let reader = new FileReader();
@@ -56,7 +61,7 @@ define(["require", "exports", "./csv/csv-loader", "./algorithm/algorithm", "./al
         };
         reader.readAsText(files[0], "UTF-8");
     }
-    exports.loadTestDataset = loadTestDataset;
+    exports.loadTestFileDataset = loadTestFileDataset;
     function drawTree() {
         return __awaiter(this, void 0, void 0, function* () {
             if (algorithmHolder.running) {
