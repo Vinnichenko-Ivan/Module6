@@ -3,14 +3,12 @@
 //https://en.wikipedia.org/wiki/DBSCAN
 //https://en.wikipedia.org/wiki/Cluster_analysis#Fuzzy_c-means_clustering
 //https://ru.wikipedia.org/wiki/%D0%9C%D0%B5%D1%82%D0%BE%D0%B4_%D0%BD%D0%B5%D1%87%D1%91%D1%82%D0%BA%D0%BE%D0%B9_%D0%BA%D0%BB%D0%B0%D1%81%D1%82%D0%B5%D1%80%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_C-%D1%81%D1%80%D0%B5%D0%B4%D0%BD%D0%B8%D1%85
-
-
+/**
+ * Функция генерации случайных цветов.
+ * @param colors список цветов
+ * @param count размер
+ */
 function genRandColor(colors, count) {
-    colors.push('red')
-    colors.push('yellow')
-    colors.push('green')
-    colors.push('blue')
-    colors.push('brown')
     while (colors.length < count) {
         let color;
         do {
@@ -20,29 +18,49 @@ function genRandColor(colors, count) {
     }
 }
 
+/**
+ * Расстояние между двумя точками
+ * @param a Точка а
+ * @param b Точка б
+ * @returns {number} Расстояние
+ */
 function lenBetweenPoints(a, b){
     return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y))
 }
 
+/**
+ * Рандомный дабл
+ * @param min минимум
+ * @param max максимум
+ * @returns {number} Случайное чило [min, max]
+ */
 function randDouble(min, max){
     return Math.random() * (max - min)
 }
 
-function dataDist(area){
-    area.points.forEach(function (point, j){
+/**
+ * Функция распределения точек по кластерам
+ * @param field Поле.
+ */
+function dataDist(field){
+    field.points.forEach(function (point, j){
         let minD = Infinity;
         let index = 0
-        area.clusterCenters.forEach(function (clusterCenter, i){
+        field.clusterCenters.forEach(function (clusterCenter, i){
             if(lenBetweenPoints(clusterCenter, point) < minD){
                 index = i;
                 minD = lenBetweenPoints(clusterCenter, point)
             }
         })
-        area.points[j].color = colorIndex[index]
-        area.points[j].id = index
+        field.points[j].color = colorIndex[index]
+        field.points[j].id = index
     })
 }
 
+/**
+ * Функция генерации случайных кластеров.
+ * @param area Поле.
+ */
 function newClusterCenters(area){
     let clusterCentersCopy = []
     let newClusterCentersCounts = []
@@ -74,6 +92,12 @@ function newClusterCenters(area){
 
 }
 
+/**
+ * Функция находящая компоненту связности.
+ * @param matrix Матрица
+ * @param point Точка старта
+ * @returns {any[] | Array} Компонента.
+ */
 function sizeOfComp(matrix, point)
 {
     let n = matrix.length;
@@ -95,6 +119,12 @@ function sizeOfComp(matrix, point)
     return matrixTemp;
 }
 
+/**
+ * Компаратор по сортировке
+ * @param a Точка а
+ * @param b Точка b
+ * @returns {number} Результат сравнения.
+ */
 function compare(a, b) {
     if (a[2] < b[2]) {
         return -1;
@@ -105,7 +135,10 @@ function compare(a, b) {
     return 0;
 }
 
-
+/**
+ * Генерация центров кластеров по алгоритмы через минимальное оставное дерево.
+ * @param field Поле.
+ */
 function graphGenClusterCenters(field){
     let graph = []
     let graphAnswer = []
@@ -165,6 +198,11 @@ function graphGenClusterCenters(field){
 
 }
 
+/**
+ * Случайная генерация центров кластеров
+ * @param clusterCount Число кластеров
+ * @param area Поле.
+ */
 function clusterInitRand(clusterCount, area){
     area.clusterCenters = []
     area.clusterCount = clusterCount
@@ -173,6 +211,11 @@ function clusterInitRand(clusterCount, area){
     }
 }
 
+/**
+ * Создание центров кластеров.
+ * @param clusterCount Число кластеров.
+ * @param area Поле.
+ */
 function clusterInit(clusterCount, area){
     area.clusterCenters = []
     area.clusterCount = clusterCount
@@ -181,6 +224,14 @@ function clusterInit(clusterCount, area){
     }
 }
 
+/**
+ * Функция для dbscan. Присоеденяет точки к кластеру если надо.
+ * @param field Поле.
+ * @param eps Максимальное расстояние для включения точки.
+ * @param minPointCount Минимальное количество точек для создания кластера.
+ * @param pointIndex Индекс точки.
+ * @param stack Массив выбора.
+ */
 function dbscanDeep(field, eps, minPointCount, pointIndex, stack)
 {
     let point = field.points[pointIndex];
@@ -202,6 +253,12 @@ function dbscanDeep(field, eps, minPointCount, pointIndex, stack)
     }
 }
 
+/**
+ * DBSCAN
+ * @param field Поле.
+ * @param eps Максимальное расстояние для включения точки.
+ * @param minPointCount Минимальное количество точек для создания кластера.
+ */
 function dbscan(field, eps, minPointCount){
     let clusterCounter = -1;
     field.rerun();
@@ -246,15 +303,20 @@ function dbscan(field, eps, minPointCount){
                 dbscanDeep(field, eps, minPointCount, stack.pop(), stack);
             }
         }
-
-
-
     });
     clusterInit(clusterCounter + 1, field)
     newClusterCenters(field);
 
 }
 
+/**
+ * Функция обработки значений от пользователя.
+ * @param min Минимум.
+ * @param max Максимм.
+ * @param floating Дробное ли?
+ * @param value Значение.
+ * @returns {number} Обработанное значение.
+ */
 function getReal(min, max, floating, value)
 {
     value = Number(value)
