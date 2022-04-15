@@ -54,7 +54,10 @@
 
 <div id="shadowSettings" class="shadow">
     <div id="settingsModalWindow" class="modalWindow">
-        <button id="closeSettingsModalWindow" class="close">Закрыть</button>
+
+        <div id="closeSettingsModalWindow" class="divForCloseButton">
+            <button class="close">Закрыть</button>
+        </div>
 
         <div class="extraDivForModalWindows">
             <label for="colonyInputId">Количество муравьев</label>
@@ -85,13 +88,17 @@
         </div>
 
 
-        <button class="save" id="saveSettings">Сохранить</button>
+        <div class="divForSaveButton">
+            <button class="save" id="saveSettings">Сохранить</button>
+        </div>
     </div>
 </div>
 
 <div id="shadowGraphics" class="shadow">
     <div id="graphicsModalWindow" class="modalWindow">
-        <button id="closeGraphicsModalWindow" class="close">Закрыть</button>
+        <div id="closeGraphicsModalWindow" class="divForCloseButton">
+            <button class="close">Закрыть</button>
+        </div>
 
         <div class="extraDivForModalWindows">
             <label for="anthillColorId">Муравейник</label>
@@ -125,7 +132,9 @@
         </div>
 
 
-        <button class="save" id="saveGraphics">Сохранить</button>
+        <div class="divForSaveButton">
+            <button class="save" id="saveGraphics">Сохранить</button>
+        </div>
     </div>
 </div>
 
