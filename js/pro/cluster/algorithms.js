@@ -4,13 +4,7 @@
 //https://en.wikipedia.org/wiki/Cluster_analysis#Fuzzy_c-means_clustering
 //https://ru.wikipedia.org/wiki/%D0%9C%D0%B5%D1%82%D0%BE%D0%B4_%D0%BD%D0%B5%D1%87%D1%91%D1%82%D0%BA%D0%BE%D0%B9_%D0%BA%D0%BB%D0%B0%D1%81%D1%82%D0%B5%D1%80%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_C-%D1%81%D1%80%D0%B5%D0%B4%D0%BD%D0%B8%D1%85
 
-
 function genRandColor(colors, count) {
-    colors.push('red')
-    colors.push('yellow')
-    colors.push('green')
-    colors.push('blue')
-    colors.push('brown')
     while (colors.length < count) {
         let color;
         do {

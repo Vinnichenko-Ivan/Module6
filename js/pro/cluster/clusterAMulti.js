@@ -6,6 +6,11 @@ let weight;
 let height;
 let globalClusterCount = 4;
 let colorIndex = [];
+colorIndex.push('red')
+colorIndex.push('yellow')
+colorIndex.push('green')
+colorIndex.push('blue')
+colorIndex.push('brown')
 let defColor = 'white';
 let repeatForKMeans = 5;
 let maxPoints = 100;
