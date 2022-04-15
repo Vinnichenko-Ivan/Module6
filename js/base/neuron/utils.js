@@ -88,7 +88,15 @@ function lineMatrixToMatrix(lineMatrix, n){
     return matrix;
 }
 
-function drawLine(x1, y1, x2, y2){
+/**
+ * Функция рисовки линии
+ * @param x1
+ * @param y1
+ * @param x2
+ * @param y2
+ * @param context
+ */
+function drawLine(x1, y1, x2, y2, context){
     context.strokeStyle = 'white'
     context.beginPath();
     context.moveTo(x1, y1);
@@ -97,11 +105,18 @@ function drawLine(x1, y1, x2, y2){
     context.closePath();
 }
 
+/**
+ * Промежуточный класс потребный для загрузки и выгрузки коффициентов из нейросети.
+ */
 
 class SaveOBJ{
     invisibleLayers = []
     outputLayer = []
 }
+
+/**
+ * Класс теста
+ */
 
 class Test{
     input

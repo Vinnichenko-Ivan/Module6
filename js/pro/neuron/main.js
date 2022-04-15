@@ -26,9 +26,9 @@ function derivLRU(x){
     return b;
 }
 
-
-
-
+/**
+ * Класс нейросети
+ */
 class NeuronFullNet{
     learningRate = 0.001
 
@@ -40,8 +40,8 @@ class NeuronFullNet{
 
     /**
      * Функция задающая конфигурацию нейросети
-     * @param inputLayersSize
-     * @param outputLayerSize
+     * @param inputLayersSize Размер входного слоя
+     * @param outputLayerSize Размер выходного слоя
      */
     setSizes(inputLayersSize, outputLayerSize){
         this.inputLayersSize = inputLayersSize;
@@ -140,7 +140,7 @@ class NeuronFullNet{
     }
 
     /**
-     * Функция кросс етропии
+     * Функция кросс ентропии
      * @param answer правильный ответ
      * @returns {number} значение кросс ентропии
      */
@@ -175,16 +175,6 @@ class NeuronFullNet{
             q[i] -= p[i];
         }
         return q;
-    }
-
-    /**
-     * Тестовая функция вычисления ошибки. Более не используется.
-     * @param answer
-     * @param output
-     * @returns {number}
-     */
-    doubleError(answer, output){
-        return (answer - output);
     }
 
     /**
@@ -263,7 +253,6 @@ class NeuronFullNet{
 
 let inputLayersSize = 2500
 let outputLayerSize = 10
-
 
 let neuroNet = new NeuronFullNet();
 neuroNet.setSizes(inputLayersSize, outputLayerSize);
