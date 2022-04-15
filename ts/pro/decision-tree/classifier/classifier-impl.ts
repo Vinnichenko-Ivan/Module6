@@ -1,6 +1,9 @@
 import {Dataset} from "../csv/csv";
 import {Condition, TreeFlow, TreeLeaf, TreeMark, TreeNode, TreeNodeType} from "./classifier";
 
+/**
+ * @author Аникушин Роман
+ */
 abstract class TreeNodeImpl implements TreeNode {
 
     readonly condition: Condition;
@@ -25,6 +28,9 @@ abstract class TreeNodeImpl implements TreeNode {
 
 }
 
+/**
+ * @author Аникушин Роман
+ */
 export class TreeFlowImpl extends TreeNodeImpl implements TreeFlow {
 
     private readonly dataset: Dataset;
@@ -83,6 +89,9 @@ export class TreeFlowImpl extends TreeNodeImpl implements TreeFlow {
     }
 }
 
+/**
+ * @author Аникушин Роман
+ */
 export class TreeLeafImpl extends TreeNodeImpl implements TreeLeaf {
 
     private readonly dataset: Dataset;

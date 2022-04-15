@@ -22,18 +22,30 @@ export class Distribution {
         this._totalCount = 0;
     }
 
+    /**
+     * Количество различных значений классов у образцов в разбиении
+     */
     get classCount(): number {
         return this.perClass.length;
     }
 
+    /**
+     * Количество различных значений атрибутов (ну или чего там) у образцов в разбиении
+     */
     get bagCount(): number {
         return this.perBag.length;
     }
 
+    /**
+     * Количество образцов в разбиении
+     */
     get totalCount(): number {
         return this._totalCount;
     }
 
+    /**
+     * Самое частовстречающееся значение класса
+     */
     get maxClass(): number {
         let maxCount = 0;
         let maxIndex = 0;
@@ -48,6 +60,9 @@ export class Distribution {
         return maxIndex;
     }
 
+    /**
+     * Самое частовстречающееся значение аттрибута (ну или чего там)
+     */
     get maxBag(): number {
         let maxCount = 0;
         let maxIndex = 0;
@@ -62,6 +77,11 @@ export class Distribution {
         return maxIndex;
     }
 
+    /**
+     * Добавить образец
+     * @param bagIndex значение атрибута образца
+     * @param classIndex значение класса образца
+     */
     add(bagIndex: number, classIndex: number): void {
         this.perClassPerBag[bagIndex][classIndex]++;
         this.perBag[bagIndex]++;
@@ -69,6 +89,11 @@ export class Distribution {
         this._totalCount++;
     }
 
+    /**
+     * Проверяет, чтобы было хотя бы одно значение атрибута,
+     * по которому количество образцов будет больше minNoObj
+     * @param minNoObj порог количества образцов
+     */
     check(minNoObj: number) {
         let counter = 0;
 
@@ -80,6 +105,10 @@ export class Distribution {
         return counter > 1;
     }
 
+    /**
+     * Получить разбиения по выборке данных
+     * @param dataset выборка данных
+     */
     static of(dataset: Dataset): Distribution {
         let bags = new Distribution(1, dataset.class.valueCount);
 

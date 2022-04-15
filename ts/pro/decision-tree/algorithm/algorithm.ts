@@ -46,6 +46,9 @@ export class AlgorithmHolder {
         this._algorithm = algorithm;
     }
 
+    /**
+     * Запуск алгоритма
+     */
     async start<T>(): Promise<T> {
         this._isRunning = true;
         this._isCompleted = false;
@@ -55,11 +58,18 @@ export class AlgorithmHolder {
         return result;
     }
 
+    /**
+     * Остановка алгоритм
+     */
     async stop() {
         this._isRunning = false;
         await this._promise;
     }
 
+    /**
+     * Задержка (для вызова из алгоритма).
+     * Можно использовать для анимации.
+     */
     delay(): Promise<any> {
         return new Promise(resolve => {
             setTimeout(resolve, this.running ? this._iterationDelay : 0);

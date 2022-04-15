@@ -4,6 +4,7 @@ import {Condition, Split} from "./classifier";
 
 /**
  * Разделение дискретного атрибута
+ * @author Аникушин Роман
  */
 export class EnumSplit implements Split {
 
@@ -68,6 +69,7 @@ export class EnumSplit implements Split {
 
 /**
  * Разделение числового атрибута
+ * @author Аникушин Роман
  */
 export class NumberSplit implements Split {
 
@@ -162,6 +164,7 @@ export class NumberSplit implements Split {
 
 /**
  * Условие перехода на узел ниже
+ * @author Аникушин Роман
  */
 abstract class AbstractCondition implements Condition {
 
@@ -188,6 +191,7 @@ abstract class AbstractCondition implements Condition {
 
 /**
  * Дискретное условие (equals)
+ * @author Аникушин Роман
  */
 export class EnumCondition extends AbstractCondition {
 
@@ -213,6 +217,7 @@ export class EnumCondition extends AbstractCondition {
 
 /**
  * Числовое условие (<= или >)
+ * @author Аникушин Роман
  */
 export class NumberCondition extends AbstractCondition {
 

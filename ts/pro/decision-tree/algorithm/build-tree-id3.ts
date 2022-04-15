@@ -24,6 +24,10 @@ function equalsChildren(children: TreeNode[]): boolean {
     return true;
 }
 
+/**
+ * Класс алгоритма построения дерева
+ * @author Аникушин Роман
+ */
 export class BuildTreeID3Algorithm implements Algorithm {
 
     /**
@@ -89,13 +93,19 @@ export class BuildTreeID3Algorithm implements Algorithm {
         let children = []
         let classPercent = bags.perClass[bags.maxClass] / bags.totalCount;
 
+        // Если глубина дерева удовлетворяет или
+        // процентное соотношение самого частовстречаемого класса достаточное,
+        // то делаем разделения
+        // иначе создаем лист
         if (deep < this.maxTreeDepth && classPercent <= this.thresholdClassPercent(deep)) {
             let split = this.findBestSplit(dataset);
 
+            // Если разделение найдено
             if (split != undefined) {
                 let sets = split.split();
                 let conditions = split.conditions();
 
+                // Рекурсивно выполняем тоже самое для детишек
                 for (let i = 0; i < sets.length; i++) {
                     if (sets[i].templateCount === 0) {
                         continue;
@@ -139,8 +149,9 @@ export class BuildTreeID3Algorithm implements Algorithm {
             if (attribute.isClass) {
                 continue;
             }
-
             let split;
+
+            // Для дискретных и непрерывных атрибутов разделение делаем по-разному
             if (attribute.isDiscrete) {
                 split = new EnumSplit(dataset, attribute, this.minSubsetSize);
             }
@@ -169,6 +180,8 @@ export class BuildTreeID3Algorithm implements Algorithm {
             }
         }
 
+        // Если прирост информации меньше порога (слишком маленький),
+        // то разбиения не будет
         if (maxInfoGain <= this.minInfoGain) {
             return null;
         }
@@ -177,7 +190,9 @@ export class BuildTreeID3Algorithm implements Algorithm {
     }
 
     /**
-     * Подсчет порога процента классов
+     * Подсчет порога процента классов с помощью функции y = -sqrt(x) + 1;
+     * Функция зависит от глубины (чем больше глубина, тем меньше значени функции).
+     * Это нужно для того, что дерево полностью не обрезалось и его глубина не была 1.
      * @param deep глубина рекурсии
      */
     private thresholdClassPercent(deep: number): number {

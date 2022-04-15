@@ -2,6 +2,10 @@ import {Algorithm, AlgorithmHolder} from "./algorithm";
 import {Dataset, Template} from "../csv/csv";
 import {TreeFlow, TreeLeaf, TreeMark, TreeNode, TreeNodeType} from "../classifier/classifier";
 
+/**
+ * Класс статистики
+ * @author Аникушин Роман
+ */
 class Statistic {
 
     total: number;
@@ -15,6 +19,10 @@ class Statistic {
     }
 }
 
+/**
+ * Класс алгоритма классификации
+ * @author Аникушин Роман
+ */
 export class ClassificationAlgorithm implements Algorithm {
 
     /**
@@ -43,21 +51,32 @@ export class ClassificationAlgorithm implements Algorithm {
         this.tree = tree;
     }
 
+    /**
+     * Классификация выборки тестовых данных
+     *
+     * @param holder контейнер алгоритма
+     */
     async run(holder: AlgorithmHolder): Promise<any> {
         this.tree.resetDisplay();
 
+        // Перебираем все образцы
         for (const test of this.testDataset.templates) {
             if (!holder.running) {
                 break;
             }
 
+            // Классификацая образца
             let classValue = await this.classify(holder, this.tree, test);
 
+            // Задержка
             await holder.delay();
 
+            // Обновляем статистику и отрисовываем
             this.updateStatistic(test.value(this.testDataset.class), classValue);
             this.drawResult();
 
+            // Сбрасываем анимацию с этого образца,
+            // так как дальше будет следующий образец
             for (const selected of this.selected) {
                 selected.markDisplay(TreeMark.NONE);
             }
@@ -65,15 +84,29 @@ export class ClassificationAlgorithm implements Algorithm {
         }
     }
 
+    /**
+     * Классификация образца
+     *
+     * @param holder контейнер алгоритма
+     * @param node узел
+     * @param test тестовый образец, который нужно классифицировать
+     * @return number значение класса образца
+     */
     async classify(holder: AlgorithmHolder, node: TreeNode, test: Template): Promise<number> {
+        // Задержка
         await holder.delay();
 
+        // Для дальнейшего сброса анимации
         this.selected.push(node);
 
+        // Если задержка между итерациями достаточно большая,
+        // чтобы глаз человека как-то реагировал, то анимируем,
+        // иначе анимируем только листы
         if (holder.iterationDelay > 25) {
             node.markDisplay(TreeMark.HIGHLIGHT);
         }
 
+        // Если узел это лист, то анимируем его
         if (node.type == TreeNodeType.LEAF) {
             let leaf = <TreeLeaf> node;
             let classValue = leaf.classValue;
@@ -88,6 +121,7 @@ export class ClassificationAlgorithm implements Algorithm {
             return classValue;
         }
 
+        // Проходимся по всем детишкам и классифицируем их тоже
         for (const child of (<TreeFlow> node).children) {
             if (child.condition.check(test)) {
                 return await this.classify(holder, child, test);
@@ -95,6 +129,12 @@ export class ClassificationAlgorithm implements Algorithm {
         }
     }
 
+    /**
+     * Обновление статистики
+     *
+     * @param excepted ожидаемое значение
+     * @param actual реальное значение
+     */
     private updateStatistic(excepted: number, actual: number) {
         if (excepted == actual) {
             this.statistic.successful++;
@@ -107,6 +147,9 @@ export class ClassificationAlgorithm implements Algorithm {
         this.statistic.errorPercent = this.statistic.errors / this.statistic.classifier;
     }
 
+    /**
+     * Отрисовка статистики
+     */
     private drawResult() {
         document.getElementById('result-classified').innerText
             = `${this.statistic.classifier.toString()}/${this.statistic.total.toString()}`;

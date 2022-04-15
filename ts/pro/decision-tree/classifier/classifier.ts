@@ -42,50 +42,105 @@ export interface Condition {
      */
     check(template: Template): boolean;
 
+    /**
+     * Отображаемый оператор (например = или <)
+     */
     displayOperator(): string;
 
+    /**
+     * Отображаемое значение
+     */
     displayValue(): string;
 
+    /**
+     * Отображаемый атрибут
+     */
     displayAttribute(): string;
 
 }
 
+/**
+ * Интерфейс для отображаемых элементов
+ */
 export interface Display {
 
+    /**
+     * HTML элементик
+     */
     get htmlElement(): HTMLElement;
 
+    /**
+     * Создать отображение и вывести на экран
+     */
     createDisplay(): void;
 
+    /**
+     * Удалить отображение и убрать с экрана
+     */
     deleteDisplay(): void;
 
+    /**
+     * Сбросить отображение к дефолтным настройкам
+     */
     resetDisplay(): void;
 
 }
 
-export enum TreeNodeType {FLOW, LEAF}
-
+/**
+ * Интерфейс узлов
+ */
 export interface TreeNode extends Display {
 
+    /**
+     * Условия, которое должны выполниться, чтобы перейти в этот узел
+     */
     get condition(): Condition;
 
+    /**
+     * Тип узла
+     */
     get type(): TreeNodeType;
 
+    /**
+     * Обновить состояние узла (для анимации)
+     * @param value состояние (или отметка)
+     */
     markDisplay(value: TreeMark): void;
 
 }
 
+/**
+ * Интерфейс узла "ветка"
+ */
 export interface TreeFlow extends TreeNode {
 
+    /**
+     * Детишки ветки
+     */
     get children(): TreeNode[];
 
 }
 
+/**
+ * Интерфейс узла "лист"
+ */
 export interface TreeLeaf extends TreeNode {
 
+    /**
+     * Значение класса листа
+     */
     get classValue(): number;
 
 }
 
+/**
+ * Типы узлов
+ */
+export enum TreeNodeType {FLOW, LEAF}
+
+/**
+ * Типы состояний (или отметок) узла (для анимации)
+ */
 export enum TreeMark {
     HIGHLIGHT = 'highlight',
     RIGHT = 'right',
