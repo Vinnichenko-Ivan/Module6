@@ -45,7 +45,6 @@ checkBoxClusterCentres.checked = drawCenters;
 checkBoxLineToCenter.checked = drawLines;
 autoRunDbscan.checked = autoRunDbscanFlag;
 
-
 weight = mainCanvas.width;
 height = mainCanvas.height;
 
@@ -56,6 +55,13 @@ let fieldAlgo2 = new Field();
 let fieldAlgo3 = new Field();
 let fieldAlgo4 = new Field();
 
+/**
+ * Функция отрисовки поля.
+ * @param field Поле.
+ * @param context То где рисуешь.
+ * @param canvas Канвас.
+ * @param scale Масштаб.
+ */
 function drawField(field, context, canvas, scale){
     context.clearRect(0, 0, canvas.width, canvas.height)
     field.points.forEach(function (point){
