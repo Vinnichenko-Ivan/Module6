@@ -23,7 +23,10 @@ define(["require", "exports", "./main"], function (require, exports, main_1) {
             document.getElementById('modal-window-blur').style.display = 'block';
             document.getElementById('modal-window').style.display = 'flex';
         });
-        $('#named-dataset').on('input', () => main_1.loadLearnFileDataset(updateTable));
+        $('#named-dataset').on('input', () => {
+            main_1.loadLearnDataset();
+            updateTable();
+        });
     }
     exports.initializeModal = initializeModal;
     function clearError() {
