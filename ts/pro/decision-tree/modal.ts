@@ -37,7 +37,10 @@ export function initializeModal() {
 
 
     // Обработка события переключения именования атрибутов
-    $('#named-dataset').on('input', () => loadLearnFileDataset(updateTable));
+    $('#named-dataset').on('input', () => {
+        loadLearnDataset();
+        updateTable();
+    });
 }
 
 /**
